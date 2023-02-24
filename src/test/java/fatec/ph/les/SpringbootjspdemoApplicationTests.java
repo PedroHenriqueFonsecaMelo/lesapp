@@ -1,4 +1,4 @@
-package xing.rujuan.springbootjspdemo;
+package fatec.ph.les;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

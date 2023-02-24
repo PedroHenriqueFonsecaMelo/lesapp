@@ -1,4 +1,4 @@
-package xing.rujuan.springbootjspdemo;
+package fatec.ph.les;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

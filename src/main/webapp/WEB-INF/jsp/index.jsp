@@ -11,6 +11,6 @@
     <title>Home</title>
 </head>
 <body>
-Welcome to Spring Boot JSP Setup Demo!!!
+  <p>Welcome to Spring Boot JSP Setup Demo!!! ${cli}</p>
 </body>
 </html>
