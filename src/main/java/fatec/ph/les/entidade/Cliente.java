@@ -1,14 +1,15 @@
 package fatec.ph.les.entidade;
 
 import java.lang.reflect.Field;
+import java.rmi.server.UID;
 
 import fatec.ph.les.connect.connectBD;
 
 public class Cliente {
 
-    private String senha = "1";
-    private String nome = "1";
-    private String email = "1";
+    private String senha;
+    private String nome;
+    private String email;
 
     public String getSenha() {
         return senha;
@@ -75,7 +76,7 @@ public class Cliente {
 
     }
 
-    public static void Inserir(String SenhaInserir, String NomeInserir, String EmailInserir) {
+    public static void Inserir(String NomeInserir, String SenhaInserir, String EmailInserir) {
         StringBuilder Inserir = new StringBuilder();
         String name;
         int i = 0;
@@ -98,23 +99,32 @@ public class Cliente {
         connectBD.EXEquery(Inserir.toString());
     }
 
+    public static void InserirCBD(Object obj) {
+        System.out.println("inserir no %s: " + obj.getClass().getSimpleName());
+        try {
+            String queryIns = connectBD.InserirTableX(obj);
+            connectBD.EXEquery(queryIns);
+            System.out.println("sucesso inserir no %s: " + obj.getClass().getSimpleName());
+        } catch (Exception e) {
+            System.out.println("erro inserir no %s: " + obj.getClass().getSimpleName());
+        }
+    }
+
+    public static void DeletarCBD(int uid, Class cli) {
+        System.out.println("deletar no %s: " + uid);
+        try {
+            String queryIns = connectBD.DeletarTableX(uid, cli);
+            connectBD.EXEquery(queryIns);
+            System.out.println("sucesso deletar no %s: " + cli.getClass().getSimpleName());
+        } catch (Exception e) {
+            System.out.println("erro deletar no %s: " + cli.getClass().getSimpleName());
+        }
+    }
+
     public static void Deletar(int uid) {
         StringBuilder Inserir = new StringBuilder();
-        String name;
-        int i = 0;
-        Field[] Fields = Cliente.class.getDeclaredFields();
-        Inserir.append("insert into " + Cliente.class.getSimpleName() + " (");
-
-        for (Field f : Fields) {
-            // f.setAccessible(true);
-            i++;
-            name = f.getName();
-            if (i <= Fields.length - 1) {
-                Inserir.append(name + " , ");
-            } else {
-                Inserir.append(name + ") VALUES  (");
-            }
-        }
+        Inserir.append("delete from" + Cliente.class.getSimpleName() + " where id" + Cliente.class.getSimpleName()
+                + " = " + uid);
 
         System.out.println(Inserir.toString());
         connectBD.EXEquery(Inserir.toString());

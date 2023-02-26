@@ -1,6 +1,8 @@
 package fatec.ph.les.connect;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
@@ -26,7 +28,7 @@ public class connectBD {
         }
     }
 
-    public static String CreateTableX(Class x) {
+    public static void CreateTableX(Class x) {
         Field[] Fields = x.getDeclaredFields();
         StringBuilder table = new StringBuilder();
         String name, tipo;
@@ -48,8 +50,57 @@ public class connectBD {
         }
 
         EXEquery(table.toString());
-        return table.toString() + " ";
+        // return table.toString() + " ";
 
+    }
+
+    public static String InserirTableX(Object obj) {
+        StringBuilder Inserir = new StringBuilder();
+        String name;
+        int i = 0;
+        Field[] Fields = obj.getClass().getDeclaredFields();
+
+        Inserir.append("insert into " + obj.getClass().getSimpleName() + " (");
+
+        for (Field f : Fields) {
+            // f.setAccessible(true);
+            i++;
+            name = f.getName();
+            if (i <= Fields.length - 1) {
+                Inserir.append(name + " , ");
+            } else {
+                Inserir.append(name + ") VALUES  (");
+            }
+        }
+        i = 0;
+        for (Field f : Fields) {
+            i++;
+            switch (f.getType().getSimpleName()) {
+                case "String":
+                    Inserir.append("'" + runGetter(f, obj) + "'");
+                    break;
+                default:
+                    Inserir.append(" " + runGetter(f, obj) + " ");
+                    break;
+            }
+            if (i <= Fields.length - 1) {
+                Inserir.append(" , ");
+            } else {
+                Inserir.append(" ); ");
+            }
+
+        }
+
+        System.out.println("resultado::: " + Inserir.toString());
+
+        return Inserir.toString();
+    }
+
+    public static String DeletarTableX(int uid, Class obj) {
+        StringBuilder queryDel = new StringBuilder();
+        queryDel.append("delete from " + obj.getClass().getSimpleName() + " where id" + obj.getClass().getSimpleName()
+                + " = " + uid + ";");
+        return queryDel.toString();
     }
 
     private static String extracted(String name, String tipo) {
@@ -77,6 +128,24 @@ public class connectBD {
         } catch (Exception e) {
             System.out.println("erro");
         }
+    }
+
+    public static String runGetter(Field field, Object o) {
+        // MZ: Find the correct method
+        for (Method method : o.getClass().getMethods()) {
+            if ((method.getName().startsWith("get")) && (method.getName().length() == (field.getName().length() + 3))) {
+                if (method.getName().toLowerCase().endsWith(field.getName().toLowerCase())) {
+                    // MZ: Method found, run it
+                    try {
+                        return method.invoke(o).toString();
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        System.out.println("Could not determine method: " + method.getName());
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
 }

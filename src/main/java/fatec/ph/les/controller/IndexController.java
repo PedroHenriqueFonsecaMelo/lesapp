@@ -16,11 +16,14 @@ public class IndexController {
 
     @GetMapping("/")
     public String index(Model model) {
-        Cliente cli = new Cliente();
-
-        System.out.println("teste: " + connectBD.CreateTableX(Cliente.class));
-
-        Cliente.Inserir("123", "joah", "fatec@");
+        /*
+         * Cliente cli = new Cliente();
+         * 
+         * System.out.println("teste: " + connectBD.CreateTableX(Cliente.class));
+         * 
+         * Cliente.Inserir("123", "joah", "fatec@");
+         * 
+         */
 
         // System.out.println("cli2: " + cli.getClass().getFields().toString());
 
@@ -46,6 +49,7 @@ public class IndexController {
          */
 
         // model.addAttribute("cli", cli.CreateClienteTable());
+
         return "index";
     }
 }

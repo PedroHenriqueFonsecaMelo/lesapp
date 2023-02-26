@@ -1,0 +1,62 @@
+<body> 
+<form action="/cliHome/singup" method="post" > 
+<div><input name="firstName" placeholder="First name">
+</div> <div><input name="email" placeholder="Email">
+</div> <div><input name="password" placeholder="Password" type="password"></div> 
+<div><input type="Submit"></div> </form>
+
+<div class="col-12 col-sm-6 mb-3">
+              <select class="form-select shadow-none" id="region" disabled required data-input
+              >
+                <option selected>Estado</option>
+                <option value="AC">Acre</option>
+                <option value="AL">Alagoas</option>
+                <option value="AP">Amapá</option>
+                <option value="AM">Amazonas</option>
+                <option value="BA">Bahia</option>
+                <option value="CE">Ceará</option>
+                <option value="DF">Distrito Federal</option>
+                <option value="ES">Espírito Santo</option>
+                <option value="GO">Goiás</option>
+                <option value="MA">Maranhão</option>
+                <option value="MT">Mato Grosso</option>
+                <option value="MS">Mato Grosso do Sul</option>
+                <option value="MG">Minas Gerais</option>
+                <option value="PA">Pará</option>
+                <option value="PB">Paraíba</option>
+                <option value="PR">Paraná</option>
+                <option value="PE">Pernambuco</option>
+                <option value="PI">Piauí</option>
+                <option value="RJ">Rio de Janeiro</option>
+                <option value="RN">Rio Grande do Norte</option>
+                <option value="RS">Rio Grande do Sul</option>
+                <option value="RO">Rondônia</option>
+                <option value="RR">Roraima</option>
+                <option value="SC">Santa Catarina</option>
+                <option value="SP">São Paulo</option>
+                <option value="SE">Sergipe</option>
+                <option value="TO">Tocantins</option>
+              </select>
+            </div>
+
+<div class="row mb-3">
+            <div class="col-12 col-sm-6 mb-3 mb-md-0 form-floating">
+              <input type="text" class="form-control shadow-none" id="city" name="city" placeholder="Cidade" disabled required data-input />
+              <label for="city">Cidade</label>
+            </div>
+<div class="col-12 col-sm-6 mb-3 mb-md-0 form-floating">
+              <input type="text" class="form-control shadow-none" id="address" name="address" placeholder="Rua" disabled required data-input />
+              <label for="address">Rua</label>
+            </div>
+<div class="col-12 col-sm-6 form-floating">
+              <input type="text" class="form-control shadow-none" id="neighborhood" name="neighborhood" placeholder="Bairro" disabled required data-input />
+              <label for="neighborhood">Bairro</label>
+            </div>
+<div class="col-12 col-sm-6 form-floating">
+              <input type="text" class="form-control shadow-none" id="number" name="number" placeholder="Digite o número da residência" disabled required />
+              <label for="number">Digite o número da residência</label>
+            </div>
+<div class="col-12 col-sm-6 mb-3 mb-md-0 form-floating">
+              <input type="text" class="form-control shadow-none" id="complement"  name="complement" placeholder="Digite o complemento" disabled data-input/>
+              <label for="complement">Digite o complemento</label>
+            </div>
