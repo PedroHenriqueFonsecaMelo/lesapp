@@ -6,8 +6,7 @@
 <div><input type="Submit"></div> </form>
 
 <div class="col-12 col-sm-6 mb-3">
-              <select class="form-select shadow-none" id="region" disabled required data-input
-              >
+              <select class="form-select shadow-none" id="region" disabled required data-input>
                 <option selected>Estado</option>
                 <option value="AC">Acre</option>
                 <option value="AL">Alagoas</option>

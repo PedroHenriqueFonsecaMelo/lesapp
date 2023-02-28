@@ -36,7 +36,6 @@ cepInput.addEventListener("keyup", (e) => {
 
 // Get address from API
 const getAddress = async (cep) => {
-  toggleLoader();
 
   cepInput.blur();
 
@@ -57,8 +56,6 @@ const getAddress = async (cep) => {
     }
 
     addressForm.reset();
-    toggleLoader();
-    toggleMessage("CEP Inválido, tente novamente.");
     return;
   }
 
@@ -72,11 +69,11 @@ const getAddress = async (cep) => {
   neighborhoodInput.value = data.bairro;
   regionInput.value = data.uf;
 
-  toggleLoader();
 };
 
 // Add or remove disable attribute
 const toggleDisabled = () => {
+  console.log(regionInput)
   if (regionInput.hasAttribute("disabled")) {
     formInputs.forEach((input) => {
       input.removeAttribute("disabled");
@@ -88,39 +85,12 @@ const toggleDisabled = () => {
   }
 };
 
-// Show or hide loader
-const toggleLoader = () => {
-  const fadeElement = document.querySelector("#fade");
-  const loaderElement = document.querySelector("#loader");
-
-  fadeElement.classList.toggle("hide");
-  loaderElement.classList.toggle("hide");
-};
-
-// Show or hide message
-const toggleMessage = (msg) => {
-  const fadeElement = document.querySelector("#fade");
-  const messageElement = document.querySelector("#message");
-
-  const messageTextElement = document.querySelector("#message p");
-
-  messageTextElement.innerText = msg;
-
-  fadeElement.classList.toggle("hide");
-  messageElement.classList.toggle("hide");
-};
-
-// Close message modal
-closeButton.addEventListener("click", () => toggleMessage());
 
 // Save address
 addressForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  toggleLoader();
-
   setTimeout(() => {
-    toggleLoader();
 
     toggleMessage("Endereço salvo com sucesso!");
 

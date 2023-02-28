@@ -1,10 +1,11 @@
-package fatec.ph.les.connect;
+package fatec.ph.les.servicos;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.Statement;
 
 import javax.management.Query;
@@ -117,8 +118,6 @@ public class connectBD {
     public static void EXEquery(String BDquery) {
 
         try {
-
-            Class.forName(className);
             con = DriverManager.getConnection(url, user, password);
             Statement stmt = con.createStatement();
             stmt.execute(BDquery);
@@ -127,6 +126,30 @@ public class connectBD {
 
         } catch (Exception e) {
             System.out.println("erro");
+        }
+    }
+
+    public static String EXE_Select(String BDquery) {
+        ResultSet rs;
+        String resultQuery = "";
+
+        try {
+            con = DriverManager.getConnection(url, user, password);
+            Statement stmt = con.createStatement();
+
+            rs = stmt.executeQuery(BDquery);
+            while (rs.next()) { // Position the cursor 3
+                resultQuery = rs.getString(1); // Retrieve only the first column value
+                // Print the column value
+            }
+            con.close();
+            rs.close();
+            System.out.println("sucesso");
+            return resultQuery;
+
+        } catch (Exception e) {
+            System.out.println("erro");
+            return "";
         }
     }
 

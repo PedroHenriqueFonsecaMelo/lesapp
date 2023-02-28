@@ -3,7 +3,7 @@ package fatec.ph.les.entidade;
 import java.lang.reflect.Field;
 import java.rmi.server.UID;
 
-import fatec.ph.les.connect.connectBD;
+import fatec.ph.les.servicos.connectBD;
 
 public class Cliente {
 
@@ -107,6 +107,47 @@ public class Cliente {
             System.out.println("sucesso inserir no %s: " + obj.getClass().getSimpleName());
         } catch (Exception e) {
             System.out.println("erro inserir no %s: " + obj.getClass().getSimpleName());
+        }
+    }
+
+    public static String cliUID(Cliente obj) {
+        StringBuilder uid = new StringBuilder("select * from " + Cliente.class.getSimpleName() + " where ");
+        Field[] Fields = obj.getClass().getDeclaredFields();
+        String fieldname = "";
+        int i = 0;
+
+        for (Field f : Fields) {
+            i++;
+            switch (f.getType().getSimpleName()) {
+                case "String":
+                    if (i <= Fields.length - 1) {
+                        uid.append(f.getName() + " = " + "'" + connectBD.runGetter(f, obj) + "'" + " AND ");
+                    } else {
+                        uid.append(f.getName() + " = " + "'" + connectBD.runGetter(f, obj) + "'" + ";");
+                    }
+                    break;
+                default:
+                    if (i <= Fields.length - 1) {
+                        uid.append(f.getName() + " = " + connectBD.runGetter(f, obj) + " AND ");
+                    } else {
+                        uid.append(f.getName() + " = " + connectBD.runGetter(f, obj) + ";");
+                    }
+                    break;
+            }
+
+        }
+        System.out.println("cliUID:::" + uid.toString());
+
+        fieldname = connectBD.EXE_Select(uid.toString());
+
+        return fieldname;
+    }
+
+    public static void CreateTable() {
+        try {
+            connectBD.CreateTableX(Cliente.class);
+        } catch (Exception e) {
+            // TODO: handle exception
         }
     }
 
