@@ -77,7 +77,6 @@
                 </tr>
               </tbody>
             </table>
-            <input type="number" name="cliuid" id="cliuid" value="${uid}" hidden>
             <button type="submit" id="save-btn">Cadastrar</button>
           </form>
         </div>

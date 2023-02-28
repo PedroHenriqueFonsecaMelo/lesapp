@@ -1,5 +1,7 @@
 package fatec.ph.les.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Controller;
@@ -32,20 +34,19 @@ public class clienteController {
     }
 
     @PostMapping("/singup")
-    public ModelAndView insCli(@ModelAttribute Cliente firstName, ModelMap model, Model m2) {
+    public ModelAndView insCli(@ModelAttribute Cliente firstName, ModelMap model, HttpServletRequest request) {
 
-        // System.out.println("part 1:" + firstName.getEmail() + " :: " +
-        // firstName.getNome() + " :: " + firstName.getSenha());
+        System.out.println("part 1:");
         connectBD.CreateTableX(firstName.getClass());
 
         System.out.println("part 2:");
         Cliente.InserirCBD(firstName);
 
         System.out.println("part 3:");
-
         uidcli = Cliente.cliUID(firstName);
-
         model.addAttribute("uid", uidcli);
+
+        request.getSession().setAttribute("uidcli", uidcli);
 
         // model.addFlashAttribute("uid", Cliente.cliUID(firstName));
 
@@ -56,14 +57,16 @@ public class clienteController {
     }
 
     @GetMapping("/login")
-    public String logCli(Model model) {
+    public String logCli(Model model, @SessionAttribute(name = "uidcli", required = false) String uid) {
 
         model.addAttribute("uid", uidcli);
         System.out.println("part 5:  ");
         System.out.println(model.asMap().get("uid"));
+        System.out.println(uid);
 
         // Cliente.Deletar(Integer.parseInt(uid));
 
         return "cliPages/login";
     }
+
 }

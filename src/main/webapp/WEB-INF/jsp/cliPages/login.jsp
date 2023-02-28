@@ -22,10 +22,10 @@
                         <input type="password" required id="password" name="senha">
                         <label for="password">Password</label>
                     </div>
-                    <input type="number" name="cliuid" id="cliuid" value="${uid}" hidden>
+                    
                     <button type="submit" formmethod="post" >Log in</button>
                     <div class="register">
-                        <p>Don't have a account <a href="/cliHome/singup/form" >Register</a></p>
+                        <p>Don't have a account <a href="/cliHome/singup/form" target="_top" >Register</a></p>
                     </div>
                 </form>
             </div>

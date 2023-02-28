@@ -22,11 +22,10 @@ import fatec.ph.les.entidade.Endereco;
 public class enderecoController {
 
     @GetMapping("/singup/form")
-    public String enderecoSingupForm(Model model, HttpServletRequest hRequest, ModelMap model2,
-            @RequestParam String uid) {
+    public String enderecoSingupForm(Model model, HttpServletRequest hRequest, @RequestParam String uid) {
 
         System.out.println("uid4:: " + uid);
-        // System.out.println("uid5:: " + id2);
+        System.out.println("uid5:: " + hRequest.getSession().getAttribute("uidcli"));
 
         model.addAttribute("uid", uid);
 

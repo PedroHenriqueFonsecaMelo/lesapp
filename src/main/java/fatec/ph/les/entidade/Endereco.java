@@ -26,6 +26,17 @@ public class Endereco {
         this.complemento = complemento;
     }
 
+    public Endereco(String cep, String estado, String cidade, String rua, String bairro, String numero,
+            String complemento) {
+        this.cep = cep;
+        this.estado = estado;
+        this.cidade = cidade;
+        this.rua = rua;
+        this.bairro = bairro;
+        this.numero = numero;
+        this.complemento = complemento;
+    }
+
     public static void CreateTable() {
         try {
             connectBD.CreateTableX(Endereco.class);
