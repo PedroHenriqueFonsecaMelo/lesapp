@@ -1,7 +1,7 @@
 package fatec.ph.les.entidade;
 
 import java.lang.reflect.Field;
-import java.rmi.server.UID;
+import java.util.Map;
 
 import fatec.ph.les.servicos.connectBD;
 
@@ -44,59 +44,20 @@ public class Cliente {
         this.email = email;
     }
 
-    public String CreateClienteTable() {
-
-        System.out.println("aqui");
-        StringBuilder table = new StringBuilder();
-
-        Field[] clienFields = this.getClass().getDeclaredFields();
-        System.out.println("aqui" + clienFields.length);
-        int i = 0;
-
-        for (Field f : clienFields) {
-            i = i + 1;
-
-            String name = f.getName();
-            System.out.println("field:: " + f.getType().getSimpleName());
-
-            System.out.println("field:: " + f.getType().getSimpleName().equals("String"));
-            System.out.println("field:: int " + f.getType().getSimpleName().equals("int"));
-            System.out.println("field:: Integer " + f.getType().getSimpleName().equals("Integer"));
-
-            if (i <= clienFields.length - 1) {
-                table.append(name + " , ");
-            } else {
-                table.append(" " + name);
-            }
-            System.out.println(table.toString() + " " + i);
-
-        }
-
-        return table.toString();
-
-    }
-
-    public static void Inserir(String NomeInserir, String SenhaInserir, String EmailInserir) {
-        StringBuilder Inserir = new StringBuilder();
-        String name;
-        int i = 0;
-        Field[] Fields = Cliente.class.getDeclaredFields();
-        Inserir.append("insert into " + Cliente.class.getSimpleName() + " (");
-
-        for (Field f : Fields) {
-            // f.setAccessible(true);
-            i++;
-            name = f.getName();
-            if (i <= Fields.length - 1) {
-                Inserir.append(name + " , ");
-            } else {
-                Inserir.append(name + ") VALUES  (");
+    public Cliente(Map<String, ?> param) {
+        System.out.println("endereco part 1:  ");
+        for (Field field : this.getClass().getDeclaredFields()) {
+            for (Map.Entry<String, ?> entry : param.entrySet()) {
+                if (field.getName().equals(entry.getKey())
+                        & field.getType().equals(entry.getValue().getClass())) {
+                    try {
+                        field.set(this, entry.getValue());
+                    } catch (IllegalArgumentException | IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
-        Inserir.append(
-                "'" + SenhaInserir + "'" + " , " + "'" + NomeInserir + "'" + " , " + "'" + EmailInserir + "'" + " );");
-        System.out.println(Inserir.toString());
-        connectBD.EXEquery(Inserir.toString());
     }
 
     public static void InserirCBD(Object obj) {
@@ -136,8 +97,6 @@ public class Cliente {
             }
 
         }
-        System.out.println("cliUID:::" + uid.toString());
-
         fieldname = connectBD.EXE_Select(uid.toString());
 
         return fieldname;

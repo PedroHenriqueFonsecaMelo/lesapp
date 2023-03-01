@@ -8,8 +8,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import javax.management.Query;
-
 public class connectBD {
 
     static private String url = "jdbc:h2:mem:testdb";

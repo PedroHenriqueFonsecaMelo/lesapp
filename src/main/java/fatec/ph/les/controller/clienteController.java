@@ -1,9 +1,9 @@
 package fatec.ph.les.controller;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -14,10 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.fasterxml.jackson.annotation.JsonCreator.Mode;
-
 import fatec.ph.les.entidade.Cliente;
 import fatec.ph.les.servicos.connectBD;
 
@@ -34,24 +30,20 @@ public class clienteController {
     }
 
     @PostMapping("/singup")
-    public ModelAndView insCli(@ModelAttribute Cliente firstName, ModelMap model, HttpServletRequest request) {
+    public ModelAndView insCli(ModelMap model, HttpServletRequest request, @RequestParam Map<String, ?> param) {
 
         System.out.println("part 1:");
-        connectBD.CreateTableX(firstName.getClass());
+        Cliente cli = new Cliente(param);
+        Cliente.CreateTable();
 
         System.out.println("part 2:");
-        Cliente.InserirCBD(firstName);
+        Cliente.InserirCBD(cli);
 
         System.out.println("part 3:");
-        uidcli = Cliente.cliUID(firstName);
+        uidcli = Cliente.cliUID(cli);
         model.addAttribute("uid", uidcli);
 
         request.getSession().setAttribute("uidcli", uidcli);
-
-        // model.addFlashAttribute("uid", Cliente.cliUID(firstName));
-
-        // System.out.println(firstName.getClass().equals(Object.class));
-        // Cliente.Inserir(clinome, clisenha, cliemail);
 
         return new ModelAndView("redirect:/endereco/singup/form", model);
     }

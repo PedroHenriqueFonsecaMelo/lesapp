@@ -1,5 +1,8 @@
 package fatec.ph.les.entidade;
 
+import java.lang.reflect.Field;
+import java.util.Map;
+
 import fatec.ph.les.servicos.connectBD;
 
 public class Endereco {
@@ -35,6 +38,22 @@ public class Endereco {
         this.bairro = bairro;
         this.numero = numero;
         this.complemento = complemento;
+    }
+
+    public Endereco(Map<String, ?> param) {
+        System.out.println("endereco part 1:  ");
+        for (Field field : this.getClass().getDeclaredFields()) {
+            for (Map.Entry<String, ?> entry : param.entrySet()) {
+                if (field.getName().equals(entry.getKey())
+                        & field.getType().equals(entry.getValue().getClass())) {
+                    try {
+                        field.set(this, entry.getValue());
+                    } catch (IllegalArgumentException | IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
     public static void CreateTable() {

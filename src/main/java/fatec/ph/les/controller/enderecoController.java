@@ -1,13 +1,12 @@
 package fatec.ph.les.controller;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Map;
-import java.util.Map.Entry;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +21,8 @@ import fatec.ph.les.entidade.Endereco;
 public class enderecoController {
 
     @GetMapping("/singup/form")
-    public String enderecoSingupForm(Model model, HttpServletRequest hRequest, @RequestParam String uid) {
+    public String enderecoSingupForm(Model model, HttpServletRequest hRequest,
+            @RequestParam(name = "uidcli", required = false) String uid) {
 
         System.out.println("uid4:: " + uid);
         System.out.println("uid5:: " + hRequest.getSession().getAttribute("uidcli"));
@@ -33,17 +33,13 @@ public class enderecoController {
     }
 
     @PostMapping("/singup")
-    public ModelAndView enderecoSingup(HttpServletRequest request, @ModelAttribute Endereco endereco,
-            @RequestParam Map<String, String> param) {
+    public ModelAndView enderecoSingup(HttpServletRequest request,
+            @RequestParam Map<String, ?> param) {
 
-        // System.out.println(map.get("uid"));
-        Map<String, String[]> parameterMap = request.getParameterMap();
 
-        for (Map.Entry<String, String> entry : param.entrySet()) {
-            System.out.println(entry.getKey() + "/" + entry.getValue());
-        }
-        System.out.println("uid11:: " + endereco.getCep());
-        System.out.println("uid12:: " + endereco.getCliuid());
+        Endereco endereco2 = new Endereco(param);
+        Endereco.InserirCBD(endereco2);
+        System.out.println(endereco2.getCep());
 
         return new ModelAndView("redirect:/cartao");
     }

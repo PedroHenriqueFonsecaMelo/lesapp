@@ -1,15 +1,8 @@
 package fatec.ph.les.controller;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import fatec.ph.les.entidade.Cliente;
-import fatec.ph.les.servicos.connectBD;
 
 @Controller
 public class IndexController {
