@@ -29,8 +29,10 @@ public class cartaoController {
         String emailId2 = "";
 
         Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(hRequest);
-
-        emailId2 = (String) flashMap.get("flash_uid");
+        if (flashMap != null) {
+            emailId2 = (String) flashMap.get("flash_uid");
+        } else
+            emailId2 = " ";
 
         System.out.println("flashMap /singup/form " + emailId2);
 

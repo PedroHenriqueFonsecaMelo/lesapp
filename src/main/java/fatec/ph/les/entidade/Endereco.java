@@ -1,11 +1,104 @@
 package fatec.ph.les.entidade;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.NavigableMap;
 
 import fatec.ph.les.servicos.connectBD;
 
 public class Endereco {
+    public static void CreateTable() {
+        try {
+            connectBD.CreateTableX(Endereco.class);
+        } catch (Exception e) {
+        }
+    }
+
+    public static void InserirCBD(Object obj) {
+        System.out.println("inserir no %s: " + obj.getClass().getSimpleName());
+        try {
+            String queryIns = connectBD.InserirTableX(obj);
+            connectBD.EXEquery(queryIns);
+            System.out.println("sucesso inserir no %s: " + obj.getClass().getSimpleName());
+        } catch (Exception e) {
+            System.out.println("erro inserir no %s: " + obj.getClass().getSimpleName());
+        }
+    }
+
+    public static ArrayList<Endereco> endereco(int uid, NavigableMap<String, String> args) {
+        ArrayList<Endereco> resulClientes = new ArrayList<>();
+        Entry<String, String> lastEntry;
+
+        StringBuilder str = new StringBuilder();
+        System.out.println(" public static ArrayList<Endereco> Endereco " + uid);
+
+        if (uid != 0 & args == null) {
+            str.append("select * from Endereco where idEndereco = " + uid + ";");
+        } else if (uid == 0 & args == null) {
+            str.append("select * from Endereco");
+        } else {
+            lastEntry = args.lastEntry();
+            str.append("select * from Endereco where ");
+
+            for (Entry<String, String> i : args.entrySet()) {
+                if (i.getKey().equals(lastEntry.getKey())) {
+                    str.append(i.getKey() + " = " + i.getValue() + ";");
+                } else {
+                    str.append(i.getKey() + " = " + i.getValue() + " AND ");
+                }
+            }
+        }
+        System.out.println(str.toString());
+
+        List<Map<String, Object>> rs = connectBD.EXE_Select(str.toString());
+
+        for (Map<String, Object> map : rs) {
+            Endereco cli = new Endereco();
+            for (Entry<String, Object> map2 : map.entrySet()) {
+                switch (map2.getKey()) {
+                    case "Bairro":
+                        cli.setBairro(map2.getValue().toString());
+                        break;
+                    case "Cep":
+                        cli.setCep(map2.getValue().toString());
+                        break;
+                    case "Cidade":
+                        cli.setCidade(map2.getValue().toString());
+                        break;
+                    case "Complemento":
+                        cli.setComplemento(map2.getValue().toString());
+                        break;
+                    case "Estado":
+                        cli.setEstado(map2.getValue().toString());
+                        break;
+                    case "Numero":
+                        cli.setNumero(map2.getValue().toString());
+                        break;
+                    case "Pais":
+                        cli.setPais(map2.getValue().toString());
+                        break;
+                    case "Rua":
+                        cli.setRua(map2.getValue().toString());
+                        break;
+                    case "TipoResidencia":
+                        cli.setTipoResidencia(map2.getValue().toString());
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            resulClientes.add(cli);
+            System.out.println(cli.toString2());
+        }
+
+        System.out.println(resulClientes.size());
+        return resulClientes;
+    }
+
     private int cliuid;
     private String pais;
     private String cep;
@@ -13,8 +106,11 @@ public class Endereco {
     private String cidade;
     private String rua;
     private String bairro;
+
     private int numero;
+
     private String complemento;
+
     private String tipoResidencia;
 
     public Endereco(int uid, String cep, String estado, String cidade, String rua, String bairro, String numero,
@@ -67,24 +163,6 @@ public class Endereco {
                     }
                 }
             }
-        }
-    }
-
-    public static void CreateTable() {
-        try {
-            connectBD.CreateTableX(Endereco.class);
-        } catch (Exception e) {
-        }
-    }
-
-    public static void InserirCBD(Object obj) {
-        System.out.println("inserir no %s: " + obj.getClass().getSimpleName());
-        try {
-            String queryIns = connectBD.InserirTableX(obj);
-            connectBD.EXEquery(queryIns);
-            System.out.println("sucesso inserir no %s: " + obj.getClass().getSimpleName());
-        } catch (Exception e) {
-            System.out.println("erro inserir no %s: " + obj.getClass().getSimpleName());
         }
     }
 
@@ -168,8 +246,7 @@ public class Endereco {
         this.tipoResidencia = tipoResidencia;
     }
 
-    @Override
-    public String toString() {
+    public String toString2() {
         return "Endereco [cliuid=" + cliuid + ", pais=" + pais + ", cep=" + cep + ", estado=" + estado + ", cidade="
                 + cidade + ", rua=" + rua + ", bairro=" + bairro + ", numero=" + numero + ", complemento=" + complemento
                 + ", tipoResidencia=" + tipoResidencia + "]";

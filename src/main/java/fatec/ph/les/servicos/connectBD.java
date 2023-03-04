@@ -6,10 +6,13 @@ import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class connectBD {
 
@@ -19,7 +22,6 @@ public class connectBD {
     static private String password = "password";
     static Connection con;
     static Statement stmt;
-    private DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
 
     public connectBD() {
         try {
@@ -31,7 +33,7 @@ public class connectBD {
         }
     }
 
-    public static void CreateTableX(Class x) {
+    public static void CreateTableX(Class<?> x) {
         Field[] Fields = x.getDeclaredFields();
         StringBuilder table = new StringBuilder();
         String name, tipo;
@@ -103,7 +105,7 @@ public class connectBD {
         return Inserir.toString();
     }
 
-    public static String DeletarTableX(int uid, Class obj) {
+    public static String DeletarTableX(int uid, Class<?> obj) {
         StringBuilder queryDel = new StringBuilder();
         queryDel.append("delete from " + obj.getClass().getSimpleName() + " where id" + obj.getClass().getSimpleName()
                 + " = " + uid + ";");
@@ -179,22 +181,33 @@ public class connectBD {
         return null;
     }
 
-    public static ResultSet EXE_Select(Class classe, int uid, ArrayList<String> args) {
-        StringBuilder str = new StringBuilder();
+    public static List<Map<String, Object>> EXE_Select(String query) {
+        ResultSet rs;
+        List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
+        Map<String, Object> row = null;
 
-        if (args == null) {
-            str.append("select * from " + classe.getSimpleName() + " where id" + classe.getSimpleName() + " = " + uid);
-        } else {
-            str.append("select ");
-            for (int i = 0; i < args.size(); i++) {
-                if (i == args.size() - 1) {
-                    str.append(args.get(i));
-                } else
-                    str.append(args.get(i) + " , ");
+        try {
+            con = DriverManager.getConnection(url, user, password);
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(query);
+            ResultSetMetaData metaData = rs.getMetaData();
+            Integer columnCount = metaData.getColumnCount();
+
+            while (rs.next()) {
+                row = new HashMap<String, Object>();
+                for (int i = 1; i <= columnCount; i++) {
+                    row.put(metaData.getColumnName(i), rs.getObject(i));
+                    System.out.println(metaData.getColumnName(i) + " || " + rs.getObject(i));
+                }
+                resultList.add(row);
             }
-            str.append(" where id" + classe.getSimpleName() + " = " + uid);
+            con.close();
+            rs.close();
+            return resultList;
+        } catch (SQLException e) {
+            System.out.println("Erro public static ResultSet EXE_Select(String query)");
         }
-        System.out.println(str.toString());
+
         return null;
 
     }

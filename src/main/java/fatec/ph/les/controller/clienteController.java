@@ -1,6 +1,9 @@
 package fatec.ph.les.controller;
 
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +19,9 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import fatec.ph.les.entidade.Cartao;
 import fatec.ph.les.entidade.Cliente;
+import fatec.ph.les.entidade.Endereco;
 import fatec.ph.les.servicos.connectBD;
 
 @Controller
@@ -79,8 +84,17 @@ public class clienteController {
     @GetMapping("/cliProfile")
     public String cliProfile(Model model, @SessionAttribute(name = "uidcli", required = false) String uid) {
 
-        connectBD.EXE_Select(Cliente.class, Integer.parseInt(uidcli), null);
-        System.out.println("uidcli " + uidcli);
+        // connectBD.EXE_Select(Cliente.class, Integer.parseInt(uidcli), null);
+        // connectBD.CreateTableX(Cliente.class);
+        connectBD.CreateTableX(Endereco.class);
+        connectBD.CreateTableX(Cartao.class);
+
+        NavigableMap<String, String> map = new TreeMap<String, String>();
+        map.put("senha", "2");
+
+        ArrayList<Cliente> array = Cliente.cliente(Integer.parseInt(uidcli), null);
+        model.addAttribute("Cliente", array.get(0));
+        // System.out.println("uidcli " + uidcli);
 
         // Cliente.Deletar(Integer.parseInt(uid));
 

@@ -27,7 +27,10 @@ public class enderecoController {
 
         Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
 
-        emailId2 = (String) flashMap.get("flash_uid");
+        if (flashMap != null) {
+            emailId2 = (String) flashMap.get("flash_uid");
+        } else
+            emailId2 = " ";
 
         // System.out.println("flashMap /singup/form " + emailId2);
         // System.out.println("request: " +
