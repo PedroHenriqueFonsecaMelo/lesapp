@@ -96,6 +96,14 @@ h2{
     transition: .5s;
 }
 
+.tg-0lax ion-icon{
+    position: absolute;
+    right: 8px;
+    color: #fff;
+    font-size: 1.2em;
+    top: 20px;
+}
+
     
 input:focus ~ label,
 input:valid ~ label,
@@ -104,6 +112,8 @@ input[type="email"]:valid ~ label,
 input[type="email"]:focus ~ label{
     top: -5px;
 }
+
+
 
 .inputbox input, .inputbox2 input, .tg-0lax input {
     width: 100%;
@@ -191,4 +201,8 @@ button{
 }
 .register p a:hover{
     text-decoration: underline;
+}
+
+option{
+    color: black;
 }

@@ -7,6 +7,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 public class connectBD {
 
@@ -16,6 +19,7 @@ public class connectBD {
     static private String password = "password";
     static Connection con;
     static Statement stmt;
+    private DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
 
     public connectBD() {
         try {
@@ -40,6 +44,9 @@ public class connectBD {
             i++;
             name = f.getName();
             tipo = f.getType().getSimpleName();
+            if (name.contains("data")) {
+                tipo = "Date";
+            }
 
             if (i <= Fields.length - 1) {
                 table.append(extracted(name, tipo) + " , ");
@@ -47,7 +54,7 @@ public class connectBD {
                 table.append(extracted(name, tipo) + ");");
             }
         }
-
+        System.out.println(table.toString());
         EXEquery(table.toString());
         // return table.toString() + " ";
 
@@ -76,6 +83,7 @@ public class connectBD {
             i++;
             switch (f.getType().getSimpleName()) {
                 case "String":
+                case "Date":
                     Inserir.append("'" + runGetter(f, obj) + "'");
                     break;
                 default:
@@ -108,6 +116,8 @@ public class connectBD {
                 return " " + name + " VARCHAR(100) ";
             case "int":
                 return " " + name + " INT ";
+            case "Date":
+                return " " + name + " DATE ";
             default:
                 return "";
         }
@@ -120,14 +130,14 @@ public class connectBD {
             Statement stmt = con.createStatement();
             stmt.execute(BDquery);
             con.close();
-            System.out.println("sucesso");
+            System.out.println("sucesso EXEquery");
 
         } catch (Exception e) {
-            System.out.println("erro");
+            System.out.println("erro EXEquery");
         }
     }
 
-    public static String EXE_Select(String BDquery) {
+    public static String EXE_Select_UID(String BDquery) {
         ResultSet rs;
         String resultQuery = "";
 
@@ -167,6 +177,26 @@ public class connectBD {
         }
 
         return null;
+    }
+
+    public static ResultSet EXE_Select(Class classe, int uid, ArrayList<String> args) {
+        StringBuilder str = new StringBuilder();
+
+        if (args == null) {
+            str.append("select * from " + classe.getSimpleName() + " where id" + classe.getSimpleName() + " = " + uid);
+        } else {
+            str.append("select ");
+            for (int i = 0; i < args.size(); i++) {
+                if (i == args.size() - 1) {
+                    str.append(args.get(i));
+                } else
+                    str.append(args.get(i) + " , ");
+            }
+            str.append(" where id" + classe.getSimpleName() + " = " + uid);
+        }
+        System.out.println(str.toString());
+        return null;
+
     }
 
 }

@@ -19,7 +19,13 @@
               <tbody>
                 <tr>
                   <td class="tg-0lax">
-                        <select class="form-select shadow-none" id="region" disabled required data-input>
+                        <select class="form-select shadow-none" id="pais" name="pais" disabled required data-input>
+                          <option selected>Pais</option>
+                          <option value="BR">Brasil</option>
+                        </select>
+                  </td>
+                  <td class="tg-0lax">
+                        <select class="form-select shadow-none" id="estado" name="estado" disabled required data-input>
                           <option selected>Estado</option>
                           <option value="AC">Acre</option>
                           <option value="AL">Alagoas</option>
@@ -50,34 +56,46 @@
                           <option value="TO">Tocantins</option>
                         </select>
                   </td>
+                </tr>
+                <tr>
                   <td class="tg-0lax">
-                        <input type="text" class="form-control shadow-none" id="city" name="city" placeholder="Cidade" disabled required data-input />
-                        <label for="city">Cidade</label>
+                        <input type="text" class="form-control shadow-none" id="cidade" name="cidade" placeholder="Cidade" disabled required data-input />
+                        <label for="cidade">Cidade</label>
+                  </td>
+                  <td class="tg-0lax">
+                        <input type="text" class="form-control shadow-none" id="bairro" name="bairro" placeholder="Bairro" disabled required data-input />
+                        <label for="bairro">Bairro</label>
+                  </td>
+                  
+                </tr>
+                <tr>
+                  <td class="tg-0lax">
+                        <input type="text" class="form-control shadow-none" id="rua" name="rua" placeholder="Rua" disabled required data-input />
+                        <label for="rua">Rua</label>
+                  </td>
+                  <td class="tg-0lax">
+                      <input type="text" class="form-control shadow-none" id="numero" name="numero" placeholder="Digite o número da residência" disabled data-input required />
+                      <label for="numero">Digite o número da residência</label>
                   </td>
                 </tr>
                 <tr>
                   <td class="tg-0lax">
-                        <input type="text" class="form-control shadow-none" id="neighborhood" name="neighborhood" placeholder="Bairro" disabled required data-input />
-                        <label for="neighborhood">Bairro</label>
+                        <input type="text" class="form-control shadow-none" id="complemento"  name="complemento" placeholder="Digite o complemento" disabled data-input required/>
+                        <label for="complemento">Digite o complemento</label>
                   </td>
+                  
                   <td class="tg-0lax">
-                        <input type="text" class="form-control shadow-none" id="address" name="address" placeholder="Rua" disabled required data-input />
-                        <label for="address">Rua</label>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="tg-0lax">
-                      <input type="text" class="form-control shadow-none" id="number" name="number" placeholder="Digite o número da residência" disabled data-input required />
-                      <label for="number">Digite o número da residência</label>
-                  </td>
-                  <td class="tg-0lax">
-                        <input type="text" class="form-control shadow-none" id="complement"  name="complement" placeholder="Digite o complemento" disabled data-input required/>
-                        <label for="complement">Digite o complemento</label>
+                        <select class="form-select shadow-none" id="tipoResidencia" name="tipoResidencia" disabled required data-input>
+                          <option selected>Tipo Residencia</option>
+                          <option value="CASA">Casa</option>
+                          <option value="APAR">Apartamento</option>
+                          <option value="CONDO">Condominio</option>
+                        </select>
                   </td>
                 </tr>
               </tbody>
             </table>
-            <button type="submit" id="save-btn">Cadastrar</button>
+            <button type="submit" id="save-btn" disabled>Cadastrar</button>
           </form>
         </div>
     </section>

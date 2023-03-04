@@ -9,6 +9,8 @@ public class Cliente {
 
     private String senha;
     private String nome;
+    private String datanasc;
+    private String gen;
     private String email;
 
     public String getSenha() {
@@ -35,39 +37,61 @@ public class Cliente {
         this.email = email;
     }
 
+    public String getDatanasc() {
+        return datanasc;
+    }
+
+    public void setDatanasc(String datanasc) {
+        this.datanasc = datanasc;
+    }
+
+    public String getGen() {
+        return gen;
+    }
+
+    public void setGen(String gen) {
+        this.gen = gen;
+    }
+
     public Cliente() {
     }
 
-    public Cliente(String senha, String nome, String email) {
+    public Cliente(String senha, String nome, String datanasc, String gen, String email) {
+
         this.senha = senha;
         this.nome = nome;
+        this.datanasc = datanasc;
+        this.gen = gen;
         this.email = email;
     }
 
+    public String toString2() {
+        return "Cliente [senha=" + senha + ", nome=" + nome + ", datanasc=" + datanasc + ", gen=" + gen + ", email="
+                + email + "]";
+    }
+
     public Cliente(Map<String, ?> param) {
-        System.out.println("endereco part 1:  ");
+        System.out.println("Cliente part 1:  ");
         for (Field field : this.getClass().getDeclaredFields()) {
             for (Map.Entry<String, ?> entry : param.entrySet()) {
-                if (field.getName().equals(entry.getKey())
-                        & field.getType().equals(entry.getValue().getClass())) {
+                if (field.getName().equalsIgnoreCase(entry.getKey())) {
                     try {
-                        field.set(this, entry.getValue());
-                    } catch (IllegalArgumentException | IllegalAccessException e) {
+                        switch (field.getType().getSimpleName()) {
+                            case "int":
+                                field.set(this, Integer.parseInt((String) entry.getValue()));
+                                break;
+                            default:
+                                field.set(this, entry.getValue().toString());
+                                break;
+                        }
+
+                    } catch (IllegalArgumentException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     }
                 }
             }
-        }
-    }
-
-    public static void InserirCBD(Object obj) {
-        System.out.println("inserir no %s: " + obj.getClass().getSimpleName());
-        try {
-            String queryIns = connectBD.InserirTableX(obj);
-            connectBD.EXEquery(queryIns);
-            System.out.println("sucesso inserir no %s: " + obj.getClass().getSimpleName());
-        } catch (Exception e) {
-            System.out.println("erro inserir no %s: " + obj.getClass().getSimpleName());
         }
     }
 
@@ -81,6 +105,7 @@ public class Cliente {
             i++;
             switch (f.getType().getSimpleName()) {
                 case "String":
+                case "Date":
                     if (i <= Fields.length - 1) {
                         uid.append(f.getName() + " = " + "'" + connectBD.runGetter(f, obj) + "'" + " AND ");
                     } else {
@@ -97,16 +122,28 @@ public class Cliente {
             }
 
         }
-        fieldname = connectBD.EXE_Select(uid.toString());
+        System.out.println(uid.toString());
+        fieldname = connectBD.EXE_Select_UID(uid.toString());
 
         return fieldname;
     }
 
     public static void CreateTable() {
         try {
+            System.out.println("CreateTable no %s: Cliente");
             connectBD.CreateTableX(Cliente.class);
         } catch (Exception e) {
-            // TODO: handle exception
+        }
+    }
+
+    public static void InserirCBD(Object obj) {
+        System.out.println("inserir no %s: " + obj.getClass().getSimpleName());
+        try {
+            String queryIns = connectBD.InserirTableX(obj);
+            connectBD.EXEquery(queryIns);
+            System.out.println("sucesso inserir no %s: " + queryIns);
+        } catch (Exception e) {
+            System.out.println("erro inserir no %s: " + obj.getClass().getSimpleName());
         }
     }
 

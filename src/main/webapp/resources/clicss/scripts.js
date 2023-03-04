@@ -1,9 +1,10 @@
 const addressForm = document.querySelector("#address-form");
 const cepInput = document.querySelector("#cep");
-const addressInput = document.querySelector("#address");
-const cityInput = document.querySelector("#city");
-const neighborhoodInput = document.querySelector("#neighborhood");
-const regionInput = document.querySelector("#region");
+const addressInput = document.querySelector("#rua");
+const cityInput = document.querySelector("#cidade");
+const neighborhoodInput = document.querySelector("#bairro");
+const regionInput = document.querySelector("#estado");
+const paisInput = document.querySelector("#pais");
 const formInputs = document.querySelectorAll("[data-input]");
 
 const closeButton = document.querySelector("#close-message");
@@ -68,6 +69,7 @@ const getAddress = async (cep) => {
   cityInput.value = data.localidade;
   neighborhoodInput.value = data.bairro;
   regionInput.value = data.uf;
+  paisInput.value = 'BR';
 
 };
 
@@ -77,12 +79,14 @@ const toggleDisabled = () => {
   if (regionInput.hasAttribute("disabled")) {
     formInputs.forEach((input) => {
       input.removeAttribute("disabled");
+      
     });
   } else {
     formInputs.forEach((input) => {
       input.setAttribute("disabled", "disabled");
     });
   }
+  document.getElementById('save-btn').disabled = false;
 };
 
 

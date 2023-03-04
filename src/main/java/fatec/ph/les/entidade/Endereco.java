@@ -13,42 +13,56 @@ public class Endereco {
     private String cidade;
     private String rua;
     private String bairro;
-    private String numero;
+    private int numero;
     private String complemento;
     private String tipoResidencia;
 
-    public Endereco(int cliuid, String cep, String estado, String cidade, String rua, String bairro, String numero,
+    public Endereco(int uid, String cep, String estado, String cidade, String rua, String bairro, String numero,
             String complemento) {
-        this.cliuid = cliuid;
+        this.cliuid = uid;
         this.cep = cep;
         this.estado = estado;
         this.cidade = cidade;
         this.rua = rua;
         this.bairro = bairro;
-        this.numero = numero;
+        this.numero = Integer.parseInt(numero);
         this.complemento = complemento;
     }
 
-    public Endereco(String cep, String estado, String cidade, String rua, String bairro, String numero,
-            String complemento) {
+    public Endereco(String pais, String cep, String estado, String cidade, String rua, String bairro, String numero,
+            String complemento, String tipoResidencia) {
+        this.pais = pais;
         this.cep = cep;
         this.estado = estado;
         this.cidade = cidade;
         this.rua = rua;
         this.bairro = bairro;
-        this.numero = numero;
+        this.numero = Integer.parseInt(numero);
         this.complemento = complemento;
+        this.tipoResidencia = tipoResidencia;
+    }
+
+    public Endereco() {
     }
 
     public Endereco(Map<String, ?> param) {
         System.out.println("endereco part 1:  ");
         for (Field field : this.getClass().getDeclaredFields()) {
             for (Map.Entry<String, ?> entry : param.entrySet()) {
-                if (field.getName().equals(entry.getKey())
-                        & field.getType().equals(entry.getValue().getClass())) {
+                if (field.getName().equalsIgnoreCase(entry.getKey())) {
                     try {
-                        field.set(this, entry.getValue());
-                    } catch (IllegalArgumentException | IllegalAccessException e) {
+                        switch (field.getType().getSimpleName()) {
+                            case "int":
+                                field.set(this, Integer.parseInt((String) entry.getValue()));
+                                break;
+                            default:
+                                field.set(this, entry.getValue().toString());
+                                break;
+                        }
+
+                    } catch (IllegalArgumentException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     }
                 }
@@ -60,7 +74,6 @@ public class Endereco {
         try {
             connectBD.CreateTableX(Endereco.class);
         } catch (Exception e) {
-            // TODO: handle exception
         }
     }
 
@@ -131,12 +144,12 @@ public class Endereco {
         this.bairro = bairro;
     }
 
-    public String getNumero() {
+    public int getNumero() {
         return numero;
     }
 
     public void setNumero(String numero) {
-        this.numero = numero;
+        this.numero = Integer.parseInt(numero);
     }
 
     public String getComplemento() {
@@ -153,6 +166,13 @@ public class Endereco {
 
     public void setTipoResidencia(String tipoResidencia) {
         this.tipoResidencia = tipoResidencia;
+    }
+
+    @Override
+    public String toString() {
+        return "Endereco [cliuid=" + cliuid + ", pais=" + pais + ", cep=" + cep + ", estado=" + estado + ", cidade="
+                + cidade + ", rua=" + rua + ", bairro=" + bairro + ", numero=" + numero + ", complemento=" + complemento
+                + ", tipoResidencia=" + tipoResidencia + "]";
     }
 
 }

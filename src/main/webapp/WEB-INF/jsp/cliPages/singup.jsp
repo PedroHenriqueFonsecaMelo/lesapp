@@ -7,26 +7,49 @@
 </head>
 <body>
 <section>
-        <div class="form-box">
+        <div class="form-box-big">
             <div class="form-value">
                 <form action="/cliHome/singup" method="post">
                     <h2>Cadastrar</h2>
-                    <div class="inputbox">
-                        <ion-icon name="person-outline"></ion-icon>
-                        <input type="text" required id="nome" name="nome">
-                        <label for="nome">Nome</label>
-                    </div>
-                    <div class="inputbox">
-                        <ion-icon name="mail-outline"></ion-icon>
-                        <input type="email" required id="email" name="email" placeholder=" ">
-                        <label for="email">Email</label>
-                    </div>
-                    <div class="inputbox">
-                        <ion-icon name="lock-closed-outline"></ion-icon>
-                        <input type="password" required id="password" name="senha">
-                        <label for="password">Password</label>
-                    </div>
-                    <button type="submit">Cadastrar</button>
+                    <table class="tg">
+                        <tbody>
+                            <tr>
+                                <td class="tg-0lax">
+                                    <ion-icon name="person-outline"></ion-icon>
+                                    <input type="text" required id="nome" name="nome">
+                                    <label for="nome">Nome</label>
+                                </td>
+                                <td class="tg-0lax">
+                                    <input type="date" required id="datanasc" name="datanasc">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="tg-0lax">
+                                    <select id="gen" name="gen" required>
+                                        <option selected>Genero</option>
+                                        <option value="M">Masculino</option>
+                                        <option value="F">Feminino</option>
+                                        <option value="O">Outro</option>
+                                    </select>
+                                </td>
+                                <td class="tg-0lax">
+                                    <ion-icon name="mail-outline"></ion-icon>
+                                    <input type="email" required id="email" name="email" placeholder=" ">
+                                    <label for="email">Email</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="tg-0lax">
+                                    <ion-icon name="lock-closed-outline"></ion-icon>
+                                    <input type="password" required id="password" name="senha">
+                                    <label for="password">Password</label>
+                                </td>
+                                <td class="tg-0lax">
+                                    <button type="submit">Cadastrar</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </form>
             </div>
         </div>
