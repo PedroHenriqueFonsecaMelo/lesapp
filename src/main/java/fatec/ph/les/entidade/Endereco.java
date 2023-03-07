@@ -17,6 +17,41 @@ public class Endereco {
         }
     }
 
+    public static String cliUID(Endereco obj) {
+        StringBuilder uid = new StringBuilder("select * from " + Endereco.class.getSimpleName() + " where ");
+        Field[] Fields = obj.getClass().getDeclaredFields();
+        String fieldname = "";
+        int i = 0;
+
+        for (Field f : Fields) {
+            i++;
+            if (!f.getName().contains("id" + obj.getClass().getSimpleName())) {
+                switch (f.getType().getSimpleName()) {
+                    case "String":
+                    case "Date":
+                        if (i <= Fields.length - 1) {
+                            uid.append(f.getName() + " = " + "'" + connectBD.runGetter(f, obj) + "'" + " AND ");
+                        } else {
+                            uid.append(f.getName() + " = " + "'" + connectBD.runGetter(f, obj) + "'" + ";");
+                        }
+                        break;
+                    default:
+                        if (i <= Fields.length - 1) {
+                            uid.append(f.getName() + " = " + connectBD.runGetter(f, obj) + " AND ");
+                        } else {
+                            uid.append(f.getName() + " = " + connectBD.runGetter(f, obj) + ";");
+                        }
+                        break;
+                }
+            }
+
+        }
+        System.out.println(uid.toString());
+        fieldname = connectBD.EXE_Select_UID(uid.toString());
+
+        return fieldname;
+    }
+
     public static void InserirCBD(Object obj) {
         System.out.println("inserir no %s: " + obj.getClass().getSimpleName());
         try {
@@ -36,10 +71,10 @@ public class Endereco {
         System.out.println(" public static ArrayList<Endereco> Endereco " + uid);
 
         if (uid != 0 & args == null) {
-            str.append("select * from Endereco where idEndereco = " + uid + ";");
+            str.append("select * from Endereco where cliuid = " + uid + ";");
         } else if (uid == 0 & args == null) {
             str.append("select * from Endereco");
-        } else {
+        } else if (args != null) {
             lastEntry = args.lastEntry();
             str.append("select * from Endereco where ");
 
@@ -58,39 +93,26 @@ public class Endereco {
         for (Map<String, Object> map : rs) {
             Endereco cli = new Endereco();
             for (Entry<String, Object> map2 : map.entrySet()) {
-                switch (map2.getKey()) {
-                    case "Bairro":
-                        cli.setBairro(map2.getValue().toString());
-                        break;
-                    case "Cep":
-                        cli.setCep(map2.getValue().toString());
-                        break;
-                    case "Cidade":
-                        cli.setCidade(map2.getValue().toString());
-                        break;
-                    case "Complemento":
-                        cli.setComplemento(map2.getValue().toString());
-                        break;
-                    case "Estado":
-                        cli.setEstado(map2.getValue().toString());
-                        break;
-                    case "Numero":
-                        cli.setNumero(map2.getValue().toString());
-                        break;
-                    case "Pais":
-                        cli.setPais(map2.getValue().toString());
-                        break;
-                    case "Rua":
-                        cli.setRua(map2.getValue().toString());
-                        break;
-                    case "TipoResidencia":
-                        cli.setTipoResidencia(map2.getValue().toString());
-                        break;
-                    default:
-                        break;
+                for (Field field : cli.getClass().getDeclaredFields()) {
+                    if (field.getName().equalsIgnoreCase(map2.getKey())) {
+                        try {
+                            switch (field.getType().getSimpleName()) {
+                                case "int":
+                                    field.set(cli, Integer.parseInt(map2.getValue().toString()));
+                                    break;
+
+                                default:
+                                    field.set(cli, map2.getValue().toString());
+                                    break;
+                            }
+                        } catch (IllegalArgumentException e) {
+                            e.printStackTrace();
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
-
             resulClientes.add(cli);
             System.out.println(cli.toString2());
         }
@@ -99,6 +121,7 @@ public class Endereco {
         return resulClientes;
     }
 
+    private int idEndereco;
     private int cliuid;
     private String pais;
     private String cep;
@@ -111,7 +134,7 @@ public class Endereco {
 
     private String complemento;
 
-    private String tipoResidencia;
+    private String tiporesidencia;
 
     public Endereco(int uid, String cep, String estado, String cidade, String rua, String bairro, String numero,
             String complemento) {
@@ -126,7 +149,7 @@ public class Endereco {
     }
 
     public Endereco(String pais, String cep, String estado, String cidade, String rua, String bairro, String numero,
-            String complemento, String tipoResidencia) {
+            String complemento, String tiporesidencia) {
         this.pais = pais;
         this.cep = cep;
         this.estado = estado;
@@ -135,35 +158,54 @@ public class Endereco {
         this.bairro = bairro;
         this.numero = Integer.parseInt(numero);
         this.complemento = complemento;
-        this.tipoResidencia = tipoResidencia;
+        this.tiporesidencia = tiporesidencia;
     }
 
     public Endereco() {
     }
 
     public Endereco(Map<String, ?> param) {
-        System.out.println("endereco part 1:  ");
-        for (Field field : this.getClass().getDeclaredFields()) {
-            for (Map.Entry<String, ?> entry : param.entrySet()) {
-                if (field.getName().equalsIgnoreCase(entry.getKey())) {
-                    try {
-                        switch (field.getType().getSimpleName()) {
-                            case "int":
-                                field.set(this, Integer.parseInt((String) entry.getValue()));
-                                break;
-                            default:
-                                field.set(this, entry.getValue().toString());
-                                break;
-                        }
+        System.out.println("public Endereco(Map<String, ?> param)");
+        for (Entry<String, ?> entry : param.entrySet()) {
 
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
+            Field field;
+            try {
+                if (this.getClass().getDeclaredField(entry.getKey()) != null) {
+                    field = this.getClass().getDeclaredField(entry.getKey());
+                } else {
+                    field = this.getClass().getDeclaredField(entry.getKey().toLowerCase());
+                }
+
+                if (field != null) {
+                    switch (field.getType().getSimpleName()) {
+                        case "String":
+                            field.set(this, entry.getValue());
+                            break;
+                        case "int":
+                            field.set(this, Integer.parseInt(entry.getValue().toString()));
+                            break;
+                        default:
+                            break;
                     }
                 }
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
             }
         }
+    }
+
+    public int getIdEndereco() {
+        return idEndereco;
+    }
+
+    public void setIdEndereco(int idEndereco) {
+        this.idEndereco = idEndereco;
+    }
+
+    public void setNumero(int numero) {
+        this.numero = numero;
     }
 
     public int getCliuid() {
@@ -238,18 +280,18 @@ public class Endereco {
         this.complemento = complemento;
     }
 
-    public String getTipoResidencia() {
-        return tipoResidencia;
+    public String getTiporesidencia() {
+        return tiporesidencia;
     }
 
-    public void setTipoResidencia(String tipoResidencia) {
-        this.tipoResidencia = tipoResidencia;
+    public void setTiporesidencia(String tiporesidencia) {
+        this.tiporesidencia = tiporesidencia;
     }
 
     public String toString2() {
         return "Endereco [cliuid=" + cliuid + ", pais=" + pais + ", cep=" + cep + ", estado=" + estado + ", cidade="
                 + cidade + ", rua=" + rua + ", bairro=" + bairro + ", numero=" + numero + ", complemento=" + complemento
-                + ", tipoResidencia=" + tipoResidencia + "]";
+                + ", tiporesidencia=" + tiporesidencia + "]";
     }
 
 }

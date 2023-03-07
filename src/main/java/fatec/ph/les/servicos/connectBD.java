@@ -1,5 +1,8 @@
 package fatec.ph.les.servicos;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -38,16 +41,21 @@ public class connectBD {
         StringBuilder table = new StringBuilder();
         String name, tipo;
         int i = 0;
-        table.append("create table " + x.getSimpleName() + "(" + "id" + x.getSimpleName()
-                + " INT PRIMARY KEY AUTO_INCREMENT ,");
+        table.append("create table " + x.getSimpleName() + " ("); // + "(" + "id" + x.getSimpleName() + " INT PRIMARY
+                                                                  // KEY
+        // AUTO_INCREMENT ,");
 
         for (Field f : Fields) {
             // f.setAccessible(true);
             i++;
             name = f.getName();
             tipo = f.getType().getSimpleName();
+
             if (name.contains("data")) {
                 tipo = "Date";
+            } else if (name.contains("id" + x.getSimpleName())
+                    | name.contains("id" + x.getSimpleName().toLowerCase())) {
+                tipo = "ID";
             }
 
             if (i <= Fields.length - 1) {
@@ -73,29 +81,34 @@ public class connectBD {
         for (Field f : Fields) {
             // f.setAccessible(true);
             i++;
-            name = f.getName();
-            if (i <= Fields.length - 1) {
-                Inserir.append(name + " , ");
-            } else {
-                Inserir.append(name + ") VALUES  (");
+            if (!f.getName().contains("id" + obj.getClass().getSimpleName())) {
+                name = f.getName();
+                if (i <= Fields.length - 1) {
+                    Inserir.append(name + " , ");
+                } else {
+                    Inserir.append(name + ") VALUES  (");
+                }
             }
+
         }
         i = 0;
         for (Field f : Fields) {
             i++;
-            switch (f.getType().getSimpleName()) {
-                case "String":
-                case "Date":
-                    Inserir.append("'" + runGetter(f, obj) + "'");
-                    break;
-                default:
-                    Inserir.append(" " + runGetter(f, obj) + " ");
-                    break;
-            }
-            if (i <= Fields.length - 1) {
-                Inserir.append(" , ");
-            } else {
-                Inserir.append(" ); ");
+            if (!f.getName().contains("id" + obj.getClass().getSimpleName())) {
+                switch (f.getType().getSimpleName()) {
+                    case "String":
+                    case "Date":
+                        Inserir.append("'" + runGetter(f, obj) + "'");
+                        break;
+                    default:
+                        Inserir.append(" " + runGetter(f, obj) + " ");
+                        break;
+                }
+                if (i <= Fields.length - 1) {
+                    Inserir.append(" , ");
+                } else {
+                    Inserir.append(" ); ");
+                }
             }
 
         }
@@ -120,6 +133,10 @@ public class connectBD {
                 return " " + name + " INT ";
             case "Date":
                 return " " + name + " DATE ";
+            case "float":
+                return " " + name + " NUMERIC(20, 2) ";
+            case "ID":
+                return (" " + name + " INT PRIMARY KEY AUTO_INCREMENT ");
             default:
                 return "";
         }
@@ -132,11 +149,11 @@ public class connectBD {
             Statement stmt = con.createStatement();
             stmt.execute(BDquery);
             con.close();
-            System.out.println("sucesso EXEquery");
-
-        } catch (Exception e) {
-            System.out.println("erro EXEquery");
+            System.out.println("sucesso EXEquery" + "\n <---------> \n");
+        } catch (SQLException e) {
+            System.out.println("erro EXEquery" + "\n <---------> \n");
         }
+
     }
 
     public static String EXE_Select_UID(String BDquery) {
@@ -197,7 +214,8 @@ public class connectBD {
                 row = new HashMap<String, Object>();
                 for (int i = 1; i <= columnCount; i++) {
                     row.put(metaData.getColumnName(i), rs.getObject(i));
-                    System.out.println(metaData.getColumnName(i) + " || " + rs.getObject(i));
+                    System.out.println(metaData.getColumnName(i) + "||" + rs.getObject(i) + "||"
+                            + rs.getObject(i).getClass().getSimpleName());
                 }
                 resultList.add(row);
             }
@@ -212,4 +230,32 @@ public class connectBD {
 
     }
 
+    public static void run() {
+        try {
+            Connection conn = DriverManager.getConnection(url, user, password);
+            Statement stmt = conn.createStatement();
+            BufferedReader reader;
+            int i = 0;
+            FileReader fr = new FileReader("src/main/java/fatec/ph/les/servicos/sqlFiles/sql.txt");
+
+            try {
+                reader = new BufferedReader(fr);
+                String line = reader.readLine();
+
+                while (line != null) {
+                    System.out.println(line);
+                    // read next line
+                    line = reader.readLine();
+                    stmt.execute(line);
+                }
+                stmt.close();
+                conn.close();
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } catch (Exception e) {
+        }
+    }
 }

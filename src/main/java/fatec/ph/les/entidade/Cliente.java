@@ -19,22 +19,24 @@ public class Cliente {
 
         for (Field f : Fields) {
             i++;
-            switch (f.getType().getSimpleName()) {
-                case "String":
-                case "Date":
-                    if (i <= Fields.length - 1) {
-                        uid.append(f.getName() + " = " + "'" + connectBD.runGetter(f, obj) + "'" + " AND ");
-                    } else {
-                        uid.append(f.getName() + " = " + "'" + connectBD.runGetter(f, obj) + "'" + ";");
-                    }
-                    break;
-                default:
-                    if (i <= Fields.length - 1) {
-                        uid.append(f.getName() + " = " + connectBD.runGetter(f, obj) + " AND ");
-                    } else {
-                        uid.append(f.getName() + " = " + connectBD.runGetter(f, obj) + ";");
-                    }
-                    break;
+            if (!f.getName().contains("id" + obj.getClass().getSimpleName())) {
+                switch (f.getType().getSimpleName()) {
+                    case "String":
+                    case "Date":
+                        if (i <= Fields.length - 1) {
+                            uid.append(f.getName() + " = " + "'" + connectBD.runGetter(f, obj) + "'" + " AND ");
+                        } else {
+                            uid.append(f.getName() + " = " + "'" + connectBD.runGetter(f, obj) + "'" + ";");
+                        }
+                        break;
+                    default:
+                        if (i <= Fields.length - 1) {
+                            uid.append(f.getName() + " = " + connectBD.runGetter(f, obj) + " AND ");
+                        } else {
+                            uid.append(f.getName() + " = " + connectBD.runGetter(f, obj) + ";");
+                        }
+                        break;
+                }
             }
 
         }
@@ -55,7 +57,7 @@ public class Cliente {
             str.append("select * from CLIENTE where idCliente = " + uid + ";");
         } else if (uid == 0 & args == null) {
             str.append("select * from CLIENTE");
-        } else {
+        } else if (args != null) {
             lastEntry = args.lastEntry();
             str.append("select * from Cliente where ");
 
@@ -74,27 +76,25 @@ public class Cliente {
         for (Map<String, Object> map : rs) {
             Cliente cli = new Cliente();
             for (Entry<String, Object> map2 : map.entrySet()) {
-                switch (map2.getKey()) {
-                    case "SENHA ":
-                        cli.setSenha(map2.getValue().toString());
-                        break;
-                    case "NOME":
-                        cli.setNome(map2.getValue().toString());
-                        break;
-                    case "DATANASC":
-                        cli.setDatanasc(map2.getValue().toString());
-                        break;
-                    case "GEN":
-                        cli.setGen(map2.getValue().toString());
-                        break;
-                    case "EMAIL":
-                        cli.setEmail(map2.getValue().toString());
-                        break;
-                    default:
-                        break;
+                for (Field field : cli.getClass().getDeclaredFields()) {
+                    if (field.getName().equalsIgnoreCase(map2.getKey())) {
+                        try {
+                            switch (field.getType().getSimpleName()) {
+                                case "int":
+                                    field.set(cli, Integer.parseInt(map2.getValue().toString()));
+                                    break;
+                                default:
+                                    field.set(cli, map2.getValue().toString());
+                                    break;
+                            }
+                        } catch (IllegalArgumentException e) {
+                            e.printStackTrace();
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
-
             resulClientes.add(cli);
             System.out.println(cli.toString2());
         }
@@ -114,6 +114,7 @@ public class Cliente {
     public static void InserirCBD(Object obj) {
         System.out.println("inserir no %s: " + obj.getClass().getSimpleName());
         try {
+
             String queryIns = connectBD.InserirTableX(obj);
             connectBD.EXEquery(queryIns);
             System.out.println("sucesso inserir no %s: " + queryIns);
@@ -142,6 +143,8 @@ public class Cliente {
         connectBD.EXEquery(Inserir.toString());
     }
 
+    private int idCliente;
+
     private String senha;
 
     private String nome;
@@ -155,36 +158,29 @@ public class Cliente {
     public Cliente() {
     }
 
-    public Cliente(String senha, String nome, String datanasc, String gen, String email) {
+    public Cliente(String senha, String nome, String datanasc, String gen, String email, int idCliente) {
 
         this.senha = senha;
         this.nome = nome;
         this.datanasc = datanasc;
         this.gen = gen;
         this.email = email;
+        this.idCliente = idCliente;
     }
 
     public Cliente(Map<String, ?> param) {
-        System.out.println("Cliente part 1:  ");
-        for (Field field : this.getClass().getDeclaredFields()) {
-            for (Map.Entry<String, ?> entry : param.entrySet()) {
-                if (field.getName().equalsIgnoreCase(entry.getKey())) {
-                    try {
-                        switch (field.getType().getSimpleName()) {
-                            case "int":
-                                field.set(this, Integer.parseInt((String) entry.getValue()));
-                                break;
-                            default:
-                                field.set(this, entry.getValue().toString());
-                                break;
-                        }
-
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
+        System.out.println("public Cliente(Map<String, ?> param)");
+        for (Entry<String, ?> entry : param.entrySet()) {
+            Field field;
+            try {
+                field = this.getClass().getDeclaredField(entry.getKey());
+                if (field != null) {
+                    field.set(this, entry.getValue());
                 }
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -232,6 +228,14 @@ public class Cliente {
     public String toString2() {
         return "Cliente [senha=" + senha + ", nome=" + nome + ", datanasc=" + datanasc + ", gen=" + gen + ", email="
                 + email + "]";
+    }
+
+    public int getIdCliente() {
+        return idCliente;
+    }
+
+    public void setIdCliente(int idCliente) {
+        this.idCliente = idCliente;
     }
 
 }

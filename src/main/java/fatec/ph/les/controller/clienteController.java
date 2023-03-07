@@ -2,8 +2,6 @@ package fatec.ph.les.controller;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.NavigableMap;
-import java.util.TreeMap;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,18 +18,27 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import fatec.ph.les.entidade.Cartao;
+import fatec.ph.les.entidade.Categoria;
 import fatec.ph.les.entidade.Cliente;
 import fatec.ph.les.entidade.Endereco;
+import fatec.ph.les.entidade.Livro;
 import fatec.ph.les.servicos.connectBD;
+import fatec.ph.les.servicos.init;
 
 @Controller
 @RequestMapping("/cliHome")
 
 public class clienteController {
-    private String uidcli;
+    private String uidcli = "1";
 
     @GetMapping("/singup/form")
     public String CliForm() {
+
+        connectBD.CreateTableX(Cliente.class);
+        connectBD.CreateTableX(Endereco.class);
+        connectBD.CreateTableX(Cartao.class);
+        connectBD.CreateTableX(Livro.class);
+        connectBD.CreateTableX(Categoria.class);
 
         return "cliPages/singup";
     }
@@ -47,19 +54,10 @@ public class clienteController {
         }
 
         Cliente cliente = new Cliente(param);
-
-        System.out.println("cliPages part 1:");
-
-        Cliente.CreateTable();
-
-        System.out.println("cliPages part 2:");
-
         Cliente.InserirCBD(cliente);
-        System.out.println("To string " + cliente.toString2());
-
-        System.out.println("cliPages part 3:");
-
         uidcli = Cliente.cliUID(cliente);
+
+        init.setUid(uidcli);
 
         // model.addAttribute("model_uid", uidcli);
         redirectAttributes.addFlashAttribute("flash_uid", uidcli);
@@ -85,19 +83,26 @@ public class clienteController {
     public String cliProfile(Model model, @SessionAttribute(name = "uidcli", required = false) String uid) {
 
         // connectBD.EXE_Select(Cliente.class, Integer.parseInt(uidcli), null);
-        // connectBD.CreateTableX(Cliente.class);
-        connectBD.CreateTableX(Endereco.class);
-        connectBD.CreateTableX(Cartao.class);
 
-        NavigableMap<String, String> map = new TreeMap<String, String>();
-        map.put("senha", "2");
+        // NavigableMap<String, String> map = new TreeMap<String, String>();
+        // map.put("senha", "2");
 
         ArrayList<Cliente> array = Cliente.cliente(Integer.parseInt(uidcli), null);
         model.addAttribute("Cliente", array.get(0));
-        // System.out.println("uidcli " + uidcli);
+
+        ArrayList<Cartao> arrayCartao = Cartao.cartao(Integer.parseInt(uidcli), null);
+        model.addAttribute("cartoes", arrayCartao);
+
+        ArrayList<Endereco> enderecos = Endereco.endereco(Integer.parseInt(uidcli), null);
+        model.addAttribute("enderecos", enderecos);
 
         // Cliente.Deletar(Integer.parseInt(uid));
 
+        return "cliPages/cliProfile";
+    }
+
+    @GetMapping("/cliProfile2")
+    public String cliProfile2(Model model, @SessionAttribute(name = "uidcli", required = false) String uid) {
         return "cliPages/cliProfile";
     }
 

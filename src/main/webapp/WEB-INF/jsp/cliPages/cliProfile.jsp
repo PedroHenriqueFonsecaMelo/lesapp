@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,11 +34,11 @@
 							<i class="fa fa-key text-center mr-1"></i> 
 							Senha
 						</a>
-            <a class="nav-link" id="endereco-tab" data-toggle="pill" href="#endereco" role="tab" aria-controls="endereco" aria-selected="false">
+            			<a class="nav-link" id="endereco-tab" data-toggle="pill" href="#endereco" role="tab" aria-controls="endereco" aria-selected="false">
 							<i class="fa fa-home text-center mr-1"></i> 
 							Endereco
 						</a>
-            <a class="nav-link" id="cartoes-tab" data-toggle="pill" href="#cartoes" role="tab" aria-controls="cartoes" aria-selected="false">
+            			<a class="nav-link" id="cartoes-tab" data-toggle="pill" href="#cartoes" role="tab" aria-controls="cartoes" aria-selected="false">
 							<i class="fa fa-credit-card text-center mr-1"></i> 
 							Cartoes
 						</a>
@@ -111,70 +113,132 @@
 							<button class="btn btn-light">Cancel</button>
 						</div>
 					</div>
-          <div class="tab-pane fade" id="endereco" role="tabpanel" aria-labelledby="endereco-tab">
+          			<div class="tab-pane fade" id="endereco" role="tabpanel" aria-labelledby="endereco-tab">
 						<h3 class="mb-4">Endereco Settings</h3>
-						<div class="row">
-							<div class="col-md-6">
-								<div class="form-group">
-								  	<label>Cep</label>
-								  	<input type="text" class="form-control">
+						<c:forEach var="endereco" items="${enderecos}">
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label>Cep</label>
+										<input type="text" class="form-control" value="${endereco.getCep()}">
+									</div>
 								</div>
 							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-6">
-								<div class="form-group">
-								  	<label>Pais</label>
-								  	<input type="text" class="form-control">
+							<div class="row">
+								<div class="col-md-3">
+									<div class="form-group">
+										<label>Pais</label>
+										<input type="text" class="form-control" value="${endereco.getPais()}">
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="form-group">
+										<label>Estado</label>
+										<input type="text" class="form-control" value="${endereco.getEstado()}">
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="form-group">
+										<label>Cidade</label>
+										<input type="text" class="form-control" value="${endereco.getCidade()}">
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="form-group">
+										<label>Bairro</label>
+										<input type="text" class="form-control" value="${endereco.getBairro()}">
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="form-group">
+										<label>Rua</label>
+										<input type="text" class="form-control" value="${endereco.getRua()}">
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="form-group">
+										<label>Numero</label>
+										<input type="number" class="form-control" value="${endereco.getNumero()}">
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="form-group">
+										<label>Complemento</label>
+										<input type="text" class="form-control" value="${endereco.getComplemento()}">
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="form-group">
+										<label>Tipo Residencia</label>
+										<input type="text" class="form-control" value="${endereco.getTiporesidencia()}">
+									</div>
+								</div>
+								<div class="col-md-3">
+									<form action="https://google.com">
+											<input type="submit" value="Go to Google" />
+									</form>
+									<form action="https://google.com">
+											<input type="submit" value="Go to Google" />
+									</form>
 								</div>
 							</div>
-							<div class="col-md-6">
-								<div class="form-group">
-								  	<label>Estado</label>
-								  	<input type="text" class="form-control">
+						</c:forEach>
+					</div>
+					<div class="tab-pane fade" id="cartoes" role="tabpanel" aria-labelledby="cartoes-tab">
+						<h3 class="mb-4">Cartoes Settings</h3>
+						<c:forEach var="cartao" items="${cartoes}">
+								<div class="row">
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Bandeira Cartao</label>
+											<input type="text" class="form-control" value="${cartao.getBandeira()}">
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Numero Cartao</label>
+											<input type="number" class="form-control" value="${cartao.getNcartao()}">
+										</div>
+									</div>
+								
+								
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Nome Cliente Cartao</label>
+											<input type="text" class="form-control" value="${cartao.getNomecli()}">
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Cartao CV</label>
+											<input type="number" class="form-control" id="CV" name="CV" value="${cartao.getCv()}">
+										</div>
+									</div>
+
+								
+									<div class="col-md-2">
+										<div class="form-group">
+											<label>Cartao Preferencial</label>
+											<c:choose>
+												<c:when test="${cartao.getPreferencial() == '1'}">
+													<input type="checkbox" class="form-control" id="Preferencial" name="Preferencial" checked>
+												</c:when>
+												<c:otherwise>
+													<input type="checkbox" class="form-control" id="Preferencial" name="Preferencial">
+												</c:otherwise>
+											</c:choose>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<form action="/cartao/edit/${cartao.getIdCartao()}">
+											<input type="submit" value="Go to Google" />
+										</form>
+										<form action="https://google.com">
+											<input type="submit" value="Go to Google" />
+										</form>
+									</div>
 								</div>
-							</div>
-              <div class="col-md-6">
-								<div class="form-group">
-								  	<label>Cidade</label>
-								  	<input type="text" class="form-control">
-								</div>
-							</div>
-              <div class="col-md-6">
-								<div class="form-group">
-								  	<label>Bairro</label>
-								  	<input type="text" class="form-control">
-								</div>
-							</div>
-              <div class="col-md-6">
-								<div class="form-group">
-								  	<label>Rua</label>
-								  	<input type="text" class="form-control">
-								</div>
-							</div>
-              <div class="col-md-6">
-								<div class="form-group">
-								  	<label>Numero</label>
-								  	<input type="number" class="form-control">
-								</div>
-							</div>
-              <div class="col-md-6">
-								<div class="form-group">
-								  	<label>Complemento</label>
-								  	<input type="text" class="form-control">
-								</div>
-							</div>
-              <div class="col-md-6">
-								<div class="form-group">
-								  	<label>Tipo Residencia</label>
-								  	<input type="text" class="form-control">
-								</div>
-							</div>
-						</div>
-						<div>
-							<button class="btn btn-primary">Update</button>
-							<button class="btn btn-light">Cancel</button>
-						</div>
+						</c:forEach>
 					</div>
 				</div>
 			</div>

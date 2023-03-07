@@ -94,3 +94,54 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+public Cliente(Map<String, ?> param) {
+        System.out.println("Cliente part 1:  ");
+        for (Field field : this.getClass().getDeclaredFields()) {
+            for (Map.Entry<String, ?> entry : param.entrySet()) {
+                if (field.getName().equalsIgnoreCase(entry.getKey())) {
+                    try {
+                        switch (field.getType().getSimpleName()) {
+                            case "int":
+                                field.set(this, Integer.parseInt((String) entry.getValue()));
+                                break;
+                            default:
+                                field.set(this, entry.getValue().toString());
+                                break;
+                        }
+
+                    } catch (IllegalArgumentException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+
+
+Syntax error in SQL statement "insert into LIVRO  ( autor,  ano,  título,  editora,  edicao,  isbn,  npaginas,  sinopse,  altura,  largura,  categorias,  peso,  profundidade,  precificacao,  barras )
+VALUES ('ph',2023,'jose',WB',1,123,200,' joao e maria', 12.20 , 2.20, 'terror[*]', 23,2, 22.2 ,1101 );"; 
+
+SQL statement:
+insert into LIVRO  ( autor,  ano,  título,  editora,  edicao,  isbn,  npaginas,  sinopse,  altura,  largura,  categorias,  peso,  profundidade,  precificacao,  barras )
+VALUES ('ph',2023,'jose',WB',1,123,200,' joao e maria', 12.20 , 2.20, 'terror', 23,2, 22.2 ,1101 ); [42000-199] 42000/42000 (Help)
+
+
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "insert into LIVRO  ( autor,  ano,  título,  editora,  edicao,  isbn,  npaginas,  sinopse,  altura,  largura,  categorias,  peso,  profundidade,  precificacao,  barras )
+VALUES ('ph',2023,'jose',WB',1,123,200,' joao e maria', 12.20 , 2.20, 'terror[*]', 23,2, 22.2 ,1101 );"; 
+
+SQL statement:
+insert into LIVRO  ( autor,  ano,  título,  editora,  edicao,  isbn,  npaginas,  sinopse,  altura,  largura,  categorias,  peso,  profundidade,  precificacao,  barras )
+VALUES ('ph',2023,'jose',WB',1,123,200,' joao e maria', 12.20 , 2.20, 'terror', 23,2, 22.2 ,1101 ); [42000-199]
+
+
+
+insert into LIVRO  ( autor,  ano,  titulo,  editora,  edicao,  isbn,  npaginas,  sinopse,  altura,  largura,  categorias,  peso,  profundidade,  precificacao,  barras )
+VALUES ('ph',2023,'jose','WB',1,123,200,' joao e maria', 12.20 , 2.20, 'terror', 23 , 2, 22.2 ,1101 );
+insert into Cliente (senha , nome , datanasc , gen , email) VALUES  ('122' , '12' , '2023-03-06' , 'M' , '3@2' ); 
+insert into Endereco (cliuid , pais , cep , estado , cidade , rua , bairro , numero , complemento , tiporesidencia) VALUES  ( 1  , 'BR' , '08780690' , 'SP' , 'Mogi das Cruzes' , 'Rua Professor Manoel Acelino de Mello' , 'Jardim Armênia' ,  21  , '21' , 'CASA' ); 
+insert into Cartao (ncartao , bandeira , nomecli , cli_id , cv , preferencial) VALUES  ( 21  , 'Visa' , '21' ,  1  ,  22  ,  1  ); 

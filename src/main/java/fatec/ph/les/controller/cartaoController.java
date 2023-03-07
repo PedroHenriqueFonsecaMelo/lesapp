@@ -1,8 +1,6 @@
 package fatec.ph.les.controller;
 
 import java.util.Map;
-import java.util.Map.Entry;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
@@ -21,7 +19,7 @@ import fatec.ph.les.entidade.Cartao;
 @RequestMapping("/cartao")
 public class cartaoController {
     private static String aux1;
-    private String aux2;
+    private int aux2 = 0;
 
     @GetMapping("/singup/form")
     public String cartaoSingupForm(HttpServletRequest hRequest, ModelMap map,
@@ -34,22 +32,12 @@ public class cartaoController {
         } else
             emailId2 = " ";
 
-        System.out.println("flashMap /singup/form " + emailId2);
+        // System.out.println("flashMap /singup/form " + emailId2);
 
         hRequest.getSession().setAttribute("emailId2", emailId2);
         redirectAttributes.addFlashAttribute("flash_uid", emailId2);
 
         aux1 = emailId2;
-        aux2 = emailId2;
-
-        return "cartaoPages/singup";
-    }
-
-    @GetMapping("/singup/form2")
-    public String cartaoSingupForm2(HttpServletRequest hRequest, ModelMap map) {
-
-        aux1 = "0";
-        aux2 = "0";
 
         return "cartaoPages/singup";
     }
@@ -58,18 +46,26 @@ public class cartaoController {
     public ModelAndView enderecoSingup(@RequestParam Map<String, ?> param,
             ModelMap model, RedirectAttributes redirectAttributes) {
 
-        for (Entry<String, ?> iterable_element : param.entrySet()) {
-            System.out.println(iterable_element.getKey() + " / " +
-                    iterable_element.getValue() + " / "
-                    + iterable_element.getValue().getClass().getSimpleName());
-        }
+        /*
+         * for (Entry<String, ?> iterable_element : param.entrySet()) {
+         * System.out.println(iterable_element.getKey() + " / " +
+         * iterable_element.getValue() + " / "
+         * + iterable_element.getValue().getClass().getSimpleName());
+         * }
+         */
 
-        Cartao.CreateTable();
         Cartao cartao = new Cartao(param);
 
         cartao.setCli_id(Integer.parseInt(aux1));
-        System.out.println(cartao.toString2());
-        // Cartao.InserirCBD(cartao);
+        if (aux2 == 0) {
+            cartao.setPreferencial(1);
+            aux2 = aux2 + 1;
+        } else
+            cartao.setPreferencial(0);
+
+        // System.out.println(cartao.toString2());
+        Cartao.InserirCBD(cartao);
+
         redirectAttributes.addFlashAttribute("flash_uid", aux1);
 
         return new ModelAndView("redirect:/cliHome/cliProfile", model);

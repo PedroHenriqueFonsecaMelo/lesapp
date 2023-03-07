@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import fatec.ph.les.entidade.Endereco;
+import fatec.ph.les.servicos.init;
 
 @Controller
 @RequestMapping("/endereco")
@@ -32,27 +33,12 @@ public class enderecoController {
         } else
             emailId2 = " ";
 
-        // System.out.println("flashMap /singup/form " + emailId2);
+        System.out.println("inir " + init.getUid());
         // System.out.println("request: " +
         // request.getSession().getAttribute("uidcli"));
 
         // request.getSession().setAttribute("emailId2", emailId2);
         redirectAttributes.addFlashAttribute("flash_uid", emailId2);
-
-        aux1 = emailId2;
-        aux2 = emailId2;
-
-        return "endPages/singup";
-    }
-
-    @GetMapping("/singup/form2")
-    public String enderecoSingupForm2(HttpServletRequest hRequest, ModelMap map) {
-        String emailId2 = "";
-
-        // System.out.println("flashMap /singup/form " + emailId2);
-
-        // hRequest.getSession().setAttribute("emailId2", emailId2);
-        // redirectAttributes.addFlashAttribute("flash_uid", emailId2);
 
         aux1 = emailId2;
         aux2 = emailId2;
@@ -72,9 +58,10 @@ public class enderecoController {
          * + iterable_element.getValue().getClass().getSimpleName());
          * }
          */
-        Endereco.CreateTable();
+
         Endereco endereco = new Endereco(param);
         endereco.setCliuid(Integer.parseInt(aux1));
+        // Endereco.cliUID(endereco);
         Endereco.InserirCBD(endereco);
         redirectAttributes.addFlashAttribute("flash_uid", aux1);
 

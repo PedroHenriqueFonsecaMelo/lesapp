@@ -10,47 +10,6 @@ import java.util.NavigableMap;
 import fatec.ph.les.servicos.connectBD;
 
 public class Cartao {
-    private int ncartao;
-    private String bandeira;
-    private String nomeCli;
-    private int cli_id;
-    private int cv;
-
-    public Cartao() {
-    }
-
-    public Cartao(String ncartao, String bandeira, String nomeCli, String cv) {
-        this.ncartao = Integer.parseInt(ncartao);
-        this.bandeira = bandeira;
-        this.nomeCli = nomeCli;
-        this.cv = Integer.parseInt(cv);
-    }
-
-    public Cartao(Map<String, ?> param) {
-        System.out.println("Cartao part 1:  ");
-        for (Field field : this.getClass().getDeclaredFields()) {
-            for (Map.Entry<String, ?> entry : param.entrySet()) {
-                if (field.getName().equalsIgnoreCase(entry.getKey())) {
-                    try {
-                        switch (field.getType().getSimpleName()) {
-                            case "int":
-                                field.set(this, Integer.parseInt((String) entry.getValue()));
-                                break;
-                            default:
-                                field.set(this, entry.getValue().toString());
-                                break;
-                        }
-
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-    }
-
     public static ArrayList<Cartao> cartao(int uid, NavigableMap<String, String> args) {
         ArrayList<Cartao> resulClientes = new ArrayList<>();
         Entry<String, String> lastEntry;
@@ -59,10 +18,10 @@ public class Cartao {
         System.out.println(" public static ArrayList<cartao> cartao " + uid);
 
         if (uid != 0 & args == null) {
-            str.append("select * from cartao where idcartao = " + uid + ";");
+            str.append("select * from cartao where cli_id = " + uid + ";");
         } else if (uid == 0 & args == null) {
             str.append("select * from cartao");
-        } else {
+        } else if (args != null) {
             lastEntry = args.lastEntry();
             str.append("select * from cartao where ");
 
@@ -81,73 +40,188 @@ public class Cartao {
         for (Map<String, Object> map : rs) {
             Cartao cli = new Cartao();
             for (Entry<String, Object> map2 : map.entrySet()) {
-                switch (map2.getKey()) {
-                    case "Bandeira":
-                        cli.setBandeira(map2.getValue().toString());
-                        break;
-                    case "Cv":
-                        cli.setCv(Integer.parseInt((String) map2.getValue()));
-                        break;
-                    case "NomeCli":
-                        cli.setNomeCli(map2.getValue().toString());
-                        break;
-                    case "Ncartao":
-                        cli.setNcartao(Integer.parseInt((String) map2.getValue()));
-                        break;
-                    case "Cli_id":
-                        cli.setCli_id(Integer.parseInt((String) map2.getValue()));
-                        break;
-                    default:
-                        break;
+                for (Field field : cli.getClass().getDeclaredFields()) {
+                    if (field.getName().equalsIgnoreCase(map2.getKey())) {
+                        try {
+                            switch (field.getType().getSimpleName()) {
+                                case "int":
+                                    field.set(cli, Integer.parseInt(map2.getValue().toString()));
+                                    break;
+
+                                default:
+                                    field.set(cli, map2.getValue().toString());
+                                    break;
+                            }
+                        } catch (IllegalArgumentException e) {
+                            e.printStackTrace();
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
 
             resulClientes.add(cli);
-            System.out.println(cli.toString2());
+            System.out.println(cli.toString2() + "\n");
         }
 
         System.out.println(resulClientes.size());
         return resulClientes;
     }
 
-    public int getNcartao() {
-        return ncartao;
+    public static String cliUID(Cartao obj) {
+        StringBuilder uid = new StringBuilder("select * from " + Cartao.class.getSimpleName() + " where ");
+        Field[] Fields = obj.getClass().getDeclaredFields();
+        String fieldname = "";
+        int i = 0;
+
+        for (Field f : Fields) {
+            i++;
+            if (!f.getName().contains("id" + obj.getClass().getSimpleName())) {
+                switch (f.getType().getSimpleName()) {
+                    case "String":
+                    case "Date":
+                        if (i <= Fields.length - 1) {
+                            uid.append(f.getName() + " = " + "'" + connectBD.runGetter(f, obj) + "'" + " AND ");
+                        } else {
+                            uid.append(f.getName() + " = " + "'" + connectBD.runGetter(f, obj) + "'" + ";");
+                        }
+                        break;
+                    default:
+                        if (i <= Fields.length - 1) {
+                            uid.append(f.getName() + " = " + connectBD.runGetter(f, obj) + " AND ");
+                        } else {
+                            uid.append(f.getName() + " = " + connectBD.runGetter(f, obj) + ";");
+                        }
+                        break;
+                }
+            }
+
+        }
+        System.out.println(uid.toString());
+        fieldname = connectBD.EXE_Select_UID(uid.toString());
+
+        return fieldname;
     }
 
-    public void setNcartao(int ncartao) {
-        this.ncartao = ncartao;
+    public static ArrayList<Cartao> cartaoCLIUID(int uid) {
+        ArrayList<Cartao> resulClientes = new ArrayList<>();
+
+        StringBuilder str = new StringBuilder();
+        System.out.println(" public static ArrayList<Cartao> cartaoCLIUID " + uid);
+
+        if (uid != 0) {
+            str.append("select * from cartao where cli_id = " + uid + ";");
+        } else if (uid == 0) {
+            str.append("select * from cartao");
+        }
+
+        System.out.println(str.toString());
+
+        List<Map<String, Object>> rs = connectBD.EXE_Select(str.toString());
+
+        for (Map<String, Object> map : rs) {
+            Cartao cli = new Cartao();
+            for (Entry<String, Object> map2 : map.entrySet()) {
+                Field field;
+                try {
+                    if (!map2.getKey().equalsIgnoreCase("idCartao")) {
+                        if (Cartao.class.getDeclaredField(map2.getKey().toLowerCase()) != null) {
+                            field = Cartao.class.getDeclaredField(map2.getKey().toLowerCase());
+                        } else {
+                            field = Cartao.class.getDeclaredField(map2.getKey());
+                        }
+
+                        if (field != null) {
+                            switch (field.getType().getSimpleName()) {
+                                case "int":
+                                    field.set(cli, map2.getValue());
+                                    break;
+                                default:
+                                    field.set(cli, map2.getValue().toString());
+                                    break;
+                            }
+
+                        }
+                    }
+                } catch (NoSuchFieldException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+
+            }
+            resulClientes.add(cli);
+            System.out.println(cli.toString2());
+        }
+        System.out.println(resulClientes.size());
+        return resulClientes;
     }
 
-    public String getBandeira() {
-        return bandeira;
-    }
+    public static ArrayList<Cartao> cartaoCLIUID(int uid, NavigableMap<String, String> args) {
+        ArrayList<Cartao> resulClientes = new ArrayList<>();
+        Entry<String, String> lastEntry;
 
-    public void setBandeira(String bandeira) {
-        this.bandeira = bandeira;
-    }
+        StringBuilder str = new StringBuilder();
+        System.out.println(" public static ArrayList<Cartao> cartaoCLIUID " + uid);
 
-    public String getNomeCli() {
-        return nomeCli;
-    }
+        if (uid != 0 & args == null) {
+            str.append("select * from cartao where cli_id = " + uid + ";");
+        } else if (uid == 0 & args == null) {
+            str.append("select * from cartao");
+        } else if (args != null) {
+            lastEntry = args.lastEntry();
+            str.append("select * from cartao where ");
 
-    public void setNomeCli(String nomeCli) {
-        this.nomeCli = nomeCli;
-    }
+            for (Entry<String, String> i : args.entrySet()) {
+                if (i.getKey().equals(lastEntry.getKey())) {
+                    str.append(i.getKey() + " = " + i.getValue() + ";");
+                } else {
+                    str.append(i.getKey() + " = " + i.getValue() + " AND ");
+                }
+            }
+        }
 
-    public int getCli_id() {
-        return cli_id;
-    }
+        System.out.println(str.toString());
 
-    public void setCli_id(int cli_id) {
-        this.cli_id = cli_id;
-    }
+        List<Map<String, Object>> rs = connectBD.EXE_Select(str.toString());
 
-    public int getCv() {
-        return cv;
-    }
+        for (Map<String, Object> map : rs) {
+            Cartao cli = new Cartao();
+            for (Entry<String, Object> map2 : map.entrySet()) {
+                Field field;
+                try {
+                    if (!map2.getKey().equalsIgnoreCase("idCartao")) {
+                        if (Cartao.class.getDeclaredField(map2.getKey().toLowerCase()) != null) {
+                            field = Cartao.class.getDeclaredField(map2.getKey().toLowerCase());
+                        } else {
+                            field = Cartao.class.getDeclaredField(map2.getKey());
+                        }
 
-    public void setCv(int cv) {
-        this.cv = cv;
+                        if (field != null) {
+                            switch (field.getType().getSimpleName()) {
+                                case "int":
+                                    field.set(cli, map2.getValue());
+                                    break;
+                                default:
+                                    field.set(cli, map2.getValue().toString());
+                                    break;
+                            }
+
+                        }
+                    }
+                } catch (NoSuchFieldException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+
+            }
+            resulClientes.add(cli);
+            System.out.println(cli.toString2());
+        }
+        System.out.println(resulClientes.size());
+        return resulClientes;
     }
 
     public static void CreateTable() {
@@ -169,9 +243,113 @@ public class Cartao {
         }
     }
 
+    private int idCartao;
+
+    private int ncartao;
+
+    private String bandeira;
+
+    private String nomecli;
+
+    private int cli_id;
+
+    private int cv;
+
+    private int preferencial;
+
+    public Cartao() {
+    }
+
+    public Cartao(String ncartao, String bandeira, String nomecli, String cv) {
+        this.ncartao = Integer.parseInt(ncartao);
+        this.bandeira = bandeira;
+        this.nomecli = nomecli;
+        this.cv = Integer.parseInt(cv);
+    }
+
+    public Cartao(Map<String, ?> param) {
+        System.out.println("public Cartao(Map<String, ?> param)");
+        for (Entry<String, ?> entry : param.entrySet()) {
+            for (Field field : this.getClass().getDeclaredFields()) {
+                if (field.getName().equalsIgnoreCase(entry.getKey())) {
+                    try {
+                        switch (field.getType().getSimpleName()) {
+                            case "int":
+                                field.set(this, Integer.parseInt(entry.getValue().toString()));
+                                break;
+                            default:
+                                field.set(this, entry.getValue().toString());
+                                break;
+                        }
+                    } catch (IllegalArgumentException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+    public int getNcartao() {
+        return ncartao;
+    }
+
+    public void setNcartao(int ncartao) {
+        this.ncartao = ncartao;
+    }
+
+    public String getBandeira() {
+        return bandeira;
+    }
+
+    public void setBandeira(String bandeira) {
+        this.bandeira = bandeira;
+    }
+
+    public String getNomecli() {
+        return nomecli;
+    }
+
+    public void setNomecli(String nomecli) {
+        this.nomecli = nomecli;
+    }
+
+    public int getCli_id() {
+        return cli_id;
+    }
+
+    public void setCli_id(int cli_id) {
+        this.cli_id = cli_id;
+    }
+
+    public int getCv() {
+        return cv;
+    }
+
+    public void setCv(int cv) {
+        this.cv = cv;
+    }
+
+    public int getPreferencial() {
+        return preferencial;
+    }
+
+    public void setPreferencial(int preferencial) {
+        this.preferencial = preferencial;
+    }
+
+    public int getIdCartao() {
+        return idCartao;
+    }
+
+    public void setIdCartao(int idCartao) {
+        this.idCartao = idCartao;
+    }
+
     public String toString2() {
-        return "Cartao [ncartao=" + ncartao + ", bandeira=" + bandeira + ", nomeCli=" + nomeCli + ", cli_id=" + cli_id
-                + ", cv=" + cv + "]";
+        return "Cartao [ncartao=" + ncartao + ", bandeira=" + bandeira + ", nomeCli=" + nomecli + ", cli_id=" + cli_id
+                + ", cv=" + cv + ", preferencial=" + preferencial + ", idCartao=" + idCartao + "]";
     }
 
 }

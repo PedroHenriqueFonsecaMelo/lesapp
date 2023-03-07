@@ -1,0 +1,11 @@
+create table Cliente ( idCliente INT PRIMARY KEY AUTO_INCREMENT  ,  senha VARCHAR(100)  ,  nome VARCHAR(100)  ,  datanasc DATE  ,  gen VARCHAR(100)  ,  email VARCHAR(100) );
+create table Endereco ( idEndereco INT PRIMARY KEY AUTO_INCREMENT  ,  cliuid INT  ,  pais VARCHAR(100)  ,  cep VARCHAR(100)  ,  estado VARCHAR(100)  ,  cidade VARCHAR(100)  ,  rua VARCHAR(100)  ,  bairro VARCHAR(100)  ,  numero INT  ,  complemento VARCHAR(100)  ,  tiporesidencia VARCHAR(100) );
+create table Cartao ( idCartao INT PRIMARY KEY AUTO_INCREMENT  ,  ncartao INT  ,  bandeira VARCHAR(100)  ,  nomecli VARCHAR(100)  ,  cli_id INT  ,  cv INT  ,  preferencial INT );
+create table Livro ( idlivro INT PRIMARY KEY AUTO_INCREMENT  ,  autor VARCHAR(100)  ,  ano INT  ,  título VARCHAR(100)  ,  editora VARCHAR(100)  ,  edicao INT  ,  isbn INT  ,  npaginas INT  ,  categorias INT  ,  sinopse VARCHAR(100)  ,  altura NUMERIC(20, 2)  ,  largura NUMERIC(20, 2)  ,  peso NUMERIC(20, 2)  ,  profundidade NUMERIC(20, 2)  ,  precificacao NUMERIC(20, 2)  ,  barras VARCHAR(100) );
+create table Categoria ( idCategoria INT PRIMARY KEY AUTO_INCREMENT  ,  categorias VARCHAR(100) );
+
+insert into Cliente (senha , nome , datanasc , gen , email) VALUES  ('12' , '12' , '2023-03-06' , 'M' , '12@2' ); 
+
+insert into Endereco (cliuid , pais , cep , estado , cidade , rua , bairro , numero , complemento , tiporesidencia) VALUES  ( 1  , 'BR' , '08780690' , 'SP' , 'Mogi das Cruzes' , 'Rua Professor Manoel Acelino de Mello' , 'Jardim Armênia' ,  12  , '12' , 'CASA' ); 
+
+insert into Cartao (ncartao , bandeira , nomecli , cli_id , cv , preferencial) VALUES  ( 12  , 'Mastercard' , '12' ,  1  ,  12  ,  1  ); 

@@ -41,3 +41,11 @@ body {
 	height: 80px;
 	background-color: lightslategray;
 }
+
+[type="checkbox"]{
+    vertical-align:middle;
+}
+
+div#cartoes {
+    border-bottom: thick grey;
+}

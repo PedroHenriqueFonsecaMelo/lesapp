@@ -85,7 +85,7 @@
                   </td>
                   
                   <td class="tg-0lax">
-                        <select class="form-select shadow-none" id="tipoResidencia" name="tipoResidencia" disabled required data-input>
+                        <select class="form-select shadow-none" id="tiporesidencia" name="tiporesidencia" disabled required data-input>
                           <option selected>Tipo Residencia</option>
                           <option value="CASA">Casa</option>
                           <option value="APAR">Apartamento</option>
