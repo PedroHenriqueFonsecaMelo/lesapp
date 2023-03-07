@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import fatec.ph.les.entidade.Livro;
-import fatec.ph.les.servicos.connectBD;
 
 @Controller
 public class IndexController {

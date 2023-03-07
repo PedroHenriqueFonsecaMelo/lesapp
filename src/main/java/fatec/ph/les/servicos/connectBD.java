@@ -1,8 +1,5 @@
 package fatec.ph.les.servicos;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -230,32 +227,15 @@ public class connectBD {
 
     }
 
-    public static void run() {
+    public static void executeQuery(String BDquery) {
         try {
             Connection conn = DriverManager.getConnection(url, user, password);
             Statement stmt = conn.createStatement();
-            BufferedReader reader;
-            int i = 0;
-            FileReader fr = new FileReader("src/main/java/fatec/ph/les/servicos/sqlFiles/sql.txt");
-
-            try {
-                reader = new BufferedReader(fr);
-                String line = reader.readLine();
-
-                while (line != null) {
-                    System.out.println(line);
-                    // read next line
-                    line = reader.readLine();
-                    stmt.execute(line);
-                }
-                stmt.close();
-                conn.close();
-                reader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        } catch (Exception e) {
+            stmt.executeQuery(BDquery);
+            con.close();
+            System.out.println("sucesso public static void executeQuery" + "\n <---------> \n");
+        } catch (SQLException e) {
+            System.out.println("erro public static void executeQuery");
         }
     }
 }

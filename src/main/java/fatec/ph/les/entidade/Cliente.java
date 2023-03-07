@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fatec.ph.les.servicos.connectBD;
+import fatec.ph.les.servicos.init;
 
 public class Cliente {
 
@@ -141,6 +142,46 @@ public class Cliente {
 
         System.out.println(Inserir.toString());
         connectBD.EXEquery(Inserir.toString());
+    }
+
+    public static void update(int uid, NavigableMap<String, String> args) {
+
+        Entry<String, String> lastEntry;
+
+        StringBuilder str = new StringBuilder();
+        System.out.println(" public static update cliente " + uid);
+        str.append("UPDATE CLIENTE SET ");
+
+        lastEntry = args.lastEntry();
+        for (Entry<String, String> i : args.entrySet()) {
+            if (i.getKey().equals(lastEntry.getKey())) {
+                switch (i.getValue().getClass().getSimpleName()) {
+                    case "String":
+                    case "Date":
+                        str.append(i.getKey() + " = " + "'" + i.getValue() + "'");
+                        break;
+                    default:
+                        str.append(i.getKey() + " = " + " " + i.getValue() + " ");
+                        break;
+                }
+            } else {
+                switch (i.getValue().getClass().getSimpleName()) {
+                    case "String":
+                    case "Date":
+                        str.append(i.getKey() + " = " + "'" + i.getValue() + "' , ");
+                        break;
+                    default:
+                        str.append(i.getKey() + " = " + i.getValue() + " , ");
+                        break;
+                }
+            }
+        }
+        str.append(" where idCliente = " + init.getUid() + ";");
+
+        System.out.println(str.toString());
+        // connectBD.executeQuery(str.toString());
+        connectBD.EXEquery(str.toString());
+
     }
 
     private int idCliente;

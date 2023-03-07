@@ -2,6 +2,8 @@ package fatec.ph.les.controller;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
@@ -104,6 +106,15 @@ public class clienteController {
     @GetMapping("/cliProfile2")
     public String cliProfile2(Model model, @SessionAttribute(name = "uidcli", required = false) String uid) {
         return "cliPages/cliProfile";
+    }
+
+    @PostMapping("/update")
+    public ModelAndView update(ModelMap model, @RequestParam Map<String, String> param) {
+        TreeMap<String, String> ls = new TreeMap<>();
+        ls.putAll(param);
+
+        Cliente.update(Integer.parseInt(init.getUid()), (NavigableMap<String, String>) ls);
+        return new ModelAndView("redirect:/cliHome/cliProfile", model);
     }
 
 }

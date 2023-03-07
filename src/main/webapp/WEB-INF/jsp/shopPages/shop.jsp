@@ -45,7 +45,7 @@
                             <p class="writer">${livro.getAutor()}</p>
                             <div class="categories">${livro.getCategorias()}</div>
                             <p class="book_price">${livro.getPrecificacao()}</p>
-                            <a href="cart/cartAdd/${livro.getIdlivro()}" class="f_btn">Learn More</a>
+                            <a href="cart/cartAdd/${livro.getIdlivro()}/1" class="f_btn">Learn More</a>
                         </div>               
                     </div>
                 </c:forEach>
@@ -71,7 +71,7 @@
                             <i class="fa-solid fa-star"></i>
                             <i class="fa-solid fa-star-half-stroke"></i>
                         </div>
-                        <a href="cart/cartAdd/${livro.getIdlivro()}" class="arrivals_btn">Learn More</a>
+                        <a href="cart/cartAdd/${livro.getIdlivro()}/1" class="arrivals_btn">Learn More</a>
                     </div>
                 </div>
             </c:forEach>

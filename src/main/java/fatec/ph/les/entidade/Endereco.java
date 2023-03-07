@@ -129,11 +129,8 @@ public class Endereco {
     private String cidade;
     private String rua;
     private String bairro;
-
     private int numero;
-
     private String complemento;
-
     private String tiporesidencia;
 
     public Endereco(int uid, String cep, String estado, String cidade, String rua, String bairro, String numero,

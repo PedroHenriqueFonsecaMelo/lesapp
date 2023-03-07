@@ -14,6 +14,8 @@
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+     <script src="/resources/livrocss/livros.js" defer></script>
 </head>
 <body>
     
@@ -40,31 +42,45 @@
 			<div class="bg-white shadow rounded-lg d-block d-sm-flex">
 				<div class="profile-tab-nav border-right">
                     <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-					    <c:forEach var="cartao" items="${cartoes}">
+                        <form action="/cart/order" method="post">
+					        <c:forEach var="cartao" items="${cartoes}">
 									<div class="col-md-12">
 										<div class="form-group">
 											<label>Bandeira Cartao</label>
-											<label>${cartao.getBandeira()}</label>
+											<label>${cartao.getKey().getBandeira()}</label>
 										</div>
 									</div>
 									<div class="col-md-12">
 										<div class="form-group">
 											<label>Numero Cartao</label>
-											<label>${cartao.getNcartao()}</label>
+											<label>${cartao.getKey().getNcartao()}</label>
 										</div>
 									</div>
                                     <div class="col-md-12">
 										<div class="form-group">
 											<label>Remover Cartao</label>
-											<a href="/removeCartaoCart/${cartao.getNcartao()}">${cartao.getNcartao()}</a>
+											<a href="/cart/removeCartaoCart/${cartao.getKey().getNcartao()}">${cartao.getKey().getNcartao()}</a>
 										</div>
 									</div>
-					    </c:forEach>
+                                    <div class="col-md-12">
+										<div class="form-group">
+											<label>Quantas Vezes</label>
+											<div class="wrapper" id="${cartao.getKey().getNcartao()}">
+                                                <span class="minus" id="minus${cartao.getKey().getNcartao()}">-</span>
+                                                <span class="num" id="num${cartao.getKey().getNcartao()}">01</span>
+                                                <span class="plus" id="plus${cartao.getKey().getNcartao()}">+</span>
+                                            </div>
+										</div>
+									</div>
+                                    <input type="hidden" value="" id="in${cartao.getKey().getNcartao()}">
+					        </c:forEach>
+                            <button class="dropbtn" type="submit" id="save-btn">Finalizar compra</button>
+                        </form>
                         <div class="dropdown">
                             <button class="dropbtn">Dropdown</button>
                             <div class="dropdown-content">
                                 <c:forEach var="cartao" items="${cartoes2}">
-                                    <a href="/addCartaoCart/${cartao.getNcartao()}">${cartao.getNcartao()}</a>
+                                    <a href="/cart/addCartaoCart/${cartao.getNcartao()}">${cartao.getNcartao()}</a>
                                 </c:forEach>
                             </div>
                         </div>
@@ -78,10 +94,16 @@
                                     <img src="/resources/indexcss/image/arrival_1.jpg">
                                 </div>
                                 <div class="arrivals_tag">
-                                    <p>${livro.getPrecificacao()}</p>
+                                    <p>${livro.getKey().getPrecificacao()}</p>
                                 </div>
                             </div>
                         </c:forEach>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Total</label>
+                            <label id="total">${Total}</label>
+                        </div>
                     </div>
 				</div>
 			</div>

@@ -10,11 +10,33 @@
 	<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="/resources/clicss/cliSpace/cliSpace.css">
+
+	<link rel="stylesheet" href="/resources/livrocss/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 </head>
 
 
 <body>
-<div class="col-12 div-header" id="main">Tentativa</div>
+	<section class="section2">
+        <nav>
+            <div class="logo">
+                <img src="/resources/indexcss/image/logo.png">
+            </div>
+            <ul>
+                <li><a href="#Home">Home</a></li>
+                <li><a href="#About">About</a></li>
+                <li><a href="/shop" target="_top">Shopp</a></li>
+            </ul>
+            <div class="social_icon">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <i class="fa-solid fa-heart"></i>
+                <a href="/cart/cartTotal" target="_top"><i class="fa-solid fa-shopping-cart"></i></a>
+            </div>
+        </nav>
+    </section>
+
+
 	<section class="py-3">
 		<div class="container col-12">
 			<div class="bg-white shadow rounded-lg d-block d-sm-flex">
@@ -47,17 +69,18 @@
 				<div class="tab-content p-4 p-md-5" id="v-pills-tabContent">
 					<div class="tab-pane fade show active" id="account" role="tabpanel" aria-labelledby="account-tab">
 						<h3 class="mb-4">Account Settings</h3>
+					<form action="/cliHome/update" method="post">
 						<div class="row">
 							<div class="col-md-12">
 								<div class="form-group">
 								  	<label>Cliente Nome</label>
-								  	<input type="text" class="form-control" value="${Cliente.getNome()}">
+								  	<input type="text" class="form-control" id = "nome" name="nome" value="${Cliente.getNome()}">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 								  	<label>Email</label>
-								  	<input type="text" class="form-control" value="${Cliente.getEmail()}">
+								  	<input type="text" class="form-control" id="email" name="email" value="${Cliente.getEmail()}">
 								</div>
 							</div>
 							<div class="col-md-6">
@@ -69,23 +92,26 @@
 							<div class="col-md-6">
 								<div class="form-group">
 								  	<label>Genero</label>
-								  	<input type="text" class="form-control" value="${Cliente.getGen()}">
+								  	<input type="text" class="form-control" id="gen" name="gen" value="${Cliente.getGen()}">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 								  	<label>Data Nasc</label>
-								  	<input type="date" class="form-control" value="${Cliente.getDatanasc()}">
+								  	<input type="date" class="form-control" id="datanasc" name="datanasc" value="${Cliente.getDatanasc()}">
 								</div>
 							</div>
 						</div>
 						<div>
-							<button class="btn btn-primary">Update</button>
+							<button class="btn btn-primary" type="submit">Update</button>
 							<button class="btn btn-light">Cancel</button>
+							<button class="btn btn-light">Delete</button>
 						</div>
+					</form>
 					</div>
 					<div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="password-tab">
 						<h3 class="mb-4">Password Settings</h3>
+					<form>
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
@@ -108,6 +134,7 @@
 								</div>
 							</div>
 						</div>
+					</form>
 						<div>
 							<button class="btn btn-primary">Update</button>
 							<button class="btn btn-light">Cancel</button>
@@ -116,6 +143,7 @@
           			<div class="tab-pane fade" id="endereco" role="tabpanel" aria-labelledby="endereco-tab">
 						<h3 class="mb-4">Endereco Settings</h3>
 						<c:forEach var="endereco" items="${enderecos}">
+						<form action="https://google.com">
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group">
@@ -173,20 +201,18 @@
 										<input type="text" class="form-control" value="${endereco.getTiporesidencia()}">
 									</div>
 								</div>
-								<div class="col-md-3">
-									<form action="https://google.com">
-											<input type="submit" value="Go to Google" />
-									</form>
-									<form action="https://google.com">
-											<input type="submit" value="Go to Google" />
-									</form>
-								</div>
 							</div>
+						</form>
 						</c:forEach>
+						<div>
+							<button class="btn btn-primary">Update</button>
+							<button class="btn btn-light">Cancel</button>
+						</div>
 					</div>
 					<div class="tab-pane fade" id="cartoes" role="tabpanel" aria-labelledby="cartoes-tab">
 						<h3 class="mb-4">Cartoes Settings</h3>
 						<c:forEach var="cartao" items="${cartoes}">
+							<form>
 								<div class="row">
 									<div class="col-md-2">
 										<div class="form-group">
@@ -214,8 +240,6 @@
 											<input type="number" class="form-control" id="CV" name="CV" value="${cartao.getCv()}">
 										</div>
 									</div>
-
-								
 									<div class="col-md-2">
 										<div class="form-group">
 											<label>Cartao Preferencial</label>
@@ -229,16 +253,13 @@
 											</c:choose>
 										</div>
 									</div>
-									<div class="col-md-2">
-										<form action="/cartao/edit/${cartao.getIdCartao()}">
-											<input type="submit" value="Go to Google" />
-										</form>
-										<form action="https://google.com">
-											<input type="submit" value="Go to Google" />
-										</form>
-									</div>
 								</div>
+							</form>
 						</c:forEach>
+						<div>
+							<button class="btn btn-primary">Update</button>
+							<button class="btn btn-light">Cancel</button>
+						</div>
 					</div>
 				</div>
 			</div>
