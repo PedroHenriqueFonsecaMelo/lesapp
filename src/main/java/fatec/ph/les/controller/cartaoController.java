@@ -1,11 +1,16 @@
 package fatec.ph.les.controller;
 
 import java.util.Map;
+import java.util.NavigableMap;
+import java.util.TreeMap;
+import java.util.Map.Entry;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -68,6 +73,32 @@ public class cartaoController {
 
         redirectAttributes.addFlashAttribute("flash_uid", aux1);
 
+        return new ModelAndView("redirect:/cliHome/cliProfile", model);
+    }
+
+    @PostMapping("/update/{id}")
+    public ModelAndView update(@PathVariable(value = "id") String ncard, ModelMap model,
+            @RequestParam Map<String, String> param) {
+        TreeMap<String, String> ls = new TreeMap<>();
+
+        for (Entry<String, String> iterable_element : param.entrySet()) {
+            System.out.println(iterable_element.getKey() + " ZZ " + iterable_element.getValue());
+
+        }
+        if (!param.containsKey("preferencial")) {
+            param.put("preferencial", "0");
+        }
+        ls.putAll(param);
+
+        Cartao.update(Integer.parseInt(ncard), (NavigableMap<String, String>) ls);
+        return new ModelAndView("redirect:/cliHome/cliProfile", model);
+    }
+
+    @GetMapping("/delete/{id}")
+    public ModelAndView del(@PathVariable(value = "id") String ncard, ModelMap model,
+            @RequestParam Map<String, String> param) {
+
+        Cartao.Deletar(Integer.parseInt(ncard));
         return new ModelAndView("redirect:/cliHome/cliProfile", model);
     }
 }

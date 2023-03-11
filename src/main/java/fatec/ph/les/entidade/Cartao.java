@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import java.util.NavigableMap;
 
 import fatec.ph.les.servicos.connectBD;
+import fatec.ph.les.servicos.init;
 
 public class Cartao {
     public static ArrayList<Cartao> cartao(int uid, NavigableMap<String, String> args) {
@@ -289,6 +290,63 @@ public class Cartao {
                 }
             }
         }
+    }
+
+    public static void Deletar() {
+        StringBuilder Inserir = new StringBuilder();
+        Inserir.append("delete from " + Cartao.class.getSimpleName() + " where cli_id " + " = " + init.getUid());
+
+        System.out.println(Inserir.toString());
+        connectBD.EXEquery(Inserir.toString());
+    }
+
+    public static void Deletar(int uid) {
+        StringBuilder Inserir = new StringBuilder();
+        Inserir.append("delete from " + Cartao.class.getSimpleName() + " where idCartaos " + " = " + uid);
+
+        System.out.println(Inserir.toString());
+        connectBD.EXEquery(Inserir.toString());
+    }
+
+    public static void update(int uid, NavigableMap<String, String> args) {
+
+        Entry<String, String> lastEntry;
+
+        StringBuilder str = new StringBuilder();
+        System.out.println(" public static update cartao " + uid);
+        str.append("UPDATE cartao SET ");
+
+        lastEntry = args.lastEntry();
+        for (Entry<String, String> i : args.entrySet()) {
+            if (i.getKey().equals(lastEntry.getKey())) {
+                switch (i.getValue().getClass().getSimpleName()) {
+                    case "String":
+                    case "Date":
+                        str.append(i.getKey() + " = " + "'" + i.getValue() + "'");
+                        break;
+                    default:
+                        str.append(i.getKey() + " = " + " " + i.getValue() + " ");
+                        break;
+                }
+            } else {
+                switch (i.getValue().getClass().getSimpleName()) {
+                    case "String":
+                    case "Date":
+                        str.append(i.getKey() + " = " + "'" + i.getValue() + "' , ");
+                        break;
+                    default:
+                        str.append(i.getKey() + " = " + i.getValue() + " , ");
+                        break;
+                }
+            }
+        }
+        str.append(" where idCartao = " + uid + ";");
+
+        System.out.println(str.toString());
+        // connectBD.executeQuery(str.toString());
+        connectBD.EXEquery("UPDATE cartao SET preferencial = " + "'" + "0" + "';");
+        connectBD.EXEquery(str.toString());
+
     }
 
     public int getNcartao() {

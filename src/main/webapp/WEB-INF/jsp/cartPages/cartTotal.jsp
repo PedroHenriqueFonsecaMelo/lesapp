@@ -74,10 +74,10 @@
 									</div>
                                     <input type="hidden" value="" id="in${cartao.getKey().getNcartao()}">
 					        </c:forEach>
-                            <button class="dropbtn" type="submit" id="save-btn">Finalizar compra</button>
+                            <button class="dropbtn col-12" type="submit" id="save-btn">Finalizar compra</button>
                         </form>
                         <div class="dropdown">
-                            <button class="dropbtn">Dropdown</button>
+                            <button class="dropbtn col-12">Dropdown</button>
                             <div class="dropdown-content">
                                 <c:forEach var="cartao" items="${cartoes2}">
                                     <a href="/cart/addCartaoCart/${cartao.getNcartao()}">${cartao.getNcartao()}</a>
@@ -91,7 +91,7 @@
                         <c:forEach var="livro" items="${livros}">
                             <div class="arrivals_card">
                                 <div class="arrivals_image">
-                                    <img src="/resources/indexcss/image/arrival_1.jpg">
+                                    <img class="img2"src="/resources/indexcss/image/arrival_1.jpg">
                                 </div>
                                 <div class="arrivals_tag">
                                     <p>${livro.getKey().getPrecificacao()}</p>

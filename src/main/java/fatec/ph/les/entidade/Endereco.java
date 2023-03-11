@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import java.util.NavigableMap;
 
 import fatec.ph.les.servicos.connectBD;
+import fatec.ph.les.servicos.init;
 
 public class Endereco {
     public static void CreateTable() {
@@ -191,6 +192,70 @@ public class Endereco {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static void update(int uid, NavigableMap<String, String> args) {
+
+        Entry<String, String> lastEntry;
+
+        StringBuilder str = new StringBuilder();
+        System.out.println(" public static update endereco " + uid);
+        str.append("UPDATE endereco SET ");
+
+        lastEntry = args.lastEntry();
+        for (Entry<String, String> i : args.entrySet()) {
+            if (i.getKey().equals(lastEntry.getKey())) {
+                argsParse(str, i);
+            } else {
+                argsParse2(str, i);
+            }
+        }
+        str.append(" where idEndereco = " + uid + ";");
+
+        System.out.println(str.toString());
+        // connectBD.executeQuery(str.toString());
+        connectBD.EXEquery(str.toString());
+
+    }
+
+    private static void argsParse2(StringBuilder str, Entry<String, String> i) {
+        switch (i.getValue().getClass().getSimpleName()) {
+            case "String":
+            case "Date":
+                str.append(i.getKey() + " = " + "'" + i.getValue() + "' , ");
+                break;
+            default:
+                str.append(i.getKey() + " = " + i.getValue() + " , ");
+                break;
+        }
+    }
+
+    private static void argsParse(StringBuilder str, Entry<String, String> i) {
+        switch (i.getValue().getClass().getSimpleName()) {
+            case "String":
+            case "Date":
+                str.append(i.getKey() + " = " + "'" + i.getValue() + "'");
+                break;
+            case "int":
+                str.append(i.getKey() + " = " + " " + i.getValue() + " ");
+                break;
+        }
+    }
+
+    public static void Deletar() {
+        StringBuilder Inserir = new StringBuilder();
+        Inserir.append("delete from " + Endereco.class.getSimpleName() + " where cliuid " + " = " + init.getUid());
+
+        System.out.println(Inserir.toString());
+        connectBD.EXEquery(Inserir.toString());
+    }
+
+    public static void Deletar(int uid) {
+        StringBuilder Inserir = new StringBuilder();
+        Inserir.append("delete from " + Endereco.class.getSimpleName() + " where idEndereco " + " = " + uid);
+
+        System.out.println(Inserir.toString());
+        connectBD.EXEquery(Inserir.toString());
     }
 
     public int getIdEndereco() {

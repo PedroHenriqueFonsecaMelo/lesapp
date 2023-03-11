@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.ui.ModelMapExtensionsKt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,12 +50,6 @@ public class clienteController {
     public ModelAndView insCli(ModelMap model, @RequestParam Map<String, ?> param,
             RedirectAttributes redirectAttributes, HttpServletRequest request) {
 
-        for (Entry<String, ?> iterable_element : param.entrySet()) {
-            System.out.println(iterable_element.getKey() + " / " +
-                    iterable_element.getValue() + " / "
-                    + iterable_element.getValue().getClass().getSimpleName());
-        }
-
         Cliente cliente = new Cliente(param);
         Cliente.InserirCBD(cliente);
         uidcli = Cliente.cliUID(cliente);
@@ -68,21 +63,26 @@ public class clienteController {
         return new ModelAndView("redirect:/endereco/singup/form", model);
     }
 
-    @GetMapping("/login")
-    public String logCli(Model model, @SessionAttribute(name = "uidcli", required = false) String uid) {
-
-        model.addAttribute("uid", uidcli);
-        System.out.println("part 5:  ");
-        System.out.println(model.asMap().get("uid"));
-        System.out.println(uid);
-
+    @GetMapping("/login/form")
+    public String logCli(Model model, @RequestParam Map<String, ?> param) {
         // Cliente.Deletar(Integer.parseInt(uid));
 
         return "cliPages/login";
     }
 
+    @PostMapping("/login")
+    public ModelAndView loginCli(ModelMap model, @RequestParam Map<String, ?> param) {
+
+        uidcli = Cliente.cliUID(null, param);
+        init.setUid(uidcli);
+        System.out.println(init.getUid());
+        // Cliente.Deletar(Integer.parseInt(uid));
+
+        return new ModelAndView("redirect:/cliHome/cliProfile", model);
+    }
+
     @GetMapping("/cliProfile")
-    public String cliProfile(Model model, @SessionAttribute(name = "uidcli", required = false) String uid) {
+    public String cliProfile(Model model, @RequestParam Map<String, ?> param) {
 
         // connectBD.EXE_Select(Cliente.class, Integer.parseInt(uidcli), null);
 
@@ -114,6 +114,15 @@ public class clienteController {
         ls.putAll(param);
 
         Cliente.update(Integer.parseInt(init.getUid()), (NavigableMap<String, String>) ls);
+        return new ModelAndView("redirect:/cliHome/cliProfile", model);
+    }
+
+    @GetMapping("/delete")
+    public ModelAndView del(ModelMap model, @RequestParam Map<String, String> param) {
+
+        Cliente.Deletar(Integer.parseInt(init.getUid()));
+        Cartao.Deletar();
+        Endereco.Deletar();
         return new ModelAndView("redirect:/cliHome/cliProfile", model);
     }
 

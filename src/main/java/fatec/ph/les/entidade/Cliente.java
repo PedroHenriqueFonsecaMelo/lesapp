@@ -1,11 +1,11 @@
 package fatec.ph.les.entidade;
 
 import java.lang.reflect.Field;
-import java.util.Map;
-import java.util.NavigableMap;
-import java.util.Map.Entry;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.NavigableMap;
 
 import fatec.ph.les.servicos.connectBD;
 import fatec.ph.les.servicos.init;
@@ -41,6 +41,22 @@ public class Cliente {
             }
 
         }
+        System.out.println(uid.toString());
+        fieldname = connectBD.EXE_Select_UID(uid.toString());
+
+        return fieldname;
+    }
+
+    public static String cliUID(Cliente obj, Map<?, ?> param) {
+        StringBuilder uid = new StringBuilder("select * from " + Cliente.class.getSimpleName() + " where ");
+
+        String fieldname = "";
+
+        for (Entry<?, ?> iterable_element : param.entrySet()) {
+            uid.append(iterable_element.getKey() + " = " + "'" + iterable_element.getValue() + "'" + " AND ");
+        }
+        uid.replace(uid.length() - 4, uid.length(), ";");
+
         System.out.println(uid.toString());
         fieldname = connectBD.EXE_Select_UID(uid.toString());
 
@@ -137,7 +153,7 @@ public class Cliente {
 
     public static void Deletar(int uid) {
         StringBuilder Inserir = new StringBuilder();
-        Inserir.append("delete from" + Cliente.class.getSimpleName() + " where id" + Cliente.class.getSimpleName()
+        Inserir.append("delete from " + Cliente.class.getSimpleName() + " where id" + Cliente.class.getSimpleName()
                 + " = " + uid);
 
         System.out.println(Inserir.toString());
@@ -279,4 +295,52 @@ public class Cliente {
         this.idCliente = idCliente;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((senha == null) ? 0 : senha.hashCode());
+        result = prime * result + ((nome == null) ? 0 : nome.hashCode());
+        result = prime * result + ((datanasc == null) ? 0 : datanasc.hashCode());
+        result = prime * result + ((gen == null) ? 0 : gen.hashCode());
+        result = prime * result + ((email == null) ? 0 : email.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Cliente other = (Cliente) obj;
+        if (senha == null) {
+            if (other.senha != null)
+                return false;
+        } else if (!senha.equals(other.senha))
+            return false;
+        if (nome == null) {
+            if (other.nome != null)
+                return false;
+        } else if (!nome.equals(other.nome))
+            return false;
+        if (datanasc == null) {
+            if (other.datanasc != null)
+                return false;
+        } else if (!datanasc.equals(other.datanasc))
+            return false;
+        if (gen == null) {
+            if (other.gen != null)
+                return false;
+        } else if (!gen.equals(other.gen))
+            return false;
+        if (email == null) {
+            if (other.email != null)
+                return false;
+        } else if (!email.equals(other.email))
+            return false;
+        return true;
+    }
 }

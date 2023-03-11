@@ -1,5 +1,6 @@
 package fatec.ph.les.controller;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +25,7 @@ import fatec.ph.les.servicos.init;
 @Controller
 @RequestMapping("/cart")
 public class cartController {
+    private static final DecimalFormat df = new DecimalFormat("0.00");
     private ArrayList<Integer> lista = new ArrayList<>();
     private Map<Livro, Integer> ls = new HashMap<>();
     private Map<Cartao, Integer> arrayCartao = new HashMap<>();
@@ -37,20 +39,35 @@ public class cartController {
     @GetMapping("/cartAdd/{id}/{quant}")
     public ModelAndView cartAdd(@PathVariable(value = "id") int id, @PathVariable(value = "quant") int quant,
             ModelMap model) {
-        System.out.println("/cartAdd/{id} " + id);
-        System.out.println("init.getUid() " + init.getUid());
+
         uid = init.getUid();
 
-        if (!ls.isEmpty() & ls.keySet().contains(Livro.livroCLIUID(id, 0).get(0))) {
-            ls.put(Livro.livroCLIUID(id, 0).get(0), ls.get(Livro.livroCLIUID(id, 0).get(0)) + quant);
-            total = total
-                    + (ls.get(Livro.livroCLIUID(id, 0).get(0)) * Livro.livroCLIUID(id, 0).get(0).getPrecificacao());
+        if (!ls.isEmpty()) {
+
+            for (Entry<Livro, Integer> iterable_element : ls.entrySet()) {
+                if (iterable_element.getKey().equals(Livro.livroCLIUID(id, 0).get(0))) {
+
+                    ls.replace(iterable_element.getKey(), iterable_element.getValue() + quant);
+
+                    total = total + (quant * Livro.livroCLIUID(id, 0).get(0).getPrecificacao());
+
+                }
+            }
         } else {
+
             ls.put(Livro.livroCLIUID(id, 0).get(0), quant);
-            total = total + Livro.livroCLIUID(id, 0).get(0).getPrecificacao();
+            total = total + (quant * Livro.livroCLIUID(id, 0).get(0).getPrecificacao());
         }
 
         mudanca = true;
+        System.out.println("<===========================================>");
+        for (Entry<Livro, Integer> iterable_element : ls.entrySet()) {
+            System.out.println(iterable_element.getKey() + " / " +
+                    iterable_element.getValue() + " / "
+                    + iterable_element.getValue().getClass().getSimpleName());
+        }
+
+        System.out.println("<===========================================>");
         return new ModelAndView("redirect:/shop", model);
     }
 
@@ -80,7 +97,7 @@ public class cartController {
 
         }
 
-        model.addAttribute("Total", total);
+        model.addAttribute("Total", df.format(total));
         model.addAttribute("livros", ls);
         model.addAttribute("cartoes", arrayCartao);
         model.addAttribute("cartoes2", arrayCartao2);

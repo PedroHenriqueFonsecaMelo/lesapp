@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import fatec.ph.les.entidade.Livro;
@@ -48,5 +49,13 @@ public class IndexController {
         model.addAttribute("livros", top);
         model.addAttribute("livros2", bottom);
         return "shopPages/shop";
+    }
+
+    @GetMapping("/aboutlivro/{id}")
+    public String aboutlivro(@PathVariable(value = "id") int id, Model model, HttpServletRequest request) {
+
+        model.addAttribute("livro", Livro.livroCLIUID(id, 0).get(0));
+
+        return "bookStore/aboutLivro";
     }
 }

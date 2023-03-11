@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class connectBD {
 
@@ -211,8 +212,8 @@ public class connectBD {
                 row = new HashMap<String, Object>();
                 for (int i = 1; i <= columnCount; i++) {
                     row.put(metaData.getColumnName(i), rs.getObject(i));
-                    System.out.println(metaData.getColumnName(i) + "||" + rs.getObject(i) + "||"
-                            + rs.getObject(i).getClass().getSimpleName());
+                    // System.out.println(metaData.getColumnName(i) + "||" + rs.getObject(i) + "||"
+                    // + rs.getObject(i).getClass().getSimpleName());
                 }
                 resultList.add(row);
             }
@@ -238,4 +239,36 @@ public class connectBD {
             System.out.println("erro public static void executeQuery");
         }
     }
+
+    public static Map<String, ArrayList<Object>> EXE(String query) {
+
+        ResultSet rs;
+        Map<String, ArrayList<Object>> row = new HashMap<>();
+
+        try {
+            con = DriverManager.getConnection(url, user, password);
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(query);
+            ResultSetMetaData metaData = rs.getMetaData();
+            Integer columnCount = metaData.getColumnCount();
+
+            while (rs.next()) {
+                for (int i = 1; i <= columnCount; i++) {
+                    row.computeIfAbsent(metaData.getColumnName(i), k -> new ArrayList<>()).add(rs.getObject(i));
+
+                }
+            }
+
+            con.close();
+            rs.close();
+            return row;
+
+        } catch (SQLException e) {
+            System.out.println("Erro public static ResultSet EXE_Select(String query)");
+        }
+
+        return null;
+
+    }
+
 }

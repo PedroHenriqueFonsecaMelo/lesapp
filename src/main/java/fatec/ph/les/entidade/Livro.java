@@ -25,7 +25,7 @@ public class Livro {
         ArrayList<Livro> resulClientes = new ArrayList<>();
 
         StringBuilder str = new StringBuilder();
-        System.out.println(" public static ArrayList<Cartao> livroCLIUID " + uid);
+        System.out.println("public static ArrayList<Cartao> livroCLIUID " + uid);
 
         if (cart != 0 & uid == 0) {
             str.append("select * from livro where categorias = " + uid + ";");
@@ -35,7 +35,7 @@ public class Livro {
             str.append("select * from livro");
         }
 
-        System.out.println(str.toString());
+        // System.out.println(str.toString());
 
         List<Map<String, Object>> rs = connectBD.EXE_Select(str.toString());
 
@@ -67,10 +67,10 @@ public class Livro {
                 }
             }
             resulClientes.add(cli);
-            System.out.println(cli.toString2());
+            // System.out.println(cli.toString2());
         }
 
-        System.out.println(resulClientes.size());
+        // System.out.println(resulClientes.size());
         return resulClientes;
 
     }
@@ -323,6 +323,91 @@ public class Livro {
                 + editora + ", edicao=" + edicao + ", isbn=" + isbn + ", npaginas=" + npaginas + ", sinopse=" + sinopse
                 + ", altura=" + altura + ", largura=" + largura + ", categorias=" + categorias + ", peso=" + peso
                 + ", profundidade=" + profundidade + ", precificacao=" + precificacao + ", barras=" + barras + "]";
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + idlivro;
+        result = prime * result + ((autor == null) ? 0 : autor.hashCode());
+        result = prime * result + ano;
+        result = prime * result + ((titulo == null) ? 0 : titulo.hashCode());
+        result = prime * result + ((editora == null) ? 0 : editora.hashCode());
+        result = prime * result + edicao;
+        result = prime * result + isbn;
+        result = prime * result + npaginas;
+        result = prime * result + ((sinopse == null) ? 0 : sinopse.hashCode());
+        result = prime * result + Float.floatToIntBits(altura);
+        result = prime * result + Float.floatToIntBits(largura);
+        result = prime * result + ((categorias == null) ? 0 : categorias.hashCode());
+        result = prime * result + Float.floatToIntBits(peso);
+        result = prime * result + Float.floatToIntBits(profundidade);
+        result = prime * result + Float.floatToIntBits(precificacao);
+        result = prime * result + ((barras == null) ? 0 : barras.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Livro other = (Livro) obj;
+        if (idlivro != other.idlivro)
+            return false;
+        if (autor == null) {
+            if (other.autor != null)
+                return false;
+        } else if (!autor.equals(other.autor))
+            return false;
+        if (ano != other.ano)
+            return false;
+        if (titulo == null) {
+            if (other.titulo != null)
+                return false;
+        } else if (!titulo.equals(other.titulo))
+            return false;
+        if (editora == null) {
+            if (other.editora != null)
+                return false;
+        } else if (!editora.equals(other.editora))
+            return false;
+        if (edicao != other.edicao)
+            return false;
+        if (isbn != other.isbn)
+            return false;
+        if (npaginas != other.npaginas)
+            return false;
+        if (sinopse == null) {
+            if (other.sinopse != null)
+                return false;
+        } else if (!sinopse.equals(other.sinopse))
+            return false;
+        if (Float.floatToIntBits(altura) != Float.floatToIntBits(other.altura))
+            return false;
+        if (Float.floatToIntBits(largura) != Float.floatToIntBits(other.largura))
+            return false;
+        if (categorias == null) {
+            if (other.categorias != null)
+                return false;
+        } else if (!categorias.equals(other.categorias))
+            return false;
+        if (Float.floatToIntBits(peso) != Float.floatToIntBits(other.peso))
+            return false;
+        if (Float.floatToIntBits(profundidade) != Float.floatToIntBits(other.profundidade))
+            return false;
+        if (Float.floatToIntBits(precificacao) != Float.floatToIntBits(other.precificacao))
+            return false;
+        if (barras == null) {
+            if (other.barras != null)
+                return false;
+        } else if (!barras.equals(other.barras))
+            return false;
+        return true;
     }
 
 }

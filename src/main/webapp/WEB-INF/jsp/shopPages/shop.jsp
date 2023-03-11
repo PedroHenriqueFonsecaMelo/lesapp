@@ -21,7 +21,7 @@
             <ul>
                 <li><a href="#Home">Home</a></li>
                 <li><a href="#About">About</a></li>
-                <li><a href="/shop" target="_top">Shopp</a></li>
+                <li><a href="/shop" target="_top">Shop</a></li>
             </ul>
             <div class="social_icon">
                 <i class="fa-solid fa-magnifying-glass"></i>
@@ -45,7 +45,7 @@
                             <p class="writer">${livro.getAutor()}</p>
                             <div class="categories">${livro.getCategorias()}</div>
                             <p class="book_price">${livro.getPrecificacao()}</p>
-                            <a href="cart/cartAdd/${livro.getIdlivro()}/1" class="f_btn">Learn More</a>
+                            <a href="aboutlivro/${livro.getIdlivro()}" class="f_btn">Learn More</a>
                         </div>               
                     </div>
                 </c:forEach>
@@ -71,7 +71,7 @@
                             <i class="fa-solid fa-star"></i>
                             <i class="fa-solid fa-star-half-stroke"></i>
                         </div>
-                        <a href="cart/cartAdd/${livro.getIdlivro()}/1" class="arrivals_btn">Learn More</a>
+                        <a href="aboutlivro/${livro.getIdlivro()}" class="arrivals_btn">Learn More</a>
                     </div>
                 </div>
             </c:forEach>
