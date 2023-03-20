@@ -410,4 +410,50 @@ public class Cartao {
                 + ", cv=" + cv + ", preferencial=" + preferencial + ", idCartao=" + idCartao + "]";
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + idCartao;
+        result = prime * result + ncartao;
+        result = prime * result + ((bandeira == null) ? 0 : bandeira.hashCode());
+        result = prime * result + ((nomecli == null) ? 0 : nomecli.hashCode());
+        result = prime * result + cli_id;
+        result = prime * result + cv;
+        result = prime * result + preferencial;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Cartao other = (Cartao) obj;
+        if (idCartao != other.idCartao)
+            return false;
+        if (ncartao != other.ncartao)
+            return false;
+        if (bandeira == null) {
+            if (other.bandeira != null)
+                return false;
+        } else if (!bandeira.equals(other.bandeira))
+            return false;
+        if (nomecli == null) {
+            if (other.nomecli != null)
+                return false;
+        } else if (!nomecli.equals(other.nomecli))
+            return false;
+        if (cli_id != other.cli_id)
+            return false;
+        if (cv != other.cv)
+            return false;
+        if (preferencial != other.preferencial)
+            return false;
+        return true;
+    }
+
 }

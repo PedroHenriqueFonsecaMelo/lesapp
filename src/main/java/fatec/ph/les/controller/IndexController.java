@@ -11,7 +11,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
+import fatec.ph.les.entidade.Cartao;
+import fatec.ph.les.entidade.Categoria;
+import fatec.ph.les.entidade.Cliente;
+import fatec.ph.les.entidade.Endereco;
 import fatec.ph.les.entidade.Livro;
+import fatec.ph.les.servicos.connectBD;
 
 @Controller
 public class IndexController {
@@ -25,8 +30,28 @@ public class IndexController {
             userid = (String) flashMap.get("flash_uid");
         } else
             userid = " ";
-
+        init();
         return "index";
+    }
+
+    private void init() {
+        connectBD.CreateTableX(Cliente.class);
+        connectBD.CreateTableX(Endereco.class);
+        connectBD.CreateTableX(Cartao.class);
+        connectBD.CreateTableX(Livro.class);
+        connectBD.CreateTableX(Categoria.class);
+
+        String st = "insert into LIVRO  ( autor,  ano,  titulo,  editora,  edicao,  isbn,  npaginas,  sinopse,  altura,  largura,  categorias,  peso,  profundidade,  precificacao,  barras ) VALUES ('ph',2023,'jose','WB',1,123,200,' joao e maria', 12.20 , 2.20, 'terror', 23 , 2, 22.2 , 1101 );";
+        String sy = "insert into Cliente (senha , nome , datanasc , gen , email) VALUES  ('122' , '12' , '2023-03-06' , 'M' , '3@2' ); ";
+        String su = "insert into Endereco (cliuid , pais , cep , estado , cidade , rua , bairro , numero , complemento , tiporesidencia) VALUES  ( 1  , 'BR' , '08780690' , 'SP' , 'Mogi das Cruzes' , 'Rua Professor Manoel Acelino de Mello' , 'Jardim Armênia' ,  21  , '21' , 'CASA' );";
+        String si = "insert into Cartao (ncartao , bandeira , nomecli , cli_id , cv , preferencial) VALUES  ( 21  , 'Visa' , '21' ,  1  ,  22  ,  1  ); ";
+        String so = "insert into Cartao (ncartao , bandeira , nomecli , cli_id , cv , preferencial) VALUES  ( 212  , 'Visa' , '21' ,  1  ,  22  ,  0  ); ";
+
+        connectBD.EXEquery(st);
+        connectBD.EXEquery(sy);
+        connectBD.EXEquery(su);
+        connectBD.EXEquery(si);
+        connectBD.EXEquery(so);
     }
 
     @GetMapping("/shop")

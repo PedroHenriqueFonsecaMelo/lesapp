@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 public class connectBD {
 
@@ -240,10 +239,72 @@ public class connectBD {
         }
     }
 
-    public static Map<String, ArrayList<Object>> EXE(String query) {
+    public static ArrayList<ArrayList<String>> mrows(String query) {
 
         ResultSet rs;
-        Map<String, ArrayList<Object>> row = new HashMap<>();
+        ArrayList<ArrayList<String>> rows = new ArrayList<>();
+
+        try {
+            con = DriverManager.getConnection(url, user, password);
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(query);
+            ResultSetMetaData metaData = rs.getMetaData();
+            Integer columnCount = metaData.getColumnCount();
+
+            while (rs.next()) {
+                ArrayList<String> aList = new ArrayList<>();
+                for (int i = 1; i <= columnCount; i++) {
+                    aList.add(rs.getObject(i).toString());
+                }
+                rows.add(aList);
+            }
+
+            con.close();
+            rs.close();
+            return rows;
+
+        } catch (SQLException e) {
+            System.out.println("Erro public static ResultSet EXE_Select(String query)");
+        }
+
+        return null;
+
+    }
+
+    public static ArrayList<ArrayList<String>> mcolum(String query) {
+
+        ResultSet rs;
+        ArrayList<ArrayList<String>> rows = new ArrayList<>();
+
+        try {
+            con = DriverManager.getConnection(url, user, password);
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(query);
+            ResultSetMetaData metaData = rs.getMetaData();
+            Integer columnCount = metaData.getColumnCount();
+            ArrayList<String> aList = new ArrayList<>();
+
+            for (int i = 1; i <= columnCount; i++) {
+
+                aList.add(metaData.getColumnName(i).toString());
+            }
+
+            rows.add(aList);
+            con.close();
+            rs.close();
+            return rows;
+
+        } catch (SQLException e) {
+            System.out.println("Erro public static ResultSet EXE_Select(String query)");
+        }
+
+        return null;
+
+    }
+
+    public static Map<String, ArrayList<String>> EXE_Map(String query) {
+        ResultSet rs;
+        Map<String, ArrayList<String>> row = new HashMap<>();
 
         try {
             con = DriverManager.getConnection(url, user, password);
@@ -254,8 +315,8 @@ public class connectBD {
 
             while (rs.next()) {
                 for (int i = 1; i <= columnCount; i++) {
-                    row.computeIfAbsent(metaData.getColumnName(i), k -> new ArrayList<>()).add(rs.getObject(i));
-
+                    row.computeIfAbsent(metaData.getColumnName(i), k -> new ArrayList<>())
+                            .add(rs.getObject(i).toString());
                 }
             }
 
@@ -264,11 +325,10 @@ public class connectBD {
             return row;
 
         } catch (SQLException e) {
-            System.out.println("Erro public static ResultSet EXE_Select(String query)");
+            System.out.println("Erro Map<String, ArrayList<Object>> EXE_Map(String query)");
         }
 
         return null;
-
     }
 
 }

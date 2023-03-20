@@ -24,6 +24,7 @@
                 <li><a href="#Home">Home</a></li>
                 <li><a href="#About">About</a></li>
                 <li><a href="/shop" target="_top">Shopp</a></li>
+                <li><a href="/cliHome/login/form" target="_top">Login</a></li>
             </ul>
 
             <div class="social_icon">

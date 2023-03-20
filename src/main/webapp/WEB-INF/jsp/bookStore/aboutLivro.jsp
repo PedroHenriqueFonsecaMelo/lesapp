@@ -68,13 +68,13 @@
         </div>
         <div class="product-price">
           <span>${livro.getPrecificacao()}</span>
-          <a href="cart/cartAdd/${livro.getIdlivro()}" id="livrolink" class="cart-btn">Add to cart</a>
+          <a href="/cart/cartAdd/${livro.getIdlivro()}/1" id="livrolink" class="cart-btn">Add to cart</a>
         </div>
       </div>
     </main>
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" charset="utf-8"></script>
-    <script src="script.js" charset="utf-8"></script>
+   
   </body>
 </html>

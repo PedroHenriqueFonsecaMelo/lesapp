@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Store Website</title>
-    <link rel="stylesheet" href="/resources/livrocss/style.css">
+    <link rel="stylesheet" type="text/css" href="/resources/livrocss/style.css">
     <link rel="stylesheet" type="text/css" href="/resources/clicss/cliSpace/cliSpace.css">
 
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -43,6 +43,12 @@
 				<div class="profile-tab-nav border-right">
                     <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                         <form action="/cart/order" method="post">
+                            <select class="form-select shadow-none" id="endereco" name="endereco">
+                                <option selected value ="${enderecoPrincipal.getIdEndereco()}">${enderecoPrincipal.getBairro()}  ${enderecoPrincipal.getNumero()}</option>
+                                 <c:forEach var="endereco" items="${outrosEnderecos}">
+                                    <option value="${endereco.getIdEndereco()}">${endereco.getBairro()}  ${endereco.getNumero()}</option>
+                                </c:forEach>
+                            </select>
 					        <c:forEach var="cartao" items="${cartoes}">
 									<div class="col-md-12">
 										<div class="form-group">
@@ -64,15 +70,13 @@
 									</div>
                                     <div class="col-md-12">
 										<div class="form-group">
-											<label>Quantas Vezes</label>
-											<div class="wrapper" id="${cartao.getKey().getNcartao()}">
-                                                <span class="minus" id="minus${cartao.getKey().getNcartao()}">-</span>
-                                                <span class="num" id="num${cartao.getKey().getNcartao()}">01</span>
-                                                <span class="plus" id="plus${cartao.getKey().getNcartao()}">+</span>
+											<label>Valor no cartao</label>
+											<div class="wrapper">
+                                                <input type="number" step="0.01" value="${TotalPorCartao}" min="10" id="in${cartao.getKey().getNcartao()}" name="in${cartao.getKey().getNcartao()}">
                                             </div>
 										</div>
 									</div>
-                                    <input type="hidden" value="" id="in${cartao.getKey().getNcartao()}">
+                                    
 					        </c:forEach>
                             <button class="dropbtn col-12" type="submit" id="save-btn">Finalizar compra</button>
                         </form>

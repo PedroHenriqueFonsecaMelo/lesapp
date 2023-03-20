@@ -140,8 +140,80 @@ VALUES ('ph',2023,'jose',WB',1,123,200,' joao e maria', 12.20 , 2.20, 'terror', 
 
 
 
-insert into LIVRO  ( autor,  ano,  titulo,  editora,  edicao,  isbn,  npaginas,  sinopse,  altura,  largura,  categorias,  peso,  profundidade,  precificacao,  barras )
-VALUES ('ph',2023,'jose','WB',1,123,200,' joao e maria', 12.20 , 2.20, 'terror', 23 , 2, 22.2 ,1101 );
+insert into LIVRO  ( autor,  ano,  titulo,  editora,  edicao,  isbn,  npaginas,  sinopse,  altura,  largura,  categorias,  peso,  profundidade,  precificacao,  barras ) VALUES ('ph',2023,'jose','WB',1,123,200,' joao e maria', 12.20 , 2.20, 'terror', 23 , 2, 22.2 , 1101 );
 insert into Cliente (senha , nome , datanasc , gen , email) VALUES  ('122' , '12' , '2023-03-06' , 'M' , '3@2' ); 
 insert into Endereco (cliuid , pais , cep , estado , cidade , rua , bairro , numero , complemento , tiporesidencia) VALUES  ( 1  , 'BR' , '08780690' , 'SP' , 'Mogi das Cruzes' , 'Rua Professor Manoel Acelino de Mello' , 'Jardim Armênia' ,  21  , '21' , 'CASA' ); 
 insert into Cartao (ncartao , bandeira , nomecli , cli_id , cv , preferencial) VALUES  ( 21  , 'Visa' , '21' ,  1  ,  22  ,  1  ); 
+
+
+
+$(document).ready(function() {
+
+  $('.color-choose input').on('click', function() {
+      var headphonesColor = $(this).attr('data-image');
+
+      $('.active').removeClass('active');
+      $('.left-column img[data-image = ' + headphonesColor + ']').addClass('active');
+      $(this).addClass('active');
+  });
+
+});
+
+
+
+
+
+
+
+Map<String, ArrayList<String>> mapa = new HashMap<>();
+        System.out.println(connectBD.EXE_Map("SELECT ORDEM_ID, LIVROID, QUANT FROM ORDDETAILS where CLI_ID = " +
+                Integer.parseInt(init.getUid())
+                + " AND ORDEM_ID = " + Integer.parseInt(ncard)));
+
+        mapa.putAll(connectBD.EXE_Map("SELECT ORDEM_ID, LIVROID, QUANT FROM ORDDETAILS where CLI_ID = " +
+                Integer.parseInt(init.getUid())
+                + " AND ORDEM_ID = " + Integer.parseInt(ncard)));
+
+        mapa.putAll(
+                connectBD.EXE_Map("SELECT PRECIFICACAO FROM LIVRO where idlivro = " + mapa.get("LIVROID").get(0)));
+        mapa.putAll(
+                connectBD.EXE_Map("SELECT TOTAL FROM ORDEM where ORDEM_ID = " + mapa.get("ORDEM_ID").get(0)));
+        mapa.putAll(
+                connectBD.EXE_Map(
+                        "SELECT VALOR, PAY_ID, CARTAOID FROM ORDPAY where ORDEM_ID = " + mapa.get("ORDEM_ID").get(0)));
+
+        for (Entry<String, ArrayList<String>> endereco : mapa.entrySet()) {
+            System.out.println(endereco.getKey() + " !! " + endereco.getValue());
+        }
+
+        String updateDetails = "UPDATE ORDDETAILS set QUANT = "
+                + (Integer.parseInt(mapa.get("QUANT").get(0)) - 1)
+                + " where ORDEM_ID = " + mapa.get("ORDEM_ID").get(0);
+
+        String updateORDEM = "UPDATE ORDEM set TOTAL = "
+                + ((Float.parseFloat(mapa.get("TOTAL").get(0))
+                        - Float.parseFloat(mapa.get("PRECIFICACAO").get(0))))
+                + " where ORDEM_ID = " + mapa.get("ORDEM_ID").get(0);
+
+
+
+//////////////////////
+ /* 0 */
+        collum.addAll(connectBD.mrows("SELECT ORDEM_ID, LIVROID, QUANT FROM ORDDETAILS where CLI_ID = " +
+                Integer.parseInt(init.getUid())
+                + " AND ORDEM_ID = " + Integer.parseInt(ncard)));
+        /* 1 */
+        collum.addAll(connectBD.mrows("SELECT ORDEM_ID, LIVROID FROM ORDDETAILS where CLI_ID = "
+                + Integer.parseInt(init.getUid())
+                + " AND ORDEM_ID = " + Integer.parseInt(ncard)));
+        /* 2 */
+        collum.addAll(connectBD.mrows("SELECT PRECIFICACAO FROM LIVRO where idlivro = " + collum.get(1).get(1)));
+        /* 3 */
+        collum.addAll(connectBD.mrows("SELECT TOTAL FROM ORDEM where ORDEM_ID = " + collum.get(1).get(0)));
+        /* 4 */
+        collum.addAll(
+                connectBD.mrows("SELECT VALOR, PAY_ID, CARTAOID FROM ORDPAY where ORDEM_ID = " + collum.get(1).get(0)));
+
+
+
+CUPON - ADD BUTTON

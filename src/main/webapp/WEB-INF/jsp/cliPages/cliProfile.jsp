@@ -64,6 +64,14 @@
 							<i class="fa fa-credit-card text-center mr-1"></i> 
 							Cartoes
 						</a>
+						<a class="nav-link" id="ordem-tab" data-toggle="pill" href="#ordem" role="tab" aria-controls="ordem" aria-selected="false">
+							<i class="fa fa-credit-card text-center mr-1"></i> 
+							Ordem
+						</a>
+						<a class="nav-link" id="ordemDetails-tab" data-toggle="pill" href="#ordemDetails" role="tab" aria-controls="ordemDetails" aria-selected="false">
+							<i class="fa fa-credit-card text-center mr-1"></i> 
+							Ordem Details
+						</a>
 					</div>
 				</div>
 				<div class="tab-content p-4 p-md-5" id="v-pills-tabContent">
@@ -261,6 +269,66 @@
 								</div>
 							</form>
 						</c:forEach>
+					</div>
+					<div class="tab-pane fade" id="ordem" role="tabpanel" aria-labelledby="ordem-tab">
+						<h3 class="mb-4">Pedidos</h3>
+						<div class="row">
+						<div class="col-md-12">
+							<table style="border-spacing: 10px; border: none !important;">
+							<tbody>
+								<tr>
+									<c:forEach var="cliente" items="${ORDEM.get(0)}">
+										<td>
+											${cliente}
+										</td>
+									</c:forEach>
+								</tr>
+								<c:forEach var="cliente" items="${ORDEM}"  begin="1">
+									<tr>
+									<c:forEach var="lista" items="${cliente}">
+										<td>
+											${lista}
+										</td>
+									</c:forEach>
+										<td>
+										<a href="/cliHome/cliDetails/${cliente.get(0)}" id="cliDetails${cliente.get(0)}" class="cart-btn">Add to cart</a>
+										</td>
+									</tr>
+								</c:forEach>
+							</tbody>
+							</table>
+						</div>
+						</div>
+					</div>
+					<div class="tab-pane fade" id="ordemDetails" role="tabpanel" aria-labelledby="ordemDetails-tab">
+						<h3 class="mb-4">Pedido Detalhes Troca</h3>
+						<div class="row">
+						<div class="col-md-12">
+							<table style="border-spacing: 10px; border: none !important;">
+							<tbody>
+								<tr>
+									<c:forEach var="cliente" items="${details.get(0)}">
+										<td>
+											${cliente}
+										</td>
+									</c:forEach>
+								</tr>
+									<c:forEach var="cliente" items="${details}"  begin="1">
+										<tr>
+										<c:forEach var="lista" items="${cliente}">
+											<td>
+												${lista}
+											</td>
+										</c:forEach>
+											<td>
+											<a href="/cliHome/reqTroca/${cliente.get(0)}/${cliente.get(1)}" id="livrolink" class="cart-btn">Trocar</a>
+											</td>
+										</tr>
+									</c:forEach>
+							</tbody>
+							</table>
+						</div>
+						</div>
 					</div>
 				</div>
 			</div>

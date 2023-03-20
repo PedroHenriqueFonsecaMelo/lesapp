@@ -4,9 +4,9 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -20,11 +20,13 @@ import org.springframework.web.servlet.ModelAndView;
 import fatec.ph.les.entidade.Cartao;
 import fatec.ph.les.entidade.Endereco;
 import fatec.ph.les.entidade.Livro;
+import fatec.ph.les.servicos.connectBD;
 import fatec.ph.les.servicos.init;
 
 @Controller
 @RequestMapping("/cart")
 public class cartController {
+
     private static final DecimalFormat df = new DecimalFormat("0.00");
     private ArrayList<Integer> lista = new ArrayList<>();
     private Map<Livro, Integer> ls = new HashMap<>();
@@ -35,6 +37,9 @@ public class cartController {
     private boolean mudanca = false;
     private String uid;
     private float total = 0;
+
+    ArrayList<Endereco> enderecos2 = new ArrayList<>();
+    ArrayList<Endereco> enderecos = new ArrayList<>();
 
     @GetMapping("/cartAdd/{id}/{quant}")
     public ModelAndView cartAdd(@PathVariable(value = "id") int id, @PathVariable(value = "quant") int quant,
@@ -60,14 +65,7 @@ public class cartController {
         }
 
         mudanca = true;
-        System.out.println("<===========================================>");
-        for (Entry<Livro, Integer> iterable_element : ls.entrySet()) {
-            System.out.println(iterable_element.getKey() + " / " +
-                    iterable_element.getValue() + " / "
-                    + iterable_element.getValue().getClass().getSimpleName());
-        }
 
-        System.out.println("<===========================================>");
         return new ModelAndView("redirect:/shop", model);
     }
 
@@ -91,18 +89,33 @@ public class cartController {
 
             } else {
                 map.clear();
+
             }
 
             mudanca = false;
 
         }
 
+        enderecos.addAll(Endereco.endereco(Integer.parseInt(init.getUid()), null));
+        for (Endereco cartao : enderecos) {
+            if (!cartao.equals(enderecos.get(0))) {
+                enderecos2.add(cartao);
+            }
+        }
+
+        modelagem(model);
+
+        return "cartPages/cartTotal";
+    }
+
+    private void modelagem(ModelMap model) {
+        model.addAttribute("enderecoPrincipal", enderecos.get(0));
+        model.addAttribute("outrosEnderecos", enderecos2);
         model.addAttribute("Total", df.format(total));
+        model.addAttribute("TotalPorCartao", total / arrayCartao.size());
         model.addAttribute("livros", ls);
         model.addAttribute("cartoes", arrayCartao);
         model.addAttribute("cartoes2", arrayCartao2);
-
-        return "cartPages/cartTotal";
     }
 
     @GetMapping("/addCartaoCart/{id}")
@@ -110,34 +123,37 @@ public class cartController {
 
         map.clear();
         map.put("ncartao", ncard);
+        Cartao aux = new Cartao();
 
         for (Cartao cartao : arrayCartao2) {
             if (cartao.getNcartao() == Integer.parseInt(ncard)) {
                 arrayCartao.put(cartao, 0);
-                arrayCartao2.remove(cartao);
+                aux = cartao;
             }
         }
 
-        model.addAttribute("Total", total);
-        model.addAttribute("livros", ls);
-        model.addAttribute("cartoes", arrayCartao);
-        model.addAttribute("cartoes2", arrayCartao2);
+        arrayCartao2.remove(aux);
+
+        modelagem(model);
+
         return "cartPages/cartTotal";
     }
 
     @GetMapping("/removeCartaoCart/{id}")
     public String removeCartaoCart(@PathVariable(value = "id") String ncard, ModelMap model) {
         map.clear();
-        map.put("ncartao", ncard);
 
-        System.out.println(ncard);
-        System.out.println(arrayCartao.get(Cartao.cartao(0, map).get(0)));
-        arrayCartao.remove(Cartao.cartao(0, map).get(0));
+        Cartao aux = new Cartao();
 
-        model.addAttribute("Total", total);
-        model.addAttribute("livros", ls);
-        model.addAttribute("cartoes", arrayCartao);
-        model.addAttribute("cartoes2", arrayCartao2);
+        for (Entry<Cartao, Integer> cartao : arrayCartao.entrySet()) {
+            if (cartao.getKey().getNcartao() == Integer.valueOf(ncard)) {
+                aux = cartao.getKey();
+            }
+        }
+        arrayCartao2.add(aux);
+        arrayCartao.remove(aux);
+
+        modelagem(model);
         return "cartPages/cartTotal";
     }
 
@@ -150,22 +166,77 @@ public class cartController {
             }
         }
 
-        model.addAttribute("Total", total);
-        model.addAttribute("livros", ls);
-        model.addAttribute("cartoes", arrayCartao);
-        model.addAttribute("cartoes2", arrayCartao2);
+        modelagem(model);
+
         return "cartPages/cartTotal";
     }
 
     @PostMapping("/order")
-    public String order(@RequestParam Map<String, ?> param) {
-        // String query = "create table ORDER ()";
-        for (Entry<String, ?> iterable_element : param.entrySet()) {
-            System.out.println(iterable_element.getKey() + " / " +
-                    iterable_element.getValue() + " / "
-                    + iterable_element.getValue().getClass().getSimpleName());
+    public ModelAndView order(@RequestParam Map<String, ?> param, ModelMap model) {
+        float totalCart = 0;
+
+        for (Entry<String, ?> cartao : param.entrySet()) {
+            if (cartao.getKey().contains("in")) {
+                totalCart = totalCart + Float.parseFloat(cartao.getValue().toString());
+            }
+            if (cartao.getKey().contains("in") && totalCart == total) {
+                execCart(param);
+            }
         }
-        return null;
+
+        clear();
+
+        return new ModelAndView("redirect:/shop", model);
+    }
+
+    private void execCart(Map<String, ?> param) {
+        String query = "create table ordem (ordem_id int primary key AUTO_INCREMENT, cli_id int, total NUMERIC(20,2), status VARCHAR(100), endereco VARCHAR(100));";
+        connectBD.EXEquery(query);
+
+        String query2 = "create table ordDetails (details_id int primary key AUTO_INCREMENT, cli_id int, ordem_id int, livroid int, quant int);";
+        connectBD.EXEquery(query2);
+
+        String query3 = "create table ordPay (pay_id int primary key AUTO_INCREMENT, cli_id int, ordem_id int, cartaoid int, valor NUMERIC(20, 2));";
+        connectBD.EXEquery(query3);
+
+        String insertOrder = "insert into ordem ( cli_id, total, status, endereco) values (" + init.getUid()
+                + ", " + total + ", 'EM PROCESSAMENTO' , '" + param.get("endereco") + "');";
+        connectBD.EXEquery(insertOrder);
+
+        String orderID = connectBD.EXE_Select_UID("select * from ordem where cli_id = " + init.getUid()
+                + " AND total = " + total + " AND endereco = " + param.get("endereco"));
+        System.out.println(orderID);
+
+        for (Entry<Livro, Integer> iterable_element : ls.entrySet()) {
+            String insertDetails = "insert into ordDetails ( cli_id, ordem_id, livroid, quant) values ("
+                    + Integer.parseInt(init.getUid()) + ", " + orderID + ", "
+                    + iterable_element.getKey().getIdlivro() + ", " + iterable_element.getValue()
+                    + ");";
+            System.out.println(insertDetails);
+            connectBD.EXEquery(insertDetails);
+
+        }
+
+        for (Entry<Cartao, Integer> cartao : arrayCartao.entrySet()) {
+            String insertPay = "insert into ordPay (cli_id , ordem_id, cartaoid, valor) values ("
+                    + Integer.parseInt(init.getUid()) + ", " + Integer.parseInt(orderID) + ", " +
+                    cartao.getKey().getNcartao()
+                    + ", " + param.get("in" + cartao.getKey().getNcartao()) + ");";
+            System.out.println(insertPay);
+            connectBD.EXEquery(insertPay);
+        }
+    }
+
+    private void clear() {
+        ls.clear();
+        arrayCartao.clear();
+        arrayCartao2.clear();
+        total = 0;
+        enderecos2.clear();
+        enderecos.clear();
+        arrayEndereco.clear();
+        lista.clear();
+        map.clear();
     }
 
 }
