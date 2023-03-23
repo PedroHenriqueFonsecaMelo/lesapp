@@ -63,7 +63,7 @@ public class Cartao {
             }
 
             resulClientes.add(cli);
-            System.out.println(cli.toString2() + "\n");
+            // System.out.println(cli.toString2() + "\n");
         }
 
         System.out.println(resulClientes.size());
@@ -153,7 +153,7 @@ public class Cartao {
 
             }
             resulClientes.add(cli);
-            System.out.println(cli.toString2());
+            // System.out.println(cli.toString2());
         }
         System.out.println(resulClientes.size());
         return resulClientes;
@@ -219,7 +219,7 @@ public class Cartao {
 
             }
             resulClientes.add(cli);
-            System.out.println(cli.toString2());
+            // System.out.println(cli.toString2());
         }
         System.out.println(resulClientes.size());
         return resulClientes;

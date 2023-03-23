@@ -83,7 +83,7 @@ public class Livro {
         System.out.println(" public static ArrayList<cartao> livro " + uid);
 
         if (uid != 0 & args == null) {
-            str.append("select * from cartao where idlivro = " + uid + ";");
+            str.append("select * from livro where idlivro = " + uid + ";");
         } else if (uid == 0 & args == null) {
             str.append("select * from livro");
         } else if (args != null) {
@@ -130,11 +130,11 @@ public class Livro {
                     e.printStackTrace();
                 }
                 resulClientes.add(cli);
-                System.out.println(cli.toString2());
+                // System.out.println(cli.toString2());
             }
 
             resulClientes.add(cli);
-            System.out.println(cli.toString2());
+            // System.out.println(cli.toString2());
         }
 
         System.out.println(resulClientes.size());

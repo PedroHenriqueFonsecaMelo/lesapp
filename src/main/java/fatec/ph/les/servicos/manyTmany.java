@@ -1,8 +1,6 @@
 package fatec.ph.les.servicos;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class manyTmany {
     String str;
@@ -19,7 +17,7 @@ public class manyTmany {
                 + " JOIN " + L.getSimpleName()
                 + " on " + paramL + " = " + " iL ");
 
-        List<Map<String, Object>> rs = connectBD.EXE_Select(str2.toString());
+        // List<Map<String, Object>> rs = connectBD.EXE_Select(str2.toString());
 
         return null;
     }

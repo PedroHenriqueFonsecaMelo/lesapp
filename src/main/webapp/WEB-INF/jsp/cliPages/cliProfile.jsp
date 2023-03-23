@@ -218,6 +218,9 @@
 							</div>
 						</form>
 						</c:forEach>
+						<div>
+							<a class="btn btn-light" href="/cliHome/add/endereco/form" target="_top">Adicionar</a>
+						</div>
 					</div>
 					<div class="tab-pane fade" id="cartoes" role="tabpanel" aria-labelledby="cartoes-tab">
 						<h3 class="mb-4">Cartoes Settings</h3>
@@ -269,16 +272,19 @@
 								</div>
 							</form>
 						</c:forEach>
+						<div>
+							<a class="btn btn-light" href="/cliHome/add/cartao/form" target="_top">Adicionar</a>
+						</div>
 					</div>
 					<div class="tab-pane fade" id="ordem" role="tabpanel" aria-labelledby="ordem-tab">
 						<h3 class="mb-4">Pedidos</h3>
 						<div class="row">
 						<div class="col-md-12">
-							<table style="border-spacing: 10px; border: none !important;">
+							<table class="tg">
 							<tbody>
 								<tr>
 									<c:forEach var="cliente" items="${ORDEM.get(0)}">
-										<td>
+										<td class="tg-0lax">
 											${cliente}
 										</td>
 									</c:forEach>
@@ -286,13 +292,17 @@
 								<c:forEach var="cliente" items="${ORDEM}"  begin="1">
 									<tr>
 									<c:forEach var="lista" items="${cliente}">
-										<td>
+										<td class="tg-0lax">
 											${lista}
 										</td>
+										<c:choose>
+											<c:when test = "${lista == 'EM PROCESSAMENTO'}">
+												<td class="tg-0lax">
+													<a href="/cliHome/cliDetails/${cliente.get(0)}" id="cliDetails${cliente.get(0)}" class="cart-btn">Add to cart</a>
+												</td>
+											</c:when>
+										</c:choose>
 									</c:forEach>
-										<td>
-										<a href="/cliHome/cliDetails/${cliente.get(0)}" id="cliDetails${cliente.get(0)}" class="cart-btn">Add to cart</a>
-										</td>
 									</tr>
 								</c:forEach>
 							</tbody>

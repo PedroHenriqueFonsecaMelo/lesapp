@@ -23,7 +23,6 @@ import fatec.ph.les.servicos.init;
 @RequestMapping("/endereco")
 public class enderecoController {
     private static String aux1;
-    private String aux2;
 
     @GetMapping("/singup/form")
     public String enderecoSingupForm(HttpServletRequest request, ModelMap map,
@@ -45,8 +44,6 @@ public class enderecoController {
         redirectAttributes.addFlashAttribute("flash_uid", emailId2);
 
         aux1 = emailId2;
-        aux2 = emailId2;
-
         return "endPages/singup";
     }
 

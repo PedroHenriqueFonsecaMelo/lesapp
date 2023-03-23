@@ -28,18 +28,21 @@ import fatec.ph.les.servicos.init;
 public class cartController {
 
     private static final DecimalFormat df = new DecimalFormat("0.00");
-    private ArrayList<Integer> lista = new ArrayList<>();
+
     private Map<Livro, Integer> ls = new HashMap<>();
     private Map<Cartao, Integer> arrayCartao = new HashMap<>();
-    private ArrayList<Cartao> arrayCartao2 = new ArrayList<>();
     private NavigableMap<String, String> map = new TreeMap<>();
-    private ArrayList<Endereco> arrayEndereco = new ArrayList<>();
+
     private boolean mudanca = false;
     private String uid;
     private float total = 0;
 
+    ArrayList<ArrayList<String>> cupon = new ArrayList<>();
+    private ArrayList<Integer> lista = new ArrayList<>();
     ArrayList<Endereco> enderecos2 = new ArrayList<>();
+    private ArrayList<Cartao> arrayCartao2 = new ArrayList<>();
     ArrayList<Endereco> enderecos = new ArrayList<>();
+    private ArrayList<Endereco> arrayEndereco = new ArrayList<>();
 
     @GetMapping("/cartAdd/{id}/{quant}")
     public ModelAndView cartAdd(@PathVariable(value = "id") int id, @PathVariable(value = "quant") int quant,
@@ -101,6 +104,13 @@ public class cartController {
             if (!cartao.equals(enderecos.get(0))) {
                 enderecos2.add(cartao);
             }
+        }
+        if (connectBD.mrows("select * from cupons where CLI_ID   = " + init.getUid()) != null) {
+            cupon.clear();
+            cupon.addAll(connectBD.mcolum("select * from cupons where CLI_ID   = " + init.getUid()));
+            cupon.addAll(connectBD.mrows("select * from cupons where CLI_ID   = " + init.getUid()));
+            System.out.println(cupon);
+            model.addAttribute("cupon", cupon);
         }
 
         modelagem(model);
@@ -174,10 +184,22 @@ public class cartController {
     @PostMapping("/order")
     public ModelAndView order(@RequestParam Map<String, ?> param, ModelMap model) {
         float totalCart = 0;
-
+        System.out.println(param);
         for (Entry<String, ?> cartao : param.entrySet()) {
+
             if (cartao.getKey().contains("in")) {
                 totalCart = totalCart + Float.parseFloat(cartao.getValue().toString());
+            }
+            if (cartao.getKey().equalsIgnoreCase("cupon")) {
+                for (ArrayList<String> cartao2 : cupon) {
+                    for (int i = 0; i < cartao2.size(); i++) {
+                        if (cartao2.get(i).toString().equalsIgnoreCase(cartao.getValue().toString())) {
+                            totalCart = totalCart - Float.parseFloat(cartao.getValue().toString());
+                            total = total - Float.parseFloat(cartao.getValue().toString());
+                        }
+                    }
+                }
+
             }
             if (cartao.getKey().contains("in") && totalCart == total) {
                 execCart(param);
@@ -199,8 +221,14 @@ public class cartController {
         String query3 = "create table ordPay (pay_id int primary key AUTO_INCREMENT, cli_id int, ordem_id int, cartaoid int, valor NUMERIC(20, 2));";
         connectBD.EXEquery(query3);
 
-        String insertOrder = "insert into ordem ( cli_id, total, status, endereco) values (" + init.getUid()
-                + ", " + total + ", 'EM PROCESSAMENTO' , '" + param.get("endereco") + "');";
+        String insertOrder = "";
+        if (param.get("cupon").toString() != "") {
+            insertOrder = "insert into ordem ( cli_id, total, status, endereco) values (" + init.getUid()
+                    + ", " + total + ", 'EM PROCESSAMENTO' , '" + param.get("endereco") + "');";
+        } else {
+
+        }
+
         connectBD.EXEquery(insertOrder);
 
         String orderID = connectBD.EXE_Select_UID("select * from ordem where cli_id = " + init.getUid()
@@ -218,10 +246,21 @@ public class cartController {
         }
 
         for (Entry<Cartao, Integer> cartao : arrayCartao.entrySet()) {
-            String insertPay = "insert into ordPay (cli_id , ordem_id, cartaoid, valor) values ("
-                    + Integer.parseInt(init.getUid()) + ", " + Integer.parseInt(orderID) + ", " +
-                    cartao.getKey().getNcartao()
-                    + ", " + param.get("in" + cartao.getKey().getNcartao()) + ");";
+            String insertPay = "";
+            if (param.get("cupon").toString() != "") {
+                insertPay = "insert into ordPay (cli_id , ordem_id, cartaoid, valor) values ("
+                        + Integer.parseInt(init.getUid()) + ", " + Integer.parseInt(orderID) + ", " +
+                        cartao.getKey().getNcartao()
+                        + ", " + (Float.parseFloat(param.get("in" + cartao.getKey().getNcartao()).toString())
+                                - Float.parseFloat(param.get("cupon").toString()))
+                        + ");";
+            } else {
+                insertPay = "insert into ordPay (cli_id , ordem_id, cartaoid, valor) values ("
+                        + Integer.parseInt(init.getUid()) + ", " + Integer.parseInt(orderID) + ", " +
+                        cartao.getKey().getNcartao()
+                        + ", " + param.get("in" + cartao.getKey().getNcartao()) + ");";
+
+            }
             System.out.println(insertPay);
             connectBD.EXEquery(insertPay);
         }
@@ -237,6 +276,7 @@ public class cartController {
         arrayEndereco.clear();
         lista.clear();
         map.clear();
+        cupon.clear();
     }
 
 }

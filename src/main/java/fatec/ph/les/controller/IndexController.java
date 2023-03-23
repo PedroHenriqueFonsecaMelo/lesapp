@@ -1,16 +1,12 @@
 package fatec.ph.les.controller;
 
 import java.util.ArrayList;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.servlet.support.RequestContextUtils;
-
 import fatec.ph.les.entidade.Cartao;
 import fatec.ph.les.entidade.Categoria;
 import fatec.ph.les.entidade.Cliente;
@@ -20,16 +16,9 @@ import fatec.ph.les.servicos.connectBD;
 
 @Controller
 public class IndexController {
-    private String userid;
 
     @GetMapping("/")
     public String index(Model model, HttpServletRequest request) {
-        Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
-
-        if (flashMap != null) {
-            userid = (String) flashMap.get("flash_uid");
-        } else
-            userid = " ";
         init();
         return "index";
     }
@@ -46,7 +35,9 @@ public class IndexController {
         String su = "insert into Endereco (cliuid , pais , cep , estado , cidade , rua , bairro , numero , complemento , tiporesidencia) VALUES  ( 1  , 'BR' , '08780690' , 'SP' , 'Mogi das Cruzes' , 'Rua Professor Manoel Acelino de Mello' , 'Jardim Armênia' ,  21  , '21' , 'CASA' );";
         String si = "insert into Cartao (ncartao , bandeira , nomecli , cli_id , cv , preferencial) VALUES  ( 21  , 'Visa' , '21' ,  1  ,  22  ,  1  ); ";
         String so = "insert into Cartao (ncartao , bandeira , nomecli , cli_id , cv , preferencial) VALUES  ( 212  , 'Visa' , '21' ,  1  ,  22  ,  0  ); ";
-
+        connectBD.EXEquery(
+                "create table cupons (cupons_id int primary key AUTO_INCREMENT, cli_id int, desconto NUMERIC (20,2))");
+        connectBD.EXEquery("insert into cupons (cli_id, desconto) values  (1, 11.1);");
         connectBD.EXEquery(st);
         connectBD.EXEquery(sy);
         connectBD.EXEquery(su);
@@ -56,13 +47,6 @@ public class IndexController {
 
     @GetMapping("/shop")
     public String shop(Model model, HttpServletRequest request) {
-        Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
-
-        if (flashMap != null) {
-            userid = (String) flashMap.get("flash_uid");
-        } else
-            userid = " ";
-
         ArrayList<Livro> ls = Livro.livroCLIUID(0, 0);
 
         ArrayList<Livro> top = new ArrayList<>();

@@ -126,31 +126,30 @@ public class clienteController {
         collum.addAll(connectBD.mrows("SELECT ORDEM_ID, LIVROID, QUANT FROM ORDDETAILS where CLI_ID = "
                 + Integer.parseInt(init.getUid())
                 + " AND ORDEM_ID = " + Integer.parseInt(ncard)));
+        ;
 
-        System.out.println("cliOrdens collum " + collum);
-        System.out.println("cliOrdens PRE " + rowDetails.get(0));
-        System.out.println("cliOrdens PRE " + rowDetails.get(1));
-
+        String titulo = "";
         for (int i = 0; i < collum.get(0).size(); i++) {
+            for (int j = 0; j < collum.get(0).size(); j++) {
+                if (collum.get(0).get(j).equalsIgnoreCase("LIVROID")) {
+                    titulo = Livro.livro(Integer.parseInt(collum.get(1).get(j)), null).get(0).getTitulo();
+                }
+            }
             if (collum.get(0).get(i).equalsIgnoreCase("QUANT")) {
-                System.out.println(collum.get(1).get(i));
-
-                for (int j = 1; j < Integer.parseInt(collum.get(1).get(i)); j++) {
-
+                rowDetails.remove(1);
+                for (int j = 0; j < Integer.parseInt(collum.get(1).get(i)); j++) {
                     ArrayList<String> aux = new ArrayList<>();
                     aux.add(collum.get(1).get(0));
-                    aux.add(collum.get(1).get(1));
+                    aux.add(titulo);
 
                     rowDetails.add(aux);
                 }
-
             }
+
         }
 
-        System.out.println("cliOrdens DEPOIS " + rowDetails.get(0));
-        System.out.println("cliOrdens DEPOIS " + rowDetails.get(1));
-
         return new ModelAndView("redirect:/cliHome/cliProfile", model);
+
     }
 
     @GetMapping("/reqTroca/{id}/{livro}")
@@ -185,23 +184,62 @@ public class clienteController {
             row.addAll(connectBD.mrows("SELECT ORDEM_ID, ENDERECO, TOTAL, STATUS FROM ORDEM  where CLI_ID = "
                     + Integer.parseInt(init.getUid())));
 
-            for (int i = 1; i < row.get(1).size(); i++) {
-                if (row.get(0).get(i).equalsIgnoreCase("endereco")
-                        && row.get(1).get(i).getClass().getSimpleName().equalsIgnoreCase("int")) {
+            for (int i = 0; i < row.get(1).size(); i++) {
+                if (row.get(0).get(i).equalsIgnoreCase("endereco")) {
                     for (Endereco arrayList : enderecos) {
-                        if (arrayList.getIdEndereco() == Integer.parseInt(row.get(1).get(i))) {
+                        if (arrayList.getIdEndereco() == Integer.parseInt(row.get(1).get(i))
+                                && !row.get(1).get(i).equalsIgnoreCase(arrayList.getRua())) {
                             row.get(1).set(i, arrayList.getRua());
                         }
                     }
                 }
             }
-
+            System.out.println("endereco " + row);
             model.addAttribute("ORDEM", row);
         }
 
         if (!rowDetails.isEmpty()) {
+            System.out.println("!rowDetails.isEmpty() " + rowDetails);
             model.addAttribute("details", rowDetails);
         }
 
+    }
+
+    @GetMapping("/add/cartao/form")
+    public String addCartao() {
+
+        return "cartaoPages/add";
+    }
+
+    @GetMapping("/add/endereco/form")
+    public String addEndereco() {
+        return "endPages/add";
+    }
+
+    @PostMapping("/add/endereco")
+    public ModelAndView enderecoSingup(@RequestParam Map<String, ?> param,
+            ModelMap model, RedirectAttributes redirectAttributes) {
+
+        Endereco endereco = new Endereco(param);
+        endereco.setCliuid(Integer.parseInt(init.getUid()));
+        Endereco.InserirCBD(endereco);
+
+        return new ModelAndView("redirect:/cliHome/cliProfile", model);
+    }
+
+    @PostMapping("/add/cartao")
+    public ModelAndView cartaoSingup(@RequestParam Map<String, ?> param,
+            ModelMap model, RedirectAttributes redirectAttributes) {
+
+        Cartao cartao = new Cartao(param);
+
+        cartao.setCli_id(Integer.parseInt(init.getUid()));
+        if (connectBD.EXE_Select("select * from cartao").isEmpty()) {
+            cartao.setPreferencial(1);
+        } else
+            cartao.setPreferencial(0);
+
+        Cartao.InserirCBD(cartao);
+        return new ModelAndView("redirect:/cliHome/cliProfile", model);
     }
 }

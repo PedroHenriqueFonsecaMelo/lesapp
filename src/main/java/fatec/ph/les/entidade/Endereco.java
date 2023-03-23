@@ -115,7 +115,7 @@ public class Endereco {
                 }
             }
             resulClientes.add(cli);
-            System.out.println(cli.toString2());
+            // System.out.println(cli.toString2());
         }
 
         System.out.println(resulClientes.size());

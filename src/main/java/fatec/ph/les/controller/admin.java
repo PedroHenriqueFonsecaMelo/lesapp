@@ -23,21 +23,27 @@ public class admin {
     ArrayList<ArrayList<String>> row = new ArrayList<>();
     ArrayList<ArrayList<String>> orderArray = new ArrayList<>();
     ArrayList<ArrayList<String>> trocaArray = new ArrayList<>();
-
+    ArrayList<Cliente> enderecos = new ArrayList<>();
     Map<String, ArrayList<String>> mapa = new HashMap<>();
+    float valorDividido = 0;
 
     @GetMapping("/admin")
     public String data(ModelMap map) {
         clear();
         System.out.println("@GetMapping admin");
+        if (connectBD.mrows("select * from cliente;") != null) {
+            row.addAll(connectBD.mcolum("select * from cliente;"));
+            row.addAll(connectBD.mrows("select * from cliente;"));
 
-        row.addAll(connectBD.mcolum("select * from cliente;"));
-        row.addAll(connectBD.mrows("select * from cliente;"));
-
-        orderArray.addAll(connectBD.mcolum("select * from ordem;"));
-        orderArray.addAll(connectBD.mrows("select * from ordem;"));
-
-        ArrayList<Cliente> enderecos = Cliente.cliente(Integer.parseInt(init.getUid()), null);
+            enderecos.addAll(Cliente.cliente(Integer.parseInt(init.getUid()), null));
+        }
+        if (connectBD.mrows("select * from ordem;") != null) {
+            orderArray.addAll(connectBD.mcolum("select * from ordem;"));
+            orderArray.addAll(connectBD.mrows("select * from ordem;"));
+        } else {
+            orderArray.add(null);
+            orderArray.add(null);
+        }
 
         if (connectBD.mrows("SELECT * FROM ORDEM  where CLI_ID = " + Integer.parseInt(init.getUid())) != null) {
             for (int i = 1; i < orderArray.get(1).size(); i++) {
@@ -51,11 +57,14 @@ public class admin {
                 }
             }
         }
-        trocaArray.addAll(connectBD.mcolum("SELECT * FROM TROCA"));
-        trocaArray.addAll(connectBD.mrows("SELECT * FROM TROCA"));
 
         if (connectBD.mrows("SELECT * FROM TROCA") != null) {
+            trocaArray.addAll(connectBD.mcolum("SELECT * FROM TROCA"));
+            trocaArray.addAll(connectBD.mrows("SELECT * FROM TROCA"));
 
+        } else {
+            trocaArray.add(null);
+            trocaArray.add(null);
         }
 
         map.addAttribute("Clientes", row);
@@ -69,18 +78,18 @@ public class admin {
         row.clear();
         orderArray.clear();
         trocaArray.clear();
+        mapa.clear();
+        enderecos.clear();
     }
 
     @GetMapping("/cliTrocar/{id}")
     public ModelAndView trocar(ModelMap model, @PathVariable(value = "id") String ncard) {
 
-        System.out.println(connectBD.EXE_Map("SELECT ORDEM_ID, LIVROID, QUANT FROM ORDDETAILS where CLI_ID = "
-                + Integer.parseInt(init.getUid())
-                + " AND ORDEM_ID = " + Integer.parseInt(ncard)) + ";");
+        System.out.println(connectBD.EXE_Map("SELECT ORDEM_ID, LIVROID, QUANT, CLI_ID FROM ORDDETAILS where "
+                + " ORDEM_ID = " + Integer.parseInt(ncard)) + ";");
 
-        mapa.putAll(connectBD.EXE_Map("SELECT ORDEM_ID, LIVROID, QUANT FROM ORDDETAILS where CLI_ID = "
-                + Integer.parseInt(init.getUid())
-                + " AND ORDEM_ID = " + Integer.parseInt(ncard) + ";"));
+        mapa.putAll(connectBD.EXE_Map("SELECT ORDEM_ID, LIVROID, QUANT, CLI_ID FROM ORDDETAILS where "
+                + " ORDEM_ID = " + Integer.parseInt(ncard) + ";"));
 
         mapa.putAll(
                 connectBD
@@ -112,28 +121,29 @@ public class admin {
                     + " where ORDEM_ID = " + mapa.get("ORDEM_ID").get(0) + ";";
         }
 
-        boolean primeiroCard = true;
-
         for (int i = 0; i < mapa.get("CARTAOID").size(); i++) {
-            float valorDividido = 0;
-            valorDividido = Float.parseFloat(mapa.get("VALOR").get(i))
-                    - (Float.parseFloat(mapa.get("TOTAL").get(0)) / mapa.get("CARTAOID").size());
+            if (mapa.get("CARTAOID").size() > 1) {
+                valorDividido = Float.parseFloat(mapa.get("VALOR").get(i))
+                        - (Float.parseFloat(mapa.get("TOTAL").get(0)) / mapa.get("CARTAOID").size());
+            } else {
+                valorDividido = Float.parseFloat(mapa.get("TOTAL").get(i))
+                        - (Float.parseFloat(mapa.get("PRECIFICACAO").get(i)) / 2);
+            }
+
             System.out.println("valorDividido " + valorDividido);
-            if (valorDividido >= 10 && primeiroCard) {
+
+            if (valorDividido >= 10) {
                 System.out.println("valorDividido >= 10 && primeiroCard");
-                updatePay.add("UPDATE ORDPAY set VALOR  = " + valorDividido + " where ORDEM_ID = "
-                        + mapa.get("ORDEM_ID").get(0)
-                        + " AND PAY_ID = " + mapa.get("PAY_ID").get(i) + ";");
+                update(updatePay, i);
+
+                connectBD.EXEquery("insert into cupons (cli_id, desconto) values ("
+                        + Integer.parseInt(mapa.get("CLI_ID").get(i)) + ", "
+                        + (valorDividido - Float.parseFloat(mapa.get("PRECIFICACAO").get(i))) + ");");
 
             } else if (valorDividido <= 0) {
                 System.out.println("valorDividido <= 0");
-                updatePay.add("UPDATE ORDPAY set VALOR  = " + valorDividido
-                        + " where ORDEM_ID = " + mapa.get("ORDEM_ID").get(0) + " AND CARTAOID = "
-                        + mapa.get("CARTAOID").get(i) + ";");
-
-                updatePay.add("delete from ORDPAY where VALOR = " + valorDividido + " AND ORDEM_ID = "
-                        + mapa.get("ORDEM_ID").get(0) + " AND CARTAOID = "
-                        + mapa.get("CARTAOID").get(i) + ";");
+                update(updatePay, i);
+                delete(updatePay, i);
 
             } else {
                 System.out.println("else {");
@@ -150,8 +160,12 @@ public class admin {
 
                 updatePay.add("UPDATE ORDPAY set VALOR = "
                         + (max / connectBD.EXE_Map("SELECT VALOR FROM ORDPAY where ORDEM_ID = "
-                                + mapa.get("ORDEM_ID").get(0) + ";").get(0).size())
+                                + mapa.get("ORDEM_ID").get(0) + ";").get(i).size())
                         + " where ORDEM_ID = " + mapa.get("ORDEM_ID").get(0) + ";");
+
+                connectBD.EXEquery("insert into cupons (cli_id, desconto) values ("
+                        + Integer.parseInt(mapa.get("CLI_ID").get(i)) + ", "
+                        + (valorDividido - Float.parseFloat(mapa.get("PRECIFICACAO").get(i))) + ");");
             }
         }
 
@@ -159,12 +173,33 @@ public class admin {
         System.out.println(updateORDEM);
         System.out.println(updatePay);
 
+        connectBD.EXEquery("delete from troca where ordem_id = " + mapa.get("ORDEM_ID").get(0) + ";");
+
         connectBD.EXEquery(updateORDEM);
         connectBD.EXEquery(updateDetails);
         for (String string : updatePay) {
             connectBD.EXEquery(string);
         }
 
+        return new ModelAndView("redirect:/admin/admin", model);
+    }
+
+    private void delete(ArrayList<String> updatePay, int i) {
+        updatePay.add("delete from ORDPAY where VALOR = " + valorDividido + " AND ORDEM_ID = "
+                + mapa.get("ORDEM_ID").get(0) + " AND CARTAOID = "
+                + mapa.get("CARTAOID").get(i) + ";");
+    }
+
+    private void update(ArrayList<String> updatePay, int i) {
+        updatePay.add("UPDATE ORDPAY set VALOR  = " + valorDividido + " where ORDEM_ID = "
+                + mapa.get("ORDEM_ID").get(0)
+                + " AND PAY_ID = " + mapa.get("PAY_ID").get(i) + ";");
+    }
+
+    @GetMapping("/admin/cliPedido/{id}")
+    public ModelAndView name(ModelMap model, @PathVariable(value = "id") String ncard) {
+        mapa.putAll(
+                connectBD.EXE_Map("SELECT TOTAL FROM ORDEM where ORDEM_ID = " + mapa.get("ORDEM_ID").get(0) + ";"));
         return new ModelAndView("redirect:/admin/admin", model);
     }
 

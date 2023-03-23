@@ -94,11 +94,11 @@
 						<h3 class="mb-4">Ordem Settings</h3>
 						<div class="row">
 							<div class="col-md-12">
-								<table>
+								<table class="tg">
 								<tbody>
 									<tr>
 									<c:forEach var="cliente" items="${Ordem.get(0)}">
-										<td>
+										<td class="tg-0lax">
 											${cliente}
 										</td>
 									</c:forEach>
@@ -106,14 +106,14 @@
 									<c:forEach var="cliente" items="${Ordem}"  begin="1">
 										<tr>
 										<c:forEach var="lista" items="${cliente}">
-											<td>
+											<td class="tg-0lax">
 												${lista}
 											</td>
 										</c:forEach>
-											<td>
+											<td class="tg-0lax">
 												<a class="btn btn-light" href="/admin/cliPedido/${cliente.get(0)}" target="_top">Aprovar</a>
 											</td>
-											<td>
+											<td class="tg-0lax">
 												<a class="btn btn-light" href="/admin/cliPedido/${cliente.get(0)}/0" target="_top">Recusar</a>
 											</td>
 										</tr>
