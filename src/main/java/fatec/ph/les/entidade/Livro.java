@@ -2,9 +2,11 @@ package fatec.ph.les.entidade;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import java.util.NavigableMap;
 
 import fatec.ph.les.servicos.connectBD;
@@ -176,11 +178,27 @@ public class Livro {
     public Livro(Map<String, ?> param) {
         System.out.println("public Cartao(Map<String, ?> param)");
         for (Entry<String, ?> entry : param.entrySet()) {
+
             Field field;
             try {
-                field = this.getClass().getDeclaredField(entry.getKey());
+                if (this.getClass().getDeclaredField(entry.getKey()) != null) {
+                    field = this.getClass().getDeclaredField(entry.getKey());
+                } else {
+                    field = this.getClass().getDeclaredField(entry.getKey().toLowerCase());
+                }
                 if (field != null) {
-                    field.set(this, entry.getValue());
+                    switch (field.getType().getSimpleName()) {
+                        case "String":
+                            field.set(this, entry.getValue());
+                            break;
+                        case "int":
+                            field.set(this, Integer.parseInt(entry.getValue().toString()));
+                            break;
+                        case "float":
+                            field.set(this, Float.parseFloat(entry.getValue().toString()));
+                        default:
+                            break;
+                    }
                 }
             } catch (NoSuchFieldException e) {
                 e.printStackTrace();
@@ -408,6 +426,29 @@ public class Livro {
         } else if (!barras.equals(other.barras))
             return false;
         return true;
+    }
+
+    public static Map<String, String> info() {
+        Map<String, String> map = new HashMap<>();
+        for (Field iterable_element : Livro.class.getDeclaredFields()) {
+            if (!iterable_element.getName().contains("idlivro")) {
+                String tipo = iterable_element.getType().getSimpleName();
+                String name = iterable_element.getName();
+
+                switch (tipo) {
+                    case "int":
+                        map.put(name, "type=\"number\"");
+                        break;
+                    case "float":
+                        map.put(name, "type=\"number\" step=\"0.01\"");
+                        break;
+                    default:
+                        map.put(name, "type=\"text\"");
+                        break;
+                }
+            }
+        }
+        return map;
     }
 
 }

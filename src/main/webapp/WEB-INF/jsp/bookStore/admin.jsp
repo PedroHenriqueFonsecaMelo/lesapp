@@ -24,9 +24,9 @@
                 <img src="/resources/indexcss/image/logo.png">
             </div>
             <ul>
-                <li><a href="#Home">Home</a></li>
+                <li><a href="/">Home</a></li>
                 <li><a href="#About">About</a></li>
-                <li><a href="/shop" target="_top">Shopp</a></li>
+                <li><a href="/shop" target="_top">Shop</a></li>
             </ul>
             <div class="social_icon">
                 <i class="fa-solid fa-magnifying-glass"></i>
@@ -55,18 +55,49 @@
 							<i class="fa fa-credit-card text-center mr-1"></i> 
 							Transações
 						</a>
+						<a class="nav-link" id="livros-tab" data-toggle="pill" href="#livros" role="tab" aria-controls="livros" aria-selected="false">
+							<i class="fa fa-book text-center mr-1"></i> 
+							Adicionar Livros
+						</a>
 					</div>
 				</div>
 				<div class="tab-content p-4 p-md-5" id="v-pills-tabContent">
 					<div class="tab-pane fade show active" id="account" role="tabpanel" aria-labelledby="account-tab">
 						<h3 class="mb-4">Account Settings</h3>
 						<div class="row">
+						<div class="col-md-12">
+							<form class="formAdmin" action="/admin/pesquisa" method="post" >
+								<h5>Pesquisa Cliente</h5>
+								<table class="tg">
+								<tbody>
+									<tr>
+										<td class="tg-0lax">
+											<select class="form-select shadow-none" id="pesquisaCli" name="pesquisaCli" required>
+											<c:forEach var="cliente" items="${Clientes.get(0)}">
+											<option value="${cliente}">${cliente}</option>
+											</c:forEach>
+											</select>
+										</td>
+										<td class="tg-0lax">
+											<input type="text" class="form-control shadow-none" id="pesquisaCliValue" name="pesquisaCliValue"required  />
+										</td>
+										<td class="tg-0lax">
+											<button class="btn btn-primary" type="submit">Pesquisar</button>
+										</td>
+									</tr>
+								</tbody>
+								</table>
+								
+							</form>
+							</div>
+						</div>
+						<div class="row">
 							<div class="col-md-12">
-								<table>
+								<table class="tg">
 								<tbody>
 									<tr>
 									<c:forEach var="cliente" items="${Clientes.get(0)}">
-										<td>
+										<td class="tg-0lax">
 											${cliente}
 										</td>
 									</c:forEach>
@@ -74,7 +105,7 @@
 									<c:forEach var="cliente" items="${Clientes}"  begin="1">
 										<tr>
 										<c:forEach var="lista" items="${cliente}">
-											<td>
+											<td class="tg-0lax">
 												${lista}
 											</td>
 										</c:forEach>
@@ -84,11 +115,7 @@
 								</table>
 							</div>
 						</div>
-						<div>
-							<button class="btn btn-primary" type="submit">Update</button>
-							<button class="btn btn-light">Cancel</button>
-							<a class="btn btn-light" href="/cliHome/delete" target="_top">Delete</a>
-						</div>
+						
 					</div>
 					<div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="password-tab">
 						<h3 class="mb-4">Ordem Settings</h3>
@@ -133,11 +160,11 @@
 						<h3 class="mb-4">Troca Settings</h3>
 						<div class="row">
 							<div class="col-md-12">
-								<table>
+								<table class="tg">
 								<tbody>
 									<tr>
 									<c:forEach var="cliente" items="${Troca.get(0)}">
-										<td>
+										<td class="tg-0lax">
 											${cliente}
 										</td>
 									</c:forEach>
@@ -145,14 +172,14 @@
 									<c:forEach var="cliente" items="${Troca}"  begin="1">
 										<tr>
 										<c:forEach var="lista" items="${cliente}">
-											<td>
+											<td class="tg-0lax">
 												${lista}
 											</td>
 										</c:forEach>
-											<td>
+											<td class="tg-0lax">
 												<a class="btn btn-light" href="/admin/cliTrocar/${cliente.get(0)}" target="_top">Aprovar</a>
 											</td>
-											<td>
+											<td class="tg-0lax">
 												<a class="btn btn-light" href="/admin/cliTrocar/${cliente.get(0)}/0" target="_top">Recusar</a>
 											</td>
 										</tr>
@@ -161,6 +188,26 @@
 								</table>
 							</div>
 						</div>
+					</div>
+
+					<div class="tab-pane fade" id="livros" role="tabpanel" aria-labelledby="livros-tab">
+						<h3 class="mb-4">Adicionar Livro</h3>
+					<form action="/admin/livro" method="post">
+						<div class="row">
+							<c:forEach var="livro" items="${livros}">
+							<div class="col-md-4">
+								<div class="form-group">
+								  	<label style="display: block;">${livro.getKey()}</label>
+								  	<input ${livro.getValue()} id="${livro.getKey()}" name="${livro.getKey()}">
+								</div>
+							</div>
+							</c:forEach>
+						</div>
+						<div>
+							<button class="btn btn-primary" type="submit">Update</button>
+							<button class="btn btn-light">Cancel</button>
+						</div>
+					</form>
 					</div>
 				</div>
 			</div>

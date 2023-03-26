@@ -27,7 +27,7 @@ public class Categoria {
             str.append("select * from Categoria where idCategoria = " + uid + ";");
         } else if (uid == 0 & args == null) {
             str.append("select * from Categoria");
-        } else if (uid == 0 & args != null) {
+        } else if (uid == 0 && args != null) {
             lastEntry = args.lastEntry();
             str.append("select * from Categoria where ");
 

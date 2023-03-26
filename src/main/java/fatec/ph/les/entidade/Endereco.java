@@ -118,7 +118,6 @@ public class Endereco {
             // System.out.println(cli.toString2());
         }
 
-        System.out.println(resulClientes.size());
         return resulClientes;
     }
 

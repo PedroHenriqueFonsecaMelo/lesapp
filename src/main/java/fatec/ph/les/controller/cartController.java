@@ -110,7 +110,7 @@ public class cartController {
             cupon.addAll(connectBD.mcolum("select * from cupons where CLI_ID   = " + init.getUid()));
             cupon.addAll(connectBD.mrows("select * from cupons where CLI_ID   = " + init.getUid()));
             System.out.println(cupon);
-            model.addAttribute("cupon", cupon);
+
         }
 
         modelagem(model);
@@ -126,6 +126,7 @@ public class cartController {
         model.addAttribute("livros", ls);
         model.addAttribute("cartoes", arrayCartao);
         model.addAttribute("cartoes2", arrayCartao2);
+        model.addAttribute("cupon", cupon);
     }
 
     @GetMapping("/addCartaoCart/{id}")
@@ -221,18 +222,21 @@ public class cartController {
         String query3 = "create table ordPay (pay_id int primary key AUTO_INCREMENT, cli_id int, ordem_id int, cartaoid int, valor NUMERIC(20, 2));";
         connectBD.EXEquery(query3);
 
-        String insertOrder = "";
         if (param.get("cupon").toString() != "") {
-            insertOrder = "insert into ordem ( cli_id, total, status, endereco) values (" + init.getUid()
-                    + ", " + total + ", 'EM PROCESSAMENTO' , '" + param.get("endereco") + "');";
-        } else {
+            total = total - Float.parseFloat(param.get("cupon").toString());
+            total = Float.parseFloat(df.format(total).replace(",", "."));
 
         }
 
+        String insertOrder = "insert into ordem ( cli_id, total, status, endereco) values (" + init.getUid()
+                + ", " + total + ", 'EM PROCESSAMENTO' , '" + param.get("endereco") + "');";
+
+        System.out.println(insertOrder);
         connectBD.EXEquery(insertOrder);
 
         String orderID = connectBD.EXE_Select_UID("select * from ordem where cli_id = " + init.getUid()
                 + " AND total = " + total + " AND endereco = " + param.get("endereco"));
+
         System.out.println(orderID);
 
         for (Entry<Livro, Integer> iterable_element : ls.entrySet()) {
@@ -251,15 +255,18 @@ public class cartController {
                 insertPay = "insert into ordPay (cli_id , ordem_id, cartaoid, valor) values ("
                         + Integer.parseInt(init.getUid()) + ", " + Integer.parseInt(orderID) + ", " +
                         cartao.getKey().getNcartao()
-                        + ", " + (Float.parseFloat(param.get("in" + cartao.getKey().getNcartao()).toString())
-                                - Float.parseFloat(param.get("cupon").toString()))
+                        + ", " +
+                        Float.parseFloat(df.format(
+                                Float.parseFloat(param.get("in" + cartao.getKey().getNcartao()).toString())
+                                        - (Float.parseFloat(param.get("cupon").toString()) / arrayCartao.size()))
+                                .replace(",", "."))
+
                         + ");";
             } else {
                 insertPay = "insert into ordPay (cli_id , ordem_id, cartaoid, valor) values ("
                         + Integer.parseInt(init.getUid()) + ", " + Integer.parseInt(orderID) + ", " +
                         cartao.getKey().getNcartao()
                         + ", " + param.get("in" + cartao.getKey().getNcartao()) + ");";
-
             }
             System.out.println(insertPay);
             connectBD.EXEquery(insertPay);

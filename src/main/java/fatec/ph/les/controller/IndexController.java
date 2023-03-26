@@ -20,6 +20,8 @@ public class IndexController {
     @GetMapping("/")
     public String index(Model model, HttpServletRequest request) {
         init();
+
+        System.out.println(Livro.info());
         return "index";
     }
 

@@ -2,6 +2,7 @@ package fatec.ph.les.entidade;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -342,5 +343,19 @@ public class Cliente {
         } else if (!email.equals(other.email))
             return false;
         return true;
+    }
+
+    public static Map<String, String> info() {
+        Map<String, String> map = new HashMap<>();
+        for (Field iterable_element : Cliente.class.getDeclaredFields()) {
+            if (!iterable_element.getName().contains("id")) {
+                String tipo = iterable_element.getType().getSimpleName();
+                String name = iterable_element.getName();
+
+                map.put(name, tipo);
+
+            }
+        }
+        return map;
     }
 }

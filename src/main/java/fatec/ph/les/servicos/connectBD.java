@@ -264,7 +264,7 @@ public class connectBD {
             return rows;
 
         } catch (SQLException e) {
-            System.out.println("Erro public static ResultSet EXE_Select(String query)");
+            System.out.println("Erro public ArrayList<ArrayList<String>> mrows(String query)");
         }
 
         return null;
@@ -295,7 +295,7 @@ public class connectBD {
             return rows;
 
         } catch (SQLException e) {
-            System.out.println("Erro public static ResultSet EXE_Select(String query)");
+            System.out.println("Erro ArrayList<ArrayList<String>> mcolum(String query)");
         }
 
         return null;
