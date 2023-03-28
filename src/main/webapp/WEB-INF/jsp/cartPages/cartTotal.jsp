@@ -27,10 +27,13 @@
             <ul>
                 <li><a href="/">Home</a></li>
                 <li><a href="#About">About</a></li>
-                <li><a href="/shop" target="_top"></a></li>
+                <li><a href="/shop" target="_top">Shop</a></li>
             </ul>
             <div class="social_icon">
-                <i class="fa-solid fa-magnifying-glass"></i>
+                <form action="/pesquisa" method="post">
+                    <input type="text" class="form-control shadow-none" id="pesquisaLivro" name="pesquisaLivro" required  />
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </form>
                 <i class="fa-solid fa-heart"></i>
                 <i class="fa-solid fa-shopping-cart"></i>
             </div>

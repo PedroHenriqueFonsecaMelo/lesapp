@@ -414,3 +414,7 @@ section .main .main_img img{
     color: #089da1;
     padding: 0 1px;
 }
+
+.social_icon {
+    display: flex;
+}

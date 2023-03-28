@@ -71,3 +71,6 @@ div#cartoes {
 	padding:10px 5px;
 	word-break:normal;
 }
+.social_icon {
+    display: flex;
+}

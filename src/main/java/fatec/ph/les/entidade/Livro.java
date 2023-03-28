@@ -123,7 +123,7 @@ public class Livro {
                                 field.set(cli, map2.getValue().toString());
                                 break;
                         }
-                        resulClientes.add(cli);
+
                     }
                     // }
                 } catch (NoSuchFieldException e) {
@@ -131,16 +131,54 @@ public class Livro {
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
-                resulClientes.add(cli);
+
                 // System.out.println(cli.toString2());
             }
-
             resulClientes.add(cli);
             // System.out.println(cli.toString2());
         }
 
         System.out.println(resulClientes.size());
         return resulClientes;
+    }
+
+    public static ArrayList<Livro> livroPesquisa(String query) {
+        ArrayList<Livro> resulivros = new ArrayList<>();
+        List<Map<String, Object>> rs = connectBD.EXE_Select(query);
+
+        for (Map<String, Object> map : rs) {
+            Livro cli = new Livro();
+            for (Entry<String, Object> map2 : map.entrySet()) {
+                Field field;
+                try {
+                    // if (!map2.getKey().equalsIgnoreCase("idlivro")) {
+                    field = Livro.class.getDeclaredField(map2.getKey().toLowerCase());
+                    if (field != null) {
+                        switch (field.getType().getSimpleName()) {
+                            case "int":
+                                field.set(cli, map2.getValue());
+                                break;
+                            case "float":
+                                field.set(cli, Float.parseFloat(map2.getValue().toString()));
+                                break;
+                            default:
+                                field.set(cli, map2.getValue().toString());
+                                break;
+                        }
+
+                    }
+                    // }
+                } catch (NoSuchFieldException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+
+                // System.out.println(cli.toString2());
+            }
+            resulivros.add(cli);
+        }
+        return resulivros;
     }
 
     public static void CreateTable() {
@@ -163,13 +201,9 @@ public class Livro {
     private float altura;
     private float largura;
     private String categorias;
-
     private float peso;
-
     private float profundidade;
-
     private float precificacao;
-
     private String barras;
 
     public Livro() {

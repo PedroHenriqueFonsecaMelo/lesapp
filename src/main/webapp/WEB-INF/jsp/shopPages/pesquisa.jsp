@@ -1,5 +1,6 @@
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,75 +13,52 @@
 </head>
 <body>
     
-    <section>
-
+    <section class="section2">
         <nav>
-
             <div class="logo">
                 <img src="/resources/indexcss/image/logo.png">
             </div>
-
             <ul>
                 <li><a href="/">Home</a></li>
                 <li><a href="#About">About</a></li>
                 <li><a href="/shop" target="_top">Shop</a></li>
-                <li><a href="/cliHome/login/form" target="_top">Login</a></li>
             </ul>
-
             <div class="social_icon">
                 <form action="/pesquisa" method="post">
                     <input type="text" class="form-control shadow-none" id="pesquisaLivro" name="pesquisaLivro" required  />
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </form>
                 <i class="fa-solid fa-heart"></i>
+                <a href="/cart/cartTotal" target="_top"><i class="fa-solid fa-shopping-cart"></i></a>
             </div>
-
         </nav>
-
-        <div class="main">
-
-            <div class="main_tag">
-                <h1>WELCOME TO<br><span>BOOK STORE</span></h1>
-
-                <a href="#" class="main_btn">Learn More</a>
-
-            </div>
-
-            <div class="main_img">
-                <img src="/resources/indexcss/image/table.png">
-            </div>
-
-        </div>
-
     </section>
 
-    <!--About-->
+    <!--Arrivals-->
+    <div class="arrivals">
+        <h1>New Arrivals</h1>
 
-    <div class="about">
-
-        <div class="about_image">
-            <img src="/resources/indexcss/image/about.png">
+        <div class="arrivals_box">
+            <c:forEach var="livro" items="${livros}">
+                <div class="arrivals_card">
+                    <div class="arrivals_image">
+                        <img src="/resources/indexcss/image/arrival_1.jpg">
+                    </div>
+                    <div class="arrivals_tag">
+                        <p>${livro.getTitulo()}</p>
+                        <div class="arrivals_icon">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star-half-stroke"></i>
+                        </div>
+                        <a href="aboutlivro/${livro.getIdlivro()}" class="arrivals_btn">Learn More</a>
+                    </div>
+                </div>
+            </c:forEach>
         </div>
-        <div class="about_tag">
-            <h1>About Us</h1>
-            <p>
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Beatae cumque atque dolor corporis 
-                architecto. Voluptate expedita molestias maxime officia natus consectetur dolor quisquam illo? 
-                Quis illum nostrum perspiciatis laboriosam perferendis? Lorem ipsum dolor sit amet consectetur 
-                adipisicing elit. Minus ad eius saepe architecto aperiam laboriosam voluptas nobis voluptates 
-                id amet eos repellat corrupti harum consectetur, dolorum dolore blanditiis quam quo.
-            </p>
-            <a href="#" class="about_btn">Learn More</a>
-        </div>
-
     </div>
 
-
-
-
-
-
-
-    
 </body>
 </html>

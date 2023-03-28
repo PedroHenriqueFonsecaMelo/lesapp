@@ -1,12 +1,19 @@
 package fatec.ph.les.controller;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import fatec.ph.les.entidade.Cartao;
 import fatec.ph.les.entidade.Categoria;
 import fatec.ph.les.entidade.Cliente;
@@ -68,5 +75,16 @@ public class IndexController {
         model.addAttribute("livro", Livro.livroCLIUID(id, 0).get(0));
 
         return "bookStore/aboutLivro";
+    }
+
+    @PostMapping("/pesquisa")
+    public String pesquisaLivro(ModelMap model, @RequestParam Map<String, ?> param) {
+
+        ArrayList<Livro> bottom = new ArrayList<>();
+        bottom.addAll(Livro
+                .livroPesquisa("select * from livro where titulo LIKE " + "'%" + param.get("pesquisaLivro") + "%';"));
+
+        model.addAttribute("livros", bottom);
+        return "shopPages/pesquisa";
     }
 }

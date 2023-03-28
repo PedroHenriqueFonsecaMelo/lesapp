@@ -265,3 +265,6 @@ section .main .main_img img{
 select#pesquisaCli {
     height: 38px;
 }
+.social_icon {
+    display: flex;
+}
