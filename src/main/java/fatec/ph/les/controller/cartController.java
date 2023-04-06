@@ -109,7 +109,6 @@ public class cartController {
             cupon.clear();
             cupon.addAll(connectBD.mcolum("select * from cupons where CLI_ID   = " + init.getUid()));
             cupon.addAll(connectBD.mrows("select * from cupons where CLI_ID   = " + init.getUid()));
-            System.out.println(cupon);
 
         }
 
@@ -222,10 +221,9 @@ public class cartController {
         String query3 = "create table ordPay (pay_id int primary key AUTO_INCREMENT, cli_id int, ordem_id int, cartaoid int, valor NUMERIC(20, 2));";
         connectBD.EXEquery(query3);
 
-        if (param.get("cupon").toString() != "") {
+        if (param.get("cupon").toString() != "" && param.get("cupon") != null) {
             total = total - Float.parseFloat(param.get("cupon").toString());
             total = Float.parseFloat(df.format(total).replace(",", "."));
-
         }
 
         String insertOrder = "insert into ordem ( cli_id, total, status, endereco) values (" + init.getUid()

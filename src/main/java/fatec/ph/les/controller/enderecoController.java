@@ -36,7 +36,6 @@ public class enderecoController {
         } else
             emailId2 = " ";
 
-        System.out.println("inir " + init.getUid());
         // System.out.println("request: " +
         // request.getSession().getAttribute("uidcli"));
 
