@@ -5,15 +5,17 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Account Settings UI Design</title>
-	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-	<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-	<link rel="stylesheet" type="text/css" href="/resources/clicss/cliSpace/cliSpace.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Store Website</title>
+    <link rel="stylesheet" type="text/css" href="/resources/livrocss/style.css">
+    <link rel="stylesheet" type="text/css" href="/resources/clicss/cliSpace/cliSpace.css">
 
-	<link rel="stylesheet" href="/resources/livrocss/style.css">
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-	<script src="/resources/clicss/scripts.js" defer></script>
+
+     <script src="/resources/livrocss/livros.js" defer></script>
 </head>
 
 
@@ -30,7 +32,7 @@
             </ul>
             <div class="social_icon">
                 <form action="/pesquisa" method="post">
-                    <input type="text" class="form-control shadow-none" id="pesquisaLivro" name="pesquisaLivro" required  />
+                    <input type="text" class="form-control2 shadow-none" id="pesquisaLivro" name="pesquisaLivro" required  />
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </form>
                 <i class="fa-solid fa-heart"></i>
@@ -134,6 +136,7 @@
 									</c:forEach>
 									</tr>
 									<c:forEach var="cliente" items="${Ordem}"  begin="1">
+										<c:if test="${cliente != null}">
 										<tr>
 										<c:forEach var="lista" items="${cliente}">
 											<td class="tg-0lax">
@@ -147,15 +150,11 @@
 												<a class="btn btn-light" href="/admin/cliPedido/${cliente.get(0)}/0" target="_top">Recusar</a>
 											</td>
 										</tr>
+										</c:if>
 									</c:forEach>
 								</tbody>
 								</table>
 							</div>
-						</div>
-						<div>
-							<button class="btn btn-primary" type="submit">Update</button>
-							<button class="btn btn-light">Cancel</button>
-							<a class="btn btn-light" href="/cliHome/delete" target="_top">Delete</a>
 						</div>
 					</div>
           			
@@ -173,6 +172,7 @@
 									</c:forEach>
 									</tr>
 									<c:forEach var="cliente" items="${Troca}"  begin="1">
+										<c:if test="${cliente != null}">
 										<tr>
 										<c:forEach var="lista" items="${cliente}">
 											<td class="tg-0lax">
@@ -186,6 +186,7 @@
 												<a class="btn btn-light" href="/admin/cliTrocar/${cliente.get(0)}/0" target="_top">Recusar</a>
 											</td>
 										</tr>
+										</c:if>
 									</c:forEach>
 								</tbody>
 								</table>

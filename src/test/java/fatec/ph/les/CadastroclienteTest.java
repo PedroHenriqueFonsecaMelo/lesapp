@@ -10,21 +10,18 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.JavascriptExecutor;
-import java.util.*;
 
 public class CadastroclienteTest {
   private WebDriver driver;
-  private Map<String, Object> vars;
   JavascriptExecutor js;
 
   @Before
   public void setUp() {
-    System.out.println("test");
+
     System.setProperty("webdriver.chrome.driver",
         "src/test/resources/chromedriver.exe");
     driver = new ChromeDriver();
     js = (JavascriptExecutor) driver;
-    vars = new HashMap<String, Object>();
   }
 
   @After
@@ -87,7 +84,6 @@ public class CadastroclienteTest {
       driver.findElement(By.id("save-btn")).click();
       driver.findElement(By.cssSelector("html")).click();
     } catch (InterruptedException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
   }

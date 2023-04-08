@@ -22,12 +22,14 @@ import fatec.ph.les.servicos.connectBD;
 
 @Controller
 public class IndexController {
+    private static boolean init = true;
 
     @GetMapping("/")
     public String index(Model model, HttpServletRequest request) {
-        init();
-
-        System.out.println(Livro.info());
+        if (init) {
+            init();
+            init = false;
+        }
         return "index";
     }
 

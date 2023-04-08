@@ -30,6 +30,7 @@
                 </form>
                 <i class="fa-solid fa-heart"></i>
                 <a href="/cart/cartTotal" target="_top"><i class="fa-solid fa-shopping-cart"></i></a>
+				<a href="/cliHome/cliProfile" target="_top"> <i class="fa-solid fa-user"></i></a>
             </div>
         </nav>
     </section>

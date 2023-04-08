@@ -71,14 +71,15 @@ public class clienteController {
     public ModelAndView loginCli(ModelMap model, @RequestParam Map<String, ?> param) {
         int i = 0;
         for (Entry<String, ?> iterable_element : param.entrySet()) {
-            if (iterable_element.getValue().toString().equalsIgnoreCase("admin")) {
+            if (iterable_element.getValue().toString().contains("admin")) {
                 i++;
             }
             if (i == param.size()) {
+                init.setUid("admin");
                 return new ModelAndView("redirect:/admin/admin", model);
             }
         }
-        System.out.println("/login" + param);
+
         uidcli = Cliente.cliUID(null, param);
         init.setUid(uidcli);
 
@@ -87,6 +88,17 @@ public class clienteController {
 
     @GetMapping("/cliProfile")
     public String cliProfile(Model model, @RequestParam Map<String, ?> param) {
+        if (init.getUid().equals("") || init.getUid().contains("admin")) {
+
+        }
+        switch (init.getUid()) {
+            case "":
+                return "cliPages/login";
+            case "admin":
+                toAdmin();
+            default:
+                break;
+        }
         clear();
         cliModel(model);
 
@@ -186,7 +198,9 @@ public class clienteController {
         enderecos = Endereco.endereco(Integer.parseInt(uidcli), null);
         model.addAttribute("enderecos", enderecos);
 
-        if (connectBD.mrows("SELECT * FROM ORDEM  where CLI_ID = " + Integer.parseInt(init.getUid())) != null) {
+        if (connectBD.mrows("SELECT * FROM ORDEM  where CLI_ID = " + Integer.parseInt(init.getUid())) != null
+                && !connectBD.mrows("SELECT * FROM ORDEM  where CLI_ID = " + Integer.parseInt(init.getUid()))
+                        .isEmpty()) {
             row.clear();
             row.addAll(
                     connectBD.mcolum("SELECT ORDEM_ID, ENDERECO, TOTAL, STATUS FROM ORDEM  where CLI_ID = "
@@ -205,12 +219,13 @@ public class clienteController {
                     }
                 }
             }
-            System.out.println("endereco " + row);
             model.addAttribute("ORDEM", row);
+        } else {
+            row.add(null);
+            row.add(null);
         }
 
         if (!rowDetails.isEmpty()) {
-            System.out.println("!rowDetails.isEmpty() " + rowDetails);
             model.addAttribute("details", rowDetails);
         }
 
@@ -252,5 +267,9 @@ public class clienteController {
 
         Cartao.InserirCBD(cartao);
         return new ModelAndView("redirect:/cliHome/cliProfile", model);
+    }
+
+    private static ModelAndView toAdmin() {
+        return new ModelAndView("redirect:/admin/admin");
     }
 }

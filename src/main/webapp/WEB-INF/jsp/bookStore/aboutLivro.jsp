@@ -22,26 +22,26 @@
   </head>
 
   <body>
-  <section class="section">
-        <nav>
-            <div class="logo">
-                <img src="/resources/indexcss/image/logo.png">
-            </div>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="#About">About</a></li>
-                <li><a href="/shop" target="_top">Shop</a></li>
-            </ul>
-            <div class="social_icon">
-                <form action="/pesquisa" method="post">
-                    <input type="text" class="form-control shadow-none" id="pesquisaLivro" name="pesquisaLivro" required  />
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </form>
-                <i class="fa-solid fa-heart"></i>
-                <i class="fa-solid fa-shopping-cart"></i>
-            </div>
-        </nav>
-    </section>
+    <section class="section2">
+          <nav>
+              <div class="logo">
+                  <img src="/resources/indexcss/image/logo.png">
+              </div>
+              <ul>
+                  <li><a href="/">Home</a></li>
+                  <li><a href="#About">About</a></li>
+                  <li><a href="/shop" target="_top">Shop</a></li>
+              </ul>
+              <div class="social_icon">
+                  <form id="pesquisaF" action="/pesquisa" method="post">
+                      <input type="text" class="form-control shadow-none" id="pesquisaLivro" name="pesquisaLivro" required  />
+                      <i class="fa-solid fa-magnifying-glass"></i>
+                  </form>
+                  <i class="fa-solid fa-heart"></i>
+                  <a href="/cart/cartTotal" target="_top"><i class="fa-solid fa-shopping-cart"></i></a>
+              </div>
+          </nav>
+      </section>
 
     <main class="container">
 

@@ -17,7 +17,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import fatec.ph.les.entidade.Endereco;
-import fatec.ph.les.servicos.init;
 
 @Controller
 @RequestMapping("/endereco")

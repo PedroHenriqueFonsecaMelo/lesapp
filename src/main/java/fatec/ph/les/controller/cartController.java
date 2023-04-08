@@ -221,35 +221,41 @@ public class cartController {
         String query3 = "create table ordPay (pay_id int primary key AUTO_INCREMENT, cli_id int, ordem_id int, cartaoid int, valor NUMERIC(20, 2));";
         connectBD.EXEquery(query3);
 
-        if (param.get("cupon").toString() != "" && param.get("cupon") != null) {
-            total = total - Float.parseFloat(param.get("cupon").toString());
-            total = Float.parseFloat(df.format(total).replace(",", "."));
+        if (param.containsKey("cupon")) {
+            if (param.get("cupon").toString() != "" && param.get("cupon") != null) {
+                total = total - Float.parseFloat(param.get("cupon").toString());
+                total = Float.parseFloat(df.format(total).replace(",", "."));
+            }
         }
 
         String insertOrder = "insert into ordem ( cli_id, total, status, endereco) values (" + init.getUid()
                 + ", " + total + ", 'EM PROCESSAMENTO' , '" + param.get("endereco") + "');";
 
-        System.out.println(insertOrder);
         connectBD.EXEquery(insertOrder);
 
         String orderID = connectBD.EXE_Select_UID("select * from ordem where cli_id = " + init.getUid()
                 + " AND total = " + total + " AND endereco = " + param.get("endereco"));
 
-        System.out.println(orderID);
+        insertDetails(orderID);
 
+        insertpay(param, orderID);
+    }
+
+    private void insertDetails(String orderID) {
         for (Entry<Livro, Integer> iterable_element : ls.entrySet()) {
             String insertDetails = "insert into ordDetails ( cli_id, ordem_id, livroid, quant) values ("
                     + Integer.parseInt(init.getUid()) + ", " + orderID + ", "
                     + iterable_element.getKey().getIdlivro() + ", " + iterable_element.getValue()
                     + ");";
-            System.out.println(insertDetails);
             connectBD.EXEquery(insertDetails);
 
         }
+    }
 
+    private void insertpay(Map<String, ?> param, String orderID) {
         for (Entry<Cartao, Integer> cartao : arrayCartao.entrySet()) {
             String insertPay = "";
-            if (param.get("cupon").toString() != "") {
+            if (param.containsKey("cupon") && param.get("cupon") != "") {
                 insertPay = "insert into ordPay (cli_id , ordem_id, cartaoid, valor) values ("
                         + Integer.parseInt(init.getUid()) + ", " + Integer.parseInt(orderID) + ", " +
                         cartao.getKey().getNcartao()
@@ -266,7 +272,6 @@ public class cartController {
                         cartao.getKey().getNcartao()
                         + ", " + param.get("in" + cartao.getKey().getNcartao()) + ");";
             }
-            System.out.println(insertPay);
             connectBD.EXEquery(insertPay);
         }
     }

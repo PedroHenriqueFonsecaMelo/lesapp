@@ -19,7 +19,7 @@
 </head>
 <body>
     
-    <section class="section">
+    <section class="section2">
         <nav>
             <div class="logo">
                 <img src="/resources/indexcss/image/logo.png">
@@ -35,7 +35,8 @@
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </form>
                 <i class="fa-solid fa-heart"></i>
-                <i class="fa-solid fa-shopping-cart"></i>
+                <a href="/cart/cartTotal" target="_top"><i class="fa-solid fa-shopping-cart"></i></a>
+				<a href="/cliHome/cliProfile" target="_top"> <i class="fa-solid fa-user"></i></a>
             </div>
         </nav>
     </section>
