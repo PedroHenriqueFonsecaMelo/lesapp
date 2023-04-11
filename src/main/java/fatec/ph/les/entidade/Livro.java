@@ -205,6 +205,7 @@ public class Livro {
     private float profundidade;
     private float precificacao;
     private String barras;
+    private int quant;
 
     public Livro() {
     }
@@ -397,6 +398,7 @@ public class Livro {
         result = prime * result + Float.floatToIntBits(profundidade);
         result = prime * result + Float.floatToIntBits(precificacao);
         result = prime * result + ((barras == null) ? 0 : barras.hashCode());
+        result = prime * result + quant;
         return result;
     }
 
@@ -459,6 +461,8 @@ public class Livro {
                 return false;
         } else if (!barras.equals(other.barras))
             return false;
+        if (quant != other.quant)
+            return false;
         return true;
     }
 
@@ -483,6 +487,14 @@ public class Livro {
             }
         }
         return map;
+    }
+
+    public int getQuant() {
+        return quant;
+    }
+
+    public void setQuant(int quant) {
+        this.quant = quant;
     }
 
 }

@@ -64,6 +64,10 @@
 							<i class="fa fa-book text-center mr-1"></i> 
 							Adicionar Livros
 						</a>
+						<a class="nav-link" id="relatorio-tab" data-toggle="pill" href="#relatorio" role="tab" aria-controls="relatorio" aria-selected="false">
+							<i class="fa fa-book text-center mr-1"></i> 
+							Relatorio
+						</a>
 					</div>
 				</div>
 				<div class="tab-content p-4 p-md-5" id="v-pills-tabContent">
@@ -143,12 +147,16 @@
 												${lista}
 											</td>
 										</c:forEach>
-											<td class="tg-0lax">
-												<a class="btn btn-light" href="/admin/cliPedido/${cliente.get(0)}" target="_top">Aprovar</a>
-											</td>
-											<td class="tg-0lax">
-												<a class="btn btn-light" href="/admin/cliPedido/${cliente.get(0)}/0" target="_top">Recusar</a>
-											</td>
+										<c:forEach var="lista" items="${cliente}">
+											<c:if test="${cliente == 'EM PROCESSAMENTO'}">
+												<td class="tg-0lax">
+													<a class="btn btn-light" href="/admin/cliPedido/${cliente.get(0)}" target="_top">Aprovar</a>
+												</td>
+												<td class="tg-0lax">
+													<a class="btn btn-light" href="/admin/cliPedido/${cliente.get(0)}/0" target="_top">Recusar</a>
+												</td>
+											</c:if>
+										</c:forEach>
 										</tr>
 										</c:if>
 									</c:forEach>
@@ -196,22 +204,28 @@
 
 					<div class="tab-pane fade" id="livros" role="tabpanel" aria-labelledby="livros-tab">
 						<h3 class="mb-4">Adicionar Livro</h3>
-					<form action="/admin/livro" method="post">
-						<div class="row">
-							<c:forEach var="livro" items="${livros}">
-							<div class="col-md-4">
-								<div class="form-group">
-								  	<label style="display: block;">${livro.getKey()}</label>
-								  	<input ${livro.getValue()} id="${livro.getKey()}" name="${livro.getKey()}">
+						<form action="/admin/livro" method="post">
+							<div class="row">
+								<c:forEach var="livro" items="${livros}">
+								<div class="col-md-4">
+									<div class="form-group">
+										<label style="display: block;">${livro.getKey()}</label>
+										<input ${livro.getValue()} id="${livro.getKey()}" name="${livro.getKey()}">
+									</div>
 								</div>
+								</c:forEach>
 							</div>
-							</c:forEach>
-						</div>
-						<div>
-							<button class="btn btn-primary" type="submit">Update</button>
-							<button class="btn btn-light">Cancel</button>
-						</div>
-					</form>
+							<div>
+								<button class="btn btn-primary" type="submit">Update</button>
+								<button class="btn btn-light">Cancel</button>
+							</div>
+						</form>
+					</div>
+
+					<div class="tab-pane fade" id="relatorio" role="tabpanel" aria-labelledby="relatorio-tab">
+						<h3 class="mb-4">Adicionar Livro</h3>
+						
+						<div id="piechart" style="width: 200px; height: 200px;"></div>
 					</div>
 				</div>
 			</div>
@@ -219,10 +233,13 @@
 	</section>
 
 
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 	<script src="/resources/livrocss/livros.js" defer></script>
+	<script src="/resources/graficos/draw.js"></script>
+
 	<script>
 		function handleClick(cb) {
 			if(cb.checked == true){

@@ -19,6 +19,7 @@ import fatec.ph.les.entidade.Cliente;
 import fatec.ph.les.entidade.Endereco;
 import fatec.ph.les.entidade.Livro;
 import fatec.ph.les.servicos.connectBD;
+import fatec.ph.les.servicos.manyTmany;
 
 @Controller
 @RequestMapping("/admin")
@@ -49,6 +50,8 @@ public class admin {
         map.addAttribute("Ordem", orderArray);
         map.addAttribute("Troca", trocaArray);
         map.addAttribute("livros", Livro.info());
+        System.out.println(manyTmany.SelectOneLivro());
+        map.addAttribute("grafico", manyTmany.SelectOneLivro());
     }
 
     private void ModelAddTroca() {
@@ -245,10 +248,23 @@ public class admin {
                 + " AND PAY_ID = " + mapa.get("PAY_ID").get(i) + ";");
     }
 
-    @GetMapping("/admin/cliPedido/{id}")
-    public ModelAndView name(ModelMap model, @PathVariable(value = "id") String ncard) {
+    @GetMapping("/cliPedido/{id}")
+    public ModelAndView aceito(ModelMap model, @PathVariable(value = "id") String ncard) {
         mapa.putAll(
                 connectBD.EXE_Map("SELECT TOTAL FROM ORDEM where ORDEM_ID = " + ncard + ";"));
+        String updateOrderm = "UPDATE ORDEM set status = 'APROVADO' where ORDEM_ID = " + ncard + ";";
+        connectBD.EXEquery(updateOrderm);
+
+        return new ModelAndView("redirect:/admin/admin", model);
+    }
+
+    @GetMapping("/cliPedido/{id}/0")
+    public ModelAndView recusado(ModelMap model, @PathVariable(value = "id") String ncard) {
+        mapa.putAll(
+                connectBD.EXE_Map("SELECT TOTAL FROM ORDEM where ORDEM_ID = " + ncard + ";"));
+        String updateOrderm = "delete from ORDEM where ORDEM_ID = " + ncard + ";";
+        connectBD.EXEquery(updateOrderm);
+
         return new ModelAndView("redirect:/admin/admin", model);
     }
 
