@@ -53,6 +53,9 @@
                                     <option value="${endereco.getIdEndereco()}">${endereco.getBairro()}  ${endereco.getNumero()}</option>
                                 </c:forEach>
                             </select>
+                            <div>
+                                <a class="btn btn-light" href="/cliHome/add/endereco/form" target="_top">Adicionar</a>
+                            </div>
 					        <c:forEach var="cartao" items="${cartoes}">
 									<div class="col-md-12">
 										<div class="form-group">
@@ -76,7 +79,7 @@
 										<div class="form-group">
 											<label>Valor no cartao</label>
 											<div class="wrapper">
-                                                <input type="number" step="0.01" value="${TotalPorCartao}" min="10" id="in${cartao.getKey().getNcartao()}" name="in${cartao.getKey().getNcartao()}">
+                                                <input type="number" value="${TotalPorCartao}" min="10" id="in${cartao.getKey().getNcartao()}" name="in${cartao.getKey().getNcartao()}">
                                             </div>
 										</div>
 									</div>

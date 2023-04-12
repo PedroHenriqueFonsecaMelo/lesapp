@@ -67,24 +67,12 @@ public class admin {
 
     private void ModelAddOderm() {
         if (!connectBD.mrows("select * from ordem;").isEmpty()) {
+
             orderArray.addAll(connectBD.mcolum("select * from ordem;"));
-            orderArray.addAll(connectBD.mrows("select * from ordem;"));
 
-            for (int i = 0; i < orderArray.get(1).size(); i++) {
-                if (orderArray.get(0).get(i).equalsIgnoreCase("cli_id")
-                        && IsIteger(orderArray.get(1).get(i))) {
+            orderArray.addAll(connectBD.mrows(
+                    "select ORDEM_ID, CLI_ID, TOTAL, STATUS, RUA from ordem join Endereco on endereco = IDENDERECO;"));
 
-                    for (Cliente arrayList : clientes) {
-
-                        if (arrayList.getIdCliente() == Integer.parseInt(orderArray.get(1).get(i))) {
-
-                            ArrayList<Endereco> resulClientes = Endereco.endereco(arrayList.getIdCliente(), null);
-
-                            orderArray.get(1).set(orderArray.get(0).size() - 1, resulClientes.get(0).getRua());
-                        }
-                    }
-                }
-            }
         } else {
             orderArray.add(null);
             orderArray.add(null);
@@ -253,6 +241,7 @@ public class admin {
         mapa.putAll(
                 connectBD.EXE_Map("SELECT TOTAL FROM ORDEM where ORDEM_ID = " + ncard + ";"));
         String updateOrderm = "UPDATE ORDEM set status = 'APROVADO' where ORDEM_ID = " + ncard + ";";
+
         connectBD.EXEquery(updateOrderm);
 
         return new ModelAndView("redirect:/admin/admin", model);
@@ -260,6 +249,30 @@ public class admin {
 
     @GetMapping("/cliPedido/{id}/0")
     public ModelAndView recusado(ModelMap model, @PathVariable(value = "id") String ncard) {
+
+        Map<String, ArrayList<String>> Livroid = connectBD
+                .EXE_Map("select livroid, quant from ORDDETAILS where ordem_id = " + ncard);
+
+        Map<String, ArrayList<String>> map;
+
+        for (int index = 0; index < Livroid.get("livroid").size(); index++) {
+
+            int livroi = Integer.parseInt(Livroid.get("livroid").get(index));
+            map = connectBD.EXE_Map("select livroid, quant from LIVRO where LIVROID = " + livroi + ";");
+
+            for (int j = 0; j < map.get("quant").size(); j++) {
+
+                int detailLivro = Integer.parseInt(map.get("livroid").get(j));
+                if (livroi == detailLivro) {
+                    int quantidade = Integer.parseInt(map.get("quant").get(j))
+                            + Integer.parseInt(map.get("quant").get(j));
+                    String updateLivro = "update LIVRO set quant = " + quantidade + "where ordem_id = " + ncard;
+                    connectBD.EXEquery(updateLivro);
+                }
+
+            }
+        }
+
         mapa.putAll(
                 connectBD.EXE_Map("SELECT TOTAL FROM ORDEM where ORDEM_ID = " + ncard + ";"));
         String updateOrderm = "delete from ORDEM where ORDEM_ID = " + ncard + ";";

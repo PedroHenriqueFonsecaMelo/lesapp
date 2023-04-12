@@ -170,19 +170,22 @@ public class clienteController {
             }
 
         }
-
+        rowDetails.clear();
         return new ModelAndView("redirect:/cliHome/cliProfile", model);
 
     }
 
     @GetMapping("/reqTroca/{id}/{livro}")
     public ModelAndView reqTroca(ModelMap model, @RequestParam Map<String, String> param,
-            @PathVariable(value = "id") String ncard, @PathVariable(value = "id") String livro) {
+            @PathVariable(value = "id") String ncard, @PathVariable(value = "livro") String titulo) {
         String troca = "create table TROCA (TROCA_id int primary key AUTO_INCREMENT, ordem_id int unique, valorTroca NUMERIC(20, 2));";
         connectBD.EXEquery(troca);
 
+        Map<String, ArrayList<String>> Maptroca = connectBD
+                .EXE_Map("select Precificacao from Livro where TITULO = '" + titulo + "';");
+
         troca = "insert into TROCA (ordem_id, valorTroca) values (" + Integer.parseInt(ncard) + ", "
-                + Livro.livroCLIUID(Integer.parseInt(livro), 0).get(0).getPrecificacao() + ")";
+                + Maptroca.get("PRECIFICACAO").get(0) + ")";
         connectBD.EXEquery(troca);
 
         return new ModelAndView("redirect:/cliHome/cliProfile", model);
@@ -206,19 +209,10 @@ public class clienteController {
                     connectBD.mcolum("SELECT ORDEM_ID, ENDERECO, TOTAL, STATUS FROM ORDEM  where CLI_ID = "
                             + Integer.parseInt(init.getUid())));
 
-            row.addAll(connectBD.mrows("SELECT ORDEM_ID, ENDERECO, TOTAL, STATUS FROM ORDEM  where CLI_ID = "
-                    + Integer.parseInt(init.getUid())));
+            row.addAll(connectBD.mrows(
+                    "SELECT ORDEM_ID, RUA, TOTAL, STATUS FROM ORDEM join Endereco on endereco = IDENDERECO where CLI_ID = "
+                            + Integer.parseInt(init.getUid())));
 
-            for (int i = 0; i < row.get(1).size(); i++) {
-                if (row.get(0).get(i).equalsIgnoreCase("endereco")) {
-                    for (Endereco arrayList : enderecos) {
-                        if (arrayList.getIdEndereco() == Integer.parseInt(row.get(1).get(i))
-                                && !row.get(1).get(i).equalsIgnoreCase(arrayList.getRua())) {
-                            row.get(1).set(i, arrayList.getRua());
-                        }
-                    }
-                }
-            }
             model.addAttribute("ORDEM", row);
         } else {
             row.add(null);

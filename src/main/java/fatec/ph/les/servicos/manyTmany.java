@@ -35,7 +35,7 @@ public class manyTmany {
         String str3 = "select IDLIVRO, COUNT(IDLIVRO) from ORDDETAILS join LIVRO on IDLIVRO = LIVROID group by LIVROID";
 
         Map<String, ArrayList<String>> rs = connectBD.EXE_Map(str3);
-        SortedMap<String, Integer> toJson = new TreeMap();
+        SortedMap<String, Integer> toJson = new TreeMap<>();
         // ArrayList<String[]> array = new ArrayList<>();
 
         for (Entry<String, ArrayList<String>> iterable_element : rs.entrySet()) {

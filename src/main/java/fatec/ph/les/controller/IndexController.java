@@ -48,11 +48,21 @@ public class IndexController {
         connectBD.EXEquery(
                 "create table cupons (cupons_id int primary key AUTO_INCREMENT, cli_id int, desconto NUMERIC (20,2))");
         connectBD.EXEquery("insert into cupons (cli_id, desconto) values  (1, 11.1);");
+
         connectBD.EXEquery(st);
         connectBD.EXEquery(sy);
         connectBD.EXEquery(su);
         connectBD.EXEquery(si);
         connectBD.EXEquery(so);
+
+        String query = "create table ordem (ordem_id int primary key AUTO_INCREMENT, cli_id int, total NUMERIC(20,2), status VARCHAR(100), endereco VARCHAR(100));";
+        connectBD.EXEquery(query);
+
+        String query2 = "create table ordDetails (details_id int primary key AUTO_INCREMENT, cli_id int, ordem_id int, livroid int, quant int);";
+        connectBD.EXEquery(query2);
+
+        String query3 = "create table ordPay (pay_id int primary key AUTO_INCREMENT, cli_id int, ordem_id int, cartaoid int, valor NUMERIC(20, 2));";
+        connectBD.EXEquery(query3);
     }
 
     @GetMapping("/shop")

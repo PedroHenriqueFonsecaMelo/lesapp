@@ -486,6 +486,7 @@ public class Livro {
                 }
             }
         }
+        System.out.println(map);
         return map;
     }
 

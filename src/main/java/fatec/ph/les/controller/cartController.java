@@ -118,14 +118,23 @@ public class cartController {
     }
 
     private void modelagem(ModelMap model) {
+
         model.addAttribute("enderecoPrincipal", enderecos.get(0));
+
         model.addAttribute("outrosEnderecos", enderecos2);
+
         model.addAttribute("Total", df.format(total));
-        model.addAttribute("TotalPorCartao", total / arrayCartao.size());
+
+        model.addAttribute("TotalPorCartao", df.format(total / arrayCartao.size()).replace(",", "."));
+
         model.addAttribute("livros", ls);
+
         model.addAttribute("cartoes", arrayCartao);
+
         model.addAttribute("cartoes2", arrayCartao2);
+
         model.addAttribute("cupon", cupon);
+
     }
 
     @GetMapping("/addCartaoCart/{id}")
@@ -212,14 +221,6 @@ public class cartController {
     }
 
     private void execCart(Map<String, ?> param) {
-        String query = "create table ordem (ordem_id int primary key AUTO_INCREMENT, cli_id int, total NUMERIC(20,2), status VARCHAR(100), endereco VARCHAR(100));";
-        connectBD.EXEquery(query);
-
-        String query2 = "create table ordDetails (details_id int primary key AUTO_INCREMENT, cli_id int, ordem_id int, livroid int, quant int);";
-        connectBD.EXEquery(query2);
-
-        String query3 = "create table ordPay (pay_id int primary key AUTO_INCREMENT, cli_id int, ordem_id int, cartaoid int, valor NUMERIC(20, 2));";
-        connectBD.EXEquery(query3);
 
         if (param.containsKey("cupon")) {
             if (param.get("cupon").toString() != "" && param.get("cupon") != null) {
@@ -247,6 +248,15 @@ public class cartController {
                     + Integer.parseInt(init.getUid()) + ", " + orderID + ", "
                     + iterable_element.getKey().getIdlivro() + ", " + iterable_element.getValue()
                     + ");";
+            Map<String, ArrayList<String>> map = connectBD
+                    .EXE_Map("Select quant from LIVRO where IDLIVRO = " + iterable_element.getKey().getIdlivro());
+            Entry<String, ArrayList<String>> entry = map.entrySet().iterator().next();
+
+            String updateLivro = "update LIVRO set quant = "
+                    + (Integer.parseInt(entry.getValue().get(0)) - iterable_element.getValue()) + " where IDLIVRO =  "
+                    + iterable_element.getKey().getIdlivro() + ");";
+
+            connectBD.EXEquery(updateLivro);
             connectBD.EXEquery(insertDetails);
 
         }

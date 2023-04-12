@@ -141,23 +141,23 @@
 									</tr>
 									<c:forEach var="cliente" items="${Ordem}"  begin="1">
 										<c:if test="${cliente != null}">
-										<tr>
-										<c:forEach var="lista" items="${cliente}">
-											<td class="tg-0lax">
-												${lista}
-											</td>
-										</c:forEach>
-										<c:forEach var="lista" items="${cliente}">
-											<c:if test="${cliente == 'EM PROCESSAMENTO'}">
-												<td class="tg-0lax">
-													<a class="btn btn-light" href="/admin/cliPedido/${cliente.get(0)}" target="_top">Aprovar</a>
-												</td>
-												<td class="tg-0lax">
-													<a class="btn btn-light" href="/admin/cliPedido/${cliente.get(0)}/0" target="_top">Recusar</a>
-												</td>
-											</c:if>
-										</c:forEach>
-										</tr>
+											<tr>
+												<c:forEach var="lista" items="${cliente}">
+													<td class="tg-0lax">
+														${lista}
+													</td>
+												</c:forEach>
+												
+												<c:if test="${cliente.get(3) == 'EM PROCESSAMENTO'}">
+													<td class="tg-0lax">
+														<a class="btn btn-light" href="/admin/cliPedido/${cliente.get(0)}" target="_top">Aprovar</a>
+													</td>
+													<td class="tg-0lax">
+														<a class="btn btn-light" href="/admin/cliPedido/${cliente.get(0)}/0" target="_top">Recusar</a>
+													</td>
+												</c:if>
+												
+											</tr>
 										</c:if>
 									</c:forEach>
 								</tbody>
