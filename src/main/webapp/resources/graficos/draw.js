@@ -1,16 +1,21 @@
 google.charts.load('current', {'packages':['corechart']});
 google.charts.setOnLoadCallback(drawChart);
-var customObjectList = JSON.parse('${grafico}');
+let customObjectList = [["Coluna", "Valor"]];
+let j = JSON.parse(document.getElementById('json').value);
 
-console.log(customObjectList);
+for (let i = 0; i < j.length; i++) {
+    customObjectList.push(j[i]);
+}
+
+for (let i = 1; i < customObjectList.length; i++) {
+    customObjectList[i][1] = parseInt(customObjectList[i][1]);
+}
+
 
 function drawChart() {
    
     
-    var data = google.visualization.arrayToDataTable([
-        ['Task', 'Hours per Day'],
-        customObjectList
-    ]);
+    var data = google.visualization.arrayToDataTable(customObjectList);
 
 
 var options = {

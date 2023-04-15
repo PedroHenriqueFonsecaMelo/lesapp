@@ -79,7 +79,7 @@
 										<div class="form-group">
 											<label>Valor no cartao</label>
 											<div class="wrapper">
-                                                <input type="number" value="${TotalPorCartao}" min="10" id="in${cartao.getKey().getNcartao()}" name="in${cartao.getKey().getNcartao()}">
+                                                <input type="number" step="0.01" value="${TotalPorCartao}" min="10" id="in${cartao.getKey().getNcartao()}" name="in${cartao.getKey().getNcartao()}">
                                             </div>
 										</div>
 									</div>

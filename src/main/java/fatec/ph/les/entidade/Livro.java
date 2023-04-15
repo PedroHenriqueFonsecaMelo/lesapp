@@ -371,6 +371,14 @@ public class Livro {
         this.idlivro = idlivro;
     }
 
+    public int getQuant() {
+        return quant;
+    }
+
+    public void setQuant(int quant) {
+        this.quant = quant;
+    }
+
     public String toString2() {
         return "Livro [idlivro=" + idlivro + ", autor=" + autor + ", ano=" + ano + ", titulo=" + titulo + ", editora="
                 + editora + ", edicao=" + edicao + ", isbn=" + isbn + ", npaginas=" + npaginas + ", sinopse=" + sinopse
@@ -488,14 +496,6 @@ public class Livro {
         }
         System.out.println(map);
         return map;
-    }
-
-    public int getQuant() {
-        return quant;
-    }
-
-    public void setQuant(int quant) {
-        this.quant = quant;
     }
 
 }

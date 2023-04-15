@@ -48,9 +48,11 @@ public class admin {
     private void AdminBaseModel(ModelMap map) {
 
         map.addAttribute("Ordem", orderArray);
+
         map.addAttribute("Troca", trocaArray);
+
         map.addAttribute("livros", Livro.info());
-        System.out.println(manyTmany.SelectOneLivro());
+
         map.addAttribute("grafico", manyTmany.SelectOneLivro());
     }
 

@@ -99,6 +99,7 @@ public class cartController {
 
         }
 
+        enderecos.clear();
         enderecos.addAll(Endereco.endereco(Integer.parseInt(init.getUid()), null));
         for (Endereco cartao : enderecos) {
             if (!cartao.equals(enderecos.get(0))) {

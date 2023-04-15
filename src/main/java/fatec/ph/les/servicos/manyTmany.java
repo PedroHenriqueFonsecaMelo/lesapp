@@ -1,15 +1,12 @@
 package fatec.ph.les.servicos;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.Map.Entry;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 public class manyTmany {
     String str;
@@ -35,21 +32,37 @@ public class manyTmany {
         String str3 = "select IDLIVRO, COUNT(IDLIVRO) from ORDDETAILS join LIVRO on IDLIVRO = LIVROID group by LIVROID";
 
         Map<String, ArrayList<String>> rs = connectBD.EXE_Map(str3);
-        SortedMap<String, Integer> toJson = new TreeMap<>();
-        // ArrayList<String[]> array = new ArrayList<>();
+
+        ArrayList<ArrayList<String>> array = new ArrayList<>();
 
         for (Entry<String, ArrayList<String>> iterable_element : rs.entrySet()) {
-            /*
-             * String[] arraStrings = { "'" + iterable_element.getKey() + "'",
-             * iterable_element.getValue().get(0) };
-             * array.add(arraStrings);
-             */
-            toJson.put(iterable_element.getKey(), Integer.parseInt(iterable_element.getValue().get(0)));
+            for (int i = 0; i < iterable_element.getValue().size(); i++) {
+                array.add(new ArrayList<String>(
+                        Arrays.asList(iterable_element.getKey(), iterable_element.getValue().get(i))));
+            }
         }
+
+        for (int i = 0; i < array.size(); i++) {
+            for (int j = 0; j < array.get(i).size(); j++) {
+
+                if (array.get(i).get(0).equals("IDLIVRO")) {
+                    array.get(i + (array.get(i).size() / 2)).set(0, array.get(i).get(0) + " " + array.get(i).get(1));
+                }
+            }
+        }
+
+        for (int i = 0; i < array.size(); i++) {
+            if (array.get(i).get(0).equals("IDLIVRO")) {
+                array.remove(i);
+                i--;
+            }
+        }
+
         Gson gson = new Gson();
-        Type gsnoType = new TypeToken<HashMap>() {
-        }.getType();
-        String gsoString = gson.toJson(toJson, gsnoType);
+        // Type gsnoType = new TypeToken<HashMap>() { e();
+
+        String gsoString = gson.toJson(array);
+        System.out.println(array);
 
         return gsoString;
     }
