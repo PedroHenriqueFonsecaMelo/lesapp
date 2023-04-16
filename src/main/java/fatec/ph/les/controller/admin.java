@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import fatec.ph.les.entidade.Cliente;
-import fatec.ph.les.entidade.Endereco;
 import fatec.ph.les.entidade.Livro;
 import fatec.ph.les.servicos.connectBD;
 import fatec.ph.les.servicos.manyTmany;
@@ -171,15 +170,8 @@ public class admin {
 
                 updatePay.add("UPDATE ORDPAY set VALOR = "
                         + (max / connectBD.EXE_Map("SELECT VALOR FROM ORDPAY where ORDEM_ID = "
-                                + mapa.get("ORDEM_ID").get(0) + ";").get(i).size())
+                                + mapa.get("ORDEM_ID").get(0) + ";").get("VALOR").size())
                         + " where ORDEM_ID = " + mapa.get("ORDEM_ID").get(0) + ";");
-
-                System.out.println(
-                        "private void updatePay" + connectBD.EXE_Map("SELECT VALOR FROM ORDPAY where ORDEM_ID = "
-                                + mapa.get("ORDEM_ID").get(0) + ";"));
-                System.out.println(
-                        "private void updatePay" + connectBD.EXE_Map("SELECT VALOR FROM ORDPAY where ORDEM_ID = "
-                                + mapa.get("ORDEM_ID").get(0) + ";").get(i));
 
                 connectBD.EXEquery("insert into cupons (cli_id, desconto) values ("
                         + Integer.parseInt(mapa.get("CLI_ID").get(i)) + ", "
@@ -335,14 +327,5 @@ public class admin {
         map.addAttribute("Clientes", row);
 
         return "bookStore/admin";
-    }
-
-    private boolean IsIteger(String tri) {
-        try {
-            Integer.parseInt(tri);
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
     }
 }

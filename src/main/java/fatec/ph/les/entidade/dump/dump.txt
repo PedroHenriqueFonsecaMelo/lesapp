@@ -217,3 +217,111 @@ Map<String, ArrayList<String>> mapa = new HashMap<>();
 
 
 CUPON - ADD BUTTON
+
+
+private static Set<Class<?>> findAllClassesUsingClassLoader(String packageName) {
+        InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream(packageName);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+
+        return reader.lines()
+                .filter(line -> line.endsWith(".class"))
+                .map(line -> getClass(line, packageName))
+                .collect(Collectors.toSet());
+
+    }
+
+private static Class<?> getClass(String className, String packageName) {
+        try {
+            return Class.forName(packageName + "."
+                    + className.substring(0, className.lastIndexOf('.')));
+        } catch (ClassNotFoundException e) {
+            // handle the exception
+        }
+        return null;
+    }
+
+for (String iterable_element : array) {
+            System.out.println("-------------------\n");
+            System.out.println(iterable_element);
+            System.out.println("\n-------------------");
+        }
+
+
+[Cartao]<>-> [IndexController ]
+[Categoria]<>-> [IndexController ]
+[Cliente]<>-> [IndexController ]
+[Endereco]<>-> [IndexController ]
+[Livro]<>-> [IndexController ]
+[connectBD]<>-> [IndexController ]
+
+[Cartao]<>-> [cartaoController ]
+
+[Cartao]<>-> [cartController ]
+[init]<>-> [cartController ]
+[Endereco]<>-> [cartController ]
+[Livro]<>-> [cartController ]
+[connectBD]<>-> [cartController ]
+
+[Cartao]<>-> [clienteController ]
+[init]<>-> [clienteController ]
+[Endereco]<>-> [clienteController ]
+[Livro]<>-> [clienteController ]
+[connectBD]<>-> [clienteController ]
+
+[Cliente]<>-> [admin ]
+[Livro]<>-> [admin ]
+[connectBD]<>-> [admin ]
+[ManyToMany]<>-> [admin ]
+
+[Endereco]<>-> [enderecoController ]
+
+[cartaoController |  -aux1: String; -aux2: int | update();del();cartaoSingupForm();enderecoSingup()]
+
+[clienteController |  -uidcli: String; +enderecos: ArrayList; +row: ArrayList; +rowDetails: ArrayList | update();clear();del();logCli();toAdmin();loginCli();cliModel();cliOrdens();CliForm();enderecoSingup();insCli();cliProfile();cliProfile2();reqTroca();addCartao();cartaoSingup();addEndereco()]
+
+[admin |  +row: ArrayList; +orderArray: ArrayList; +trocaArray: ArrayList; +clientes: ArrayList; +mapa: Map; +valorDividido: float | name();update();clear();data();delete();AdminBaseModel();ModelAddOderm();execUpdate();DadoPreparoMapa();updateDetails();ModelAddTroca();trocar();updateORDEM();updatePay();ModelAddCli();aceito();pesquisa();recusado()]
+
+[enderecoController |  -aux1: String | update();del();enderecoSingup();enderecoSingupForm()]
+
+[IndexController |  -init: boolean | index();init();shop();aboutlivro();pesquisaLivro()]
+
+[cartController |  -df: DecimalFormat; -ls: Map; -arrayCartao: Map; -map: NavigableMap; -mudanca: boolean; -uid: String; -total: float; +cupon: ArrayList; -lista: ArrayList; +enderecos2: ArrayList; -arrayCartao2: ArrayList; +enderecos: ArrayList; -arrayEndereco: ArrayList | clear();order();cartTotal();modelagem();cartAdd();addCartaoCart();removeLivroCart();insertDetails();execCart();removeCartaoCart();insertpay()]
+
+
+
+
+
+[connectBD]<>-> [ordercartoes ]
+[connectBD]<>-> [orderdetails ]
+
+[Init]<>-> [Cartao ]
+[connectBD]<>-> [Cartao ]
+
+[connectBD]<>-> [Categoria ]
+[connectBD]<>-> [Livro ]
+
+[Init]<>-> [Cliente ]
+[connectBD]<>-> [Cliente ]
+
+[Init]<>-> [Endereco ]
+[connectBD]<>-> [Endereco ]
+
+
+[order |  -idorder: int; -cli_id: int; -valorTotal: float; -status: String; -enderecoentrega: String]
+
+[ordercartoes |  -idordercartoes: int; -orderid: int; -cartao_id: int; -vezes: int | InserirCBD()]
+
+[orderdetails |  -idorderdetails: int; -orderid: int; -livro_id: int; -quant: int | InserirCBD()]
+
+[Categoria |  -idCategoria: int; -categorias: String | cliUID();CreateTable();categoriaId()]
+[Cartao |  -idCartao: int; -ncartao: int; -bandeira: String; -nomecli: String; -cli_id: int; -cv: int; -preferencial: int | equals();hashCode();update();InserirCBD();cartao();cartaoCLIUID();cartaoCLIUID();Deletar();Deletar();cliUID();toString2();CreateTable()]
+[Livro |  -idlivro: int; -autor: String; -ano: int; -titulo: String; -editora: String; -edicao: int; -isbn: int; -npaginas: int; -sinopse: String; -altura: float; -largura: float; -categorias: String; -peso: float; -profundidade: float; -precificacao: float; -barras: String; -quant: int | equals();hashCode();info();livroCLIUID();livro();livroPesquisa();InserirCBD();toString2();CreateTable()]
+
+[Endereco |  -idEndereco: int; -cliuid: int; -pais: String; -cep: String; -estado: String; -cidade: String; -rua: String; -bairro: String; -numero: int; -complemento: String; -tiporesidencia: String | update();InserirCBD();endereco();Deletar();Deletar();cliUID();toString2();CreateTable();argsParse2();argsParse()]
+
+[Cliente |  -idCliente: int; -senha: String; -nome: String; -datanasc: String; -gen: String; -email: String | equals();hashCode();update();info();cliente();InserirCBD();Deletar();cliUID();cliUID();toString2();CreateTable();DeletarCBD()]
+
+[Cartao |  -idCartao: int; -ncartao: int; -bandeira: String; -nomecli: String; -cli_id: int; -cv: int; -preferencial: int | equals();hashCode();update();InserirCBD();cartao();cartaoCLIUID();cartaoCLIUID();Deletar();Deletar();cliUID();toString2();CreateTable()]
+
+
+

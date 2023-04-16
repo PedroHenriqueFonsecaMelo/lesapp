@@ -2,6 +2,7 @@ package fatec.ph.les.controller;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -34,6 +35,16 @@ public class IndexController {
     }
 
     private void init() {
+
+        Set<String> array = fatec.ph.les.servicos.init
+                .fileDirectory("C:/Users/Pedro Henrique/Documents/Fatec/les/lesapp/lesapp/src/main/java/fatec/ph/les");
+
+        for (String iterable_element : array) {
+            System.out.println("-------------------\n");
+            System.out.println(iterable_element);
+            System.out.println("\n-------------------");
+        }
+
         connectBD.CreateTableX(Cliente.class);
         connectBD.CreateTableX(Endereco.class);
         connectBD.CreateTableX(Cartao.class);
