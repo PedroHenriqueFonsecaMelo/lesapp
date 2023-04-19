@@ -15,7 +15,8 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-     <script src="/resources/livrocss/livros.js" defer></script>
+    
+    <script src="/resources/livrocss/livros.js" defer></script>
 </head>
 <body>
     
@@ -31,7 +32,7 @@
             </ul>
             <div class="social_icon">
                 <form action="/pesquisa" method="post">
-                    <input type="text" class="form-control shadow-none" id="pesquisaLivro" name="pesquisaLivro" required  />
+                    <input type="text" class="form-control2 shadow-none" id="pesquisaLivro" name="pesquisaLivro" required  />
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </form>
                 <i class="fa-solid fa-heart"></i>
@@ -113,6 +114,7 @@
                                 </div>
                                 <div class="arrivals_tag">
                                     <p>${livro.getKey().getPrecificacao()}</p>
+                                    <a href="/cart/removeLivroCart/${livro.getKey().getIdlivro()}">Remover Livro</a>
                                 </div>
                             </div>
                         </c:forEach>

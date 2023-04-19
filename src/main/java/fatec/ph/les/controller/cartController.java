@@ -2,6 +2,7 @@ package fatec.ph.les.controller;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -34,7 +35,6 @@ public class cartController {
     private NavigableMap<String, String> map = new TreeMap<>();
 
     private boolean mudanca = false;
-    private String uid;
     private float total = 0;
 
     ArrayList<ArrayList<String>> cupon = new ArrayList<>();
@@ -48,25 +48,24 @@ public class cartController {
     public ModelAndView cartAdd(@PathVariable(value = "id") int id, @PathVariable(value = "quant") int quant,
             ModelMap model) {
 
-        uid = init.getUid();
-
         if (!ls.isEmpty()) {
 
             for (Entry<Livro, Integer> iterable_element : ls.entrySet()) {
-                if (iterable_element.getKey().equals(Livro.livroCLIUID(id, 0).get(0))) {
+                if (Livro.livroCLIUID(id, 0).get(0).equals(iterable_element.getKey())) {
 
                     ls.replace(iterable_element.getKey(), iterable_element.getValue() + quant);
 
                     total = total + (quant * Livro.livroCLIUID(id, 0).get(0).getPrecificacao());
 
+                } else {
+                    ls.put(Livro.livroCLIUID(id, 0).get(0), quant);
+                    total = total + (quant * Livro.livroCLIUID(id, 0).get(0).getPrecificacao());
                 }
             }
         } else {
-
             ls.put(Livro.livroCLIUID(id, 0).get(0), quant);
             total = total + (quant * Livro.livroCLIUID(id, 0).get(0).getPrecificacao());
         }
-
         mudanca = true;
 
         return new ModelAndView("redirect:/shop", model);
@@ -77,16 +76,16 @@ public class cartController {
         if (mudanca) {
 
             if (arrayCartao.isEmpty()) {
-                map.put("cli_id", uid);
+                map.put("cli_id", init.getUid());
                 map.put("preferencial", "1");
 
-                arrayCartao.put(Cartao.cartao(Integer.valueOf(init.getUid()), map).get(0), 1);
+                arrayCartao.put(Cartao.cartao(0, map).get(0), 1);
 
                 map.clear();
 
-                map.put("cli_id", uid);
+                map.put("cli_id", init.getUid());
                 map.put("preferencial", "0");
-                arrayCartao2 = Cartao.cartaoCLIUID(Integer.valueOf(init.getUid()), map);
+                arrayCartao2 = Cartao.cartaoCLIUID(0, map);
 
                 arrayEndereco.addAll(Endereco.endereco(Integer.valueOf(init.getUid()), null));
 
@@ -178,17 +177,18 @@ public class cartController {
     }
 
     @GetMapping("/removeLivroCart/{id}")
-    public String removeLivroCart(@PathVariable(value = "id") String ncard, ModelMap model) {
+    public ModelAndView removeLivroCart(@PathVariable(value = "id") String ncard, ModelMap model) {
 
-        for (int i = 0; i <= lista.size() - 1; i++) {
-            if (lista.get(i) == Integer.parseInt(ncard)) {
-                ls.remove(Livro.livroCLIUID(i, 0).get(0));
+        for (Entry<Livro, Integer> cartao : ls.entrySet()) {
+
+            if (cartao.getKey().getIdlivro() == Integer.parseInt(ncard)) {
+                ls.remove(Livro.livroCLIUID(Integer.parseInt(ncard), 0).get(0));
+                total = total - (cartao.getKey().getPrecificacao() * cartao.getValue());
             }
+
         }
 
-        modelagem(model);
-
-        return "cartPages/cartTotal";
+        return new ModelAndView("redirect:/cart/cartTotal", model);
     }
 
     @PostMapping("/order")
