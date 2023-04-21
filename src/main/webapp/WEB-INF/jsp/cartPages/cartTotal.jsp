@@ -54,9 +54,7 @@
                                     <option value="${endereco.getIdEndereco()}">${endereco.getBairro()}  ${endereco.getNumero()}</option>
                                 </c:forEach>
                             </select>
-                            <div>
-                                <a class="btn btn-light" href="/cliHome/add/endereco/form" target="_top">Adicionar</a>
-                            </div>
+                            
 					        <c:forEach var="cartao" items="${cartoes}">
 									<div class="col-md-12">
 										<div class="form-group">
@@ -95,14 +93,19 @@
                             </c:if>
                             <button class="dropbtn col-12" type="submit" id="save-btn">Finalizar compra</button>
                         </form>
+                        <form action="/cart/getEnderecoADD" method="get">
+                             <button class="dropbtn col-12" type="submit">Cadastrar Endereco</button>
+                        </form>
                         <div class="dropdown">
-                            <button class="dropbtn col-12">Dropdown</button>
+                            <button class="dropbtn col-12">Cartoes</button>
                             <div class="dropdown-content">
                                 <c:forEach var="cartao" items="${cartoes2}">
                                     <a href="/cart/addCartaoCart/${cartao.getNcartao()}">${cartao.getNcartao()}</a>
                                 </c:forEach>
+                                <a href="/cart/getCartaoADD">Cadastrar Cartao</a>
                             </div>
                         </div>
+                        
                     </div>
 				</div>
 				<div class="tab-content p-4 p-md-5" id="v-pills-tabContent">

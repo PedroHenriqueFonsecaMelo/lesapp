@@ -85,6 +85,7 @@ public class cartController {
 
                 map.put("cli_id", init.getUid());
                 map.put("preferencial", "0");
+
                 arrayCartao2 = Cartao.cartaoCLIUID(0, map);
 
                 arrayEndereco.addAll(Endereco.endereco(Integer.valueOf(init.getUid()), null));
@@ -194,7 +195,7 @@ public class cartController {
     @PostMapping("/order")
     public ModelAndView order(@RequestParam Map<String, ?> param, ModelMap model) {
         float totalCart = 0;
-        System.out.println(param);
+
         for (Entry<String, ?> cartao : param.entrySet()) {
 
             if (cartao.getKey().contains("in")) {
@@ -298,6 +299,47 @@ public class cartController {
         lista.clear();
         map.clear();
         cupon.clear();
+    }
+
+    @GetMapping("/getCartaoADD")
+    public String getCartaoADD() {
+        return "cartPages/cartaoCart";
+    }
+
+    @GetMapping("/getEnderecoADD")
+    public String getEnderecoADD() {
+
+        return "cartPages/enderecoCart";
+    }
+
+    @PostMapping("/postCartaoADD")
+    public ModelAndView postCartaoADD(ModelMap model, @RequestParam Map<String, ?> param) {
+        Cartao cartao = new Cartao(param);
+
+        cartao.setCli_id(Integer.parseInt(init.getUid()));
+
+        if (connectBD.EXE_Map("select * from cartao where CLI_ID = " + init.getUid()).isEmpty()) {
+            cartao.setPreferencial(1);
+        } else
+            cartao.setPreferencial(0);
+
+        Cartao.InserirCBD(cartao);
+
+        arrayCartao2.add(cartao);
+
+        mudanca = true;
+        return new ModelAndView("redirect:/cart/cartTotal", model);
+    }
+
+    @PostMapping("/postEnderecoADD")
+    public ModelAndView postEnderecoADD(ModelMap model, @RequestParam Map<String, ?> param) {
+
+        Endereco endereco = new Endereco(param);
+        endereco.setCliuid(Integer.parseInt(init.getUid()));
+        Endereco.InserirCBD(endereco);
+
+        mudanca = true;
+        return new ModelAndView("redirect:/cart/cartTotal", model);
     }
 
 }
