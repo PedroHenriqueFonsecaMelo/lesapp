@@ -3,8 +3,6 @@ package fatec.ph.les.controller;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
-import java.util.Map.Entry;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
@@ -37,8 +35,6 @@ public class cartaoController {
         } else
             emailId2 = " ";
 
-        // System.out.println("flashMap /singup/form " + emailId2);
-
         hRequest.getSession().setAttribute("emailId2", emailId2);
         redirectAttributes.addFlashAttribute("flash_uid", emailId2);
 
@@ -51,14 +47,6 @@ public class cartaoController {
     public ModelAndView enderecoSingup(@RequestParam Map<String, ?> param,
             ModelMap model, RedirectAttributes redirectAttributes) {
 
-        /*
-         * for (Entry<String, ?> iterable_element : param.entrySet()) {
-         * System.out.println(iterable_element.getKey() + " / " +
-         * iterable_element.getValue() + " / "
-         * + iterable_element.getValue().getClass().getSimpleName());
-         * }
-         */
-
         Cartao cartao = new Cartao(param);
 
         cartao.setCli_id(Integer.parseInt(aux1));
@@ -68,7 +56,6 @@ public class cartaoController {
         } else
             cartao.setPreferencial(0);
 
-        // System.out.println(cartao.toString2());
         Cartao.InserirCBD(cartao);
 
         redirectAttributes.addFlashAttribute("flash_uid", aux1);
@@ -81,10 +68,6 @@ public class cartaoController {
             @RequestParam Map<String, String> param) {
         TreeMap<String, String> ls = new TreeMap<>();
 
-        for (Entry<String, String> iterable_element : param.entrySet()) {
-            System.out.println(iterable_element.getKey() + " ZZ " + iterable_element.getValue());
-
-        }
         if (!param.containsKey("preferencial")) {
             param.put("preferencial", "0");
         }

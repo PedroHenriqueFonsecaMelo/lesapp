@@ -13,7 +13,10 @@
 
 	<link rel="stylesheet" href="/resources/livrocss/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	
 	<script src="/resources/clicss/scripts.js" defer></script>
+	
+	<script src="/resources/clicss/jsTable/table.js" defer type="text/javascript"></script>
 </head>
 
 
@@ -283,7 +286,7 @@
 						<h3 class="mb-4">Pedidos</h3>
 						<div class="row">
 						<div class="col-md-12">
-							<table class="tg">
+							<table class="tg" id="TABLE1">
 							<tbody>
 								<tr>
 									<c:forEach var="cliente" items="${ORDEM.get(0)}">
@@ -301,7 +304,7 @@
 										<c:choose>
 											<c:when test = "${lista == 'EM PROCESSAMENTO'}">
 												<td class="tg-0lax">
-													<a href="/cliHome/cliDetails/${cliente.get(0)}" id="cliDetails${cliente.get(0)}" class="cart-btn">Add to cart</a>
+													<button onclick='changeTable("${cliente.get(0)}")' id="cliDetails${cliente.get(0)}" class="cart-btn">Add to cart</button>
 												</td>
 											</c:when>
 										</c:choose>
@@ -310,6 +313,7 @@
 								</c:forEach>
 							</tbody>
 							</table>
+							
 						</div>
 						</div>
 					</div>
@@ -317,29 +321,8 @@
 						<h3 class="mb-4">Pedido Detalhes Troca</h3>
 						<div class="row">
 						<div class="col-md-12">
-							<table style="border-spacing: 10px; border: none !important;">
-							<tbody>
-								<tr>
-									<c:forEach var="cliente" items="${details.get(0)}">
-										<td>
-											${cliente}
-										</td>
-									</c:forEach>
-								</tr>
-									<c:forEach var="cliente" items="${details}"  begin="1">
-										<tr>
-										<c:forEach var="lista" items="${cliente}">
-											<td>
-												${lista}
-											</td>
-										</c:forEach>
-											<td>
-											<a href="/cliHome/reqTroca/${cliente.get(0)}/${cliente.get(1)}" id="livrolink" class="cart-btn">Trocar</a>
-											</td>
-										</tr>
-									</c:forEach>
-							</tbody>
-							</table>
+							<input type="hidden" id="json" value='${table}'>
+							<div id="TABLE2"></div>
 						</div>
 						</div>
 					</div>
@@ -353,6 +336,8 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 	<script src="/resources/livrocss/livros.js" defer></script>
+
+
 	<script>
 		function handleClick(cb) {
 			if(cb.checked == true){

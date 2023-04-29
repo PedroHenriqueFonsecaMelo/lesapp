@@ -21,7 +21,6 @@ public class Categoria {
         Entry<String, String> lastEntry;
 
         StringBuilder str = new StringBuilder();
-        System.out.println(" public static ArrayList<Categoria> Categoria " + uid);
 
         if (uid != 0 & args == null) {
             str.append("select * from Categoria where idCategoria = " + uid + ";");
@@ -39,7 +38,6 @@ public class Categoria {
                 }
             }
         }
-        System.out.println(str.toString());
 
         int i = Integer.parseInt(connectBD.EXE_Select_UID(str.toString()));
 
@@ -75,7 +73,7 @@ public class Categoria {
             }
 
         }
-        System.out.println(uid.toString());
+
         fieldname = connectBD.EXE_Select_UID(uid.toString());
 
         return fieldname;

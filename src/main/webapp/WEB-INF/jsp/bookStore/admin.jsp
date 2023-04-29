@@ -223,7 +223,7 @@
 					</div>
 
 					<div class="tab-pane fade" id="relatorio" role="tabpanel" aria-labelledby="relatorio-tab">
-						<h3 class="mb-4">Adicionar Livro</h3>
+						<h3 class="mb-4">Grafico de Vendas</h3>
 						<input type="hidden" id="json" value='${grafico}'>
 						<div id="piechart" style="width: 200px; height: 200px;"></div>
 					</div>

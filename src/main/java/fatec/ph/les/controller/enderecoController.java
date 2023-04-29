@@ -35,10 +35,6 @@ public class enderecoController {
         } else
             emailId2 = " ";
 
-        // System.out.println("request: " +
-        // request.getSession().getAttribute("uidcli"));
-
-        // request.getSession().setAttribute("emailId2", emailId2);
         redirectAttributes.addFlashAttribute("flash_uid", emailId2);
 
         aux1 = emailId2;

@@ -124,6 +124,10 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
+                            <label>Frete</label>
+                            <label id="frete">${frete}</label>
+                        </div>
+                        <div class="form-group">
                             <label>Total</label>
                             <label id="total">${Total}</label>
                         </div>

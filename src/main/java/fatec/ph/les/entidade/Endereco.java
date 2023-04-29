@@ -47,14 +47,14 @@ public class Endereco {
             }
 
         }
-        System.out.println(uid.toString());
+
         fieldname = connectBD.EXE_Select_UID(uid.toString());
 
         return fieldname;
     }
 
     public static void InserirCBD(Object obj) {
-        System.out.println("inserir no %s: " + obj.getClass().getSimpleName());
+
         try {
             String queryIns = connectBD.InserirTableX(obj);
             connectBD.EXEquery(queryIns);
@@ -69,7 +69,6 @@ public class Endereco {
         Entry<String, String> lastEntry;
 
         StringBuilder str = new StringBuilder();
-        System.out.println(" public static ArrayList<Endereco> Endereco " + uid);
 
         if (uid != 0 & args == null) {
             str.append("select * from Endereco where cliuid = " + uid + ";");
@@ -87,7 +86,6 @@ public class Endereco {
                 }
             }
         }
-        System.out.println(str.toString());
 
         List<Map<String, Object>> rs = connectBD.EXE_Select(str.toString());
 
@@ -115,7 +113,6 @@ public class Endereco {
                 }
             }
             resulClientes.add(cli);
-            // System.out.println(cli.toString2());
         }
 
         return resulClientes;
@@ -162,7 +159,7 @@ public class Endereco {
     }
 
     public Endereco(Map<String, ?> param) {
-        System.out.println("public Endereco(Map<String, ?> param)");
+
         for (Entry<String, ?> entry : param.entrySet()) {
 
             Field field;
@@ -198,7 +195,7 @@ public class Endereco {
         Entry<String, String> lastEntry;
 
         StringBuilder str = new StringBuilder();
-        System.out.println(" public static update endereco " + uid);
+
         str.append("UPDATE endereco SET ");
 
         lastEntry = args.lastEntry();
@@ -211,8 +208,6 @@ public class Endereco {
         }
         str.append(" where idEndereco = " + uid + ";");
 
-        System.out.println(str.toString());
-        // connectBD.executeQuery(str.toString());
         connectBD.EXEquery(str.toString());
 
     }
@@ -245,7 +240,6 @@ public class Endereco {
         StringBuilder Inserir = new StringBuilder();
         Inserir.append("delete from " + Endereco.class.getSimpleName() + " where cliuid " + " = " + init.getUid());
 
-        System.out.println(Inserir.toString());
         connectBD.EXEquery(Inserir.toString());
     }
 
@@ -253,7 +247,6 @@ public class Endereco {
         StringBuilder Inserir = new StringBuilder();
         Inserir.append("delete from " + Endereco.class.getSimpleName() + " where idEndereco " + " = " + uid);
 
-        System.out.println(Inserir.toString());
         connectBD.EXEquery(Inserir.toString());
     }
 

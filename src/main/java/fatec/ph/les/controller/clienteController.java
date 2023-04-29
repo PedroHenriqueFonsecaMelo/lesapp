@@ -1,6 +1,7 @@
 package fatec.ph.les.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
@@ -23,9 +24,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import fatec.ph.les.entidade.Cartao;
 import fatec.ph.les.entidade.Cliente;
 import fatec.ph.les.entidade.Endereco;
-import fatec.ph.les.entidade.Livro;
 import fatec.ph.les.servicos.connectBD;
 import fatec.ph.les.servicos.init;
+import fatec.ph.les.servicos.manyTmany;
 
 @Controller
 @RequestMapping("/cliHome")
@@ -35,6 +36,9 @@ public class clienteController {
     ArrayList<Endereco> enderecos = new ArrayList<>();
     ArrayList<ArrayList<String>> row = new ArrayList<>();
     ArrayList<ArrayList<String>> rowDetails = new ArrayList<>();
+    Map<String, ArrayList<String>> rowMapDetails = new HashMap<>();
+    Map<String, ArrayList<String>> collumMapDetails = new HashMap<>();
+    private String json1 = "";
 
     private void clear() {
         enderecos.clear();
@@ -128,56 +132,40 @@ public class clienteController {
         return new ModelAndView("redirect:/cliHome/cliProfile", model);
     }
 
-    @GetMapping("/cliDetails/{id}")
-    public ModelAndView cliOrdens(ModelMap model, @PathVariable(value = "id") String ncard) {
-
+    public void cliOrdens() {
         rowDetails.clear();
 
-        rowDetails.addAll(connectBD.mcolum("SELECT ORDEM_ID, LIVROID FROM ORDDETAILS where CLI_ID = "
-                + Integer.parseInt(init.getUid())
-                + " AND ORDEM_ID = " + Integer.parseInt(ncard)));
+        ArrayList<String> tables = new ArrayList<>();
+        tables.add(manyTmany.GenericTable(row, 0));
 
-        rowDetails.addAll(connectBD.mrows("SELECT ORDEM_ID, LIVROID FROM ORDDETAILS where CLI_ID = "
-                + Integer.parseInt(init.getUid())
-                + " AND ORDEM_ID = " + Integer.parseInt(ncard)));
+        int rowSize = connectBD
+                .mrows("Select DISTINCT ORDEM_ID FROM ORDDETAILS join LIVRO on IDLIVRO = LIVROID where CLI_ID =  "
+                        + Integer.parseInt(init.getUid()))
+                .size();
 
-        ArrayList<ArrayList<String>> collum = new ArrayList<>();
+        for (int i = 1; i <= rowSize; i++) {
+            ArrayList<ArrayList<String>> rowToTable = new ArrayList<>();
 
-        collum.addAll(connectBD.mcolum("SELECT ORDEM_ID, LIVROID, QUANT FROM ORDDETAILS where CLI_ID = "
-                + Integer.parseInt(init.getUid())
-                + " AND ORDEM_ID = " + Integer.parseInt(ncard)));
-        collum.addAll(connectBD.mrows("SELECT ORDEM_ID, LIVROID, QUANT FROM ORDDETAILS where CLI_ID = "
-                + Integer.parseInt(init.getUid())
-                + " AND ORDEM_ID = " + Integer.parseInt(ncard)));
-        ;
+            String query = "SELECT ORDEM_ID, TITULO, LIVRO.PRECIFICACAO as Preco_Por_Livro,"
+                    + " ORDDETAILS.QUANT as Quantidade_Livros, (LIVRO.PRECIFICACAO * ORDDETAILS.QUANT) as Preco_Total_Livros"
+                    + " FROM ORDDETAILS join LIVRO on IDLIVRO = LIVROID where CLI_ID =  "
+                    + Integer.parseInt(init.getUid())
+                    + " AND ORDEM_ID = " + i;
 
-        String titulo = "";
-        for (int i = 0; i < collum.get(0).size(); i++) {
-            for (int j = 0; j < collum.get(0).size(); j++) {
-                if (collum.get(0).get(j).equalsIgnoreCase("LIVROID")) {
-                    titulo = Livro.livro(Integer.parseInt(collum.get(1).get(j)), null).get(0).getTitulo();
-                }
-            }
-            if (collum.get(0).get(i).equalsIgnoreCase("QUANT")) {
-                rowDetails.remove(1);
-                for (int j = 0; j < Integer.parseInt(collum.get(1).get(i)); j++) {
-                    ArrayList<String> aux = new ArrayList<>();
-                    aux.add(collum.get(1).get(0));
-                    aux.add(titulo);
+            rowToTable.addAll(connectBD.mcolum(query));
+            rowToTable.addAll(connectBD.mrows(query));
 
-                    rowDetails.add(aux);
-                }
-            }
-
+            tables.add(manyTmany.GenericTable(rowToTable, i));
         }
-        rowDetails.clear();
-        return new ModelAndView("redirect:/cliHome/cliProfile", model);
+
+        json1 = manyTmany.ArrayListToJson(tables);
 
     }
 
-    @GetMapping("/reqTroca/{id}/{livro}")
+    @GetMapping("/reqTroca/{id}/{livro}/{quant}")
     public ModelAndView reqTroca(ModelMap model, @RequestParam Map<String, String> param,
             @PathVariable(value = "id") String ncard, @PathVariable(value = "livro") String titulo) {
+
         String troca = "create table TROCA (TROCA_id int primary key AUTO_INCREMENT, ordem_id int unique, valorTroca NUMERIC(20, 2));";
         connectBD.EXEquery(troca);
 
@@ -214,13 +202,15 @@ public class clienteController {
                             + Integer.parseInt(init.getUid())));
 
             model.addAttribute("ORDEM", row);
+            cliOrdens();
+
         } else {
             row.add(null);
             row.add(null);
         }
 
-        if (!rowDetails.isEmpty()) {
-            model.addAttribute("details", rowDetails);
+        if (!json1.equalsIgnoreCase("") && !json1.isEmpty()) {
+            model.addAttribute("table", json1);
         }
 
     }

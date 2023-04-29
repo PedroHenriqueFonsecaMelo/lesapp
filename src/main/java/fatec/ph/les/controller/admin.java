@@ -86,8 +86,6 @@ public class admin {
             row.addAll(connectBD.mcolum("select * from cliente;"));
             row.addAll(connectBD.mrows("select * from cliente;"));
 
-            System.out.println(connectBD.EXE_Map("select * from cliente;"));
-
             Map<String, ArrayList<String>> smap = connectBD.EXE_Map("select IDCLIENTE from cliente;");
 
             for (Entry<String, ArrayList<String>> cliente : smap.entrySet()) {
@@ -156,7 +154,7 @@ public class admin {
                 delete(updatePay, i);
 
             } else {
-                System.out.println("else {");
+
                 ArrayList<Float> parse = new ArrayList<>();
                 for (String string : mapa.get("VALOR")) {
                     parse.add(Float.parseFloat(string));
@@ -189,7 +187,7 @@ public class admin {
         } else {
             updateORDEM = "delete from ORDEM where ORDEM_ID = " + mapa.get("ORDEM_ID").get(0) + ";";
         }
-        System.out.println("private String updateORDEM  ::" + updateORDEM);
+
         return updateORDEM;
     }
 
@@ -277,10 +275,7 @@ public class admin {
 
     @PostMapping("/livro")
     public ModelAndView name(ModelMap model, @RequestParam Map<String, ?> param) {
-        for (Entry<String, ?> cliente : param.entrySet()) {
-            System.out.println(cliente.getKey() + "|| " + cliente.getValue() + " || "
-                    + cliente.getValue().getClass().getSimpleName());
-        }
+
         Livro li = new Livro(param);
         Livro.InserirCBD(li);
         return new ModelAndView("redirect:/admin/admin", model);
@@ -288,10 +283,6 @@ public class admin {
 
     @PostMapping("/pesquisa")
     public String pesquisa(ModelMap map, @RequestParam Map<String, ?> param) {
-        for (Entry<String, ?> cliente : param.entrySet()) {
-            System.out.println(cliente.getKey() + "|| " + cliente.getValue() + " || "
-                    + cliente.getValue().getClass().getSimpleName());
-        }
 
         row.clear();
 
@@ -317,7 +308,6 @@ public class admin {
                 break;
         }
 
-        System.out.println(str.toString());
         row.addAll(connectBD.mrows(str.toString()));
 
         ModelAddOderm();

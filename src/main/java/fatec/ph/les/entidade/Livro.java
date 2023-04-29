@@ -37,8 +37,6 @@ public class Livro {
             str.append("select * from livro");
         }
 
-        // System.out.println(str.toString());
-
         List<Map<String, Object>> rs = connectBD.EXE_Select(str.toString());
 
         for (Map<String, Object> map : rs) {
@@ -69,10 +67,8 @@ public class Livro {
                 }
             }
             resulClientes.add(cli);
-            // System.out.println(cli.toString2());
         }
 
-        // System.out.println(resulClientes.size());
         return resulClientes;
 
     }
@@ -82,7 +78,6 @@ public class Livro {
         Entry<String, String> lastEntry;
 
         StringBuilder str = new StringBuilder();
-        System.out.println(" public static ArrayList<cartao> livro " + uid);
 
         if (uid != 0 & args == null) {
             str.append("select * from livro where idlivro = " + uid + ";");
@@ -100,7 +95,6 @@ public class Livro {
                 }
             }
         }
-        System.out.println(str.toString());
 
         List<Map<String, Object>> rs = connectBD.EXE_Select(str.toString());
 
@@ -132,13 +126,10 @@ public class Livro {
                     e.printStackTrace();
                 }
 
-                // System.out.println(cli.toString2());
             }
             resulClientes.add(cli);
-            // System.out.println(cli.toString2());
         }
 
-        System.out.println(resulClientes.size());
         return resulClientes;
     }
 
@@ -174,7 +165,6 @@ public class Livro {
                     e.printStackTrace();
                 }
 
-                // System.out.println(cli.toString2());
             }
             resulivros.add(cli);
         }
@@ -494,7 +484,6 @@ public class Livro {
                 }
             }
         }
-        System.out.println(map);
         return map;
     }
 

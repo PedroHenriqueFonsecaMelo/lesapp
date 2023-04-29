@@ -16,7 +16,6 @@ public class Cartao {
         Entry<String, String> lastEntry;
 
         StringBuilder str = new StringBuilder();
-        System.out.println(" public static ArrayList<cartao> cartao " + uid);
 
         if (uid != 0 & args == null) {
             str.append("select * from cartao where cli_id = " + uid + ";");
@@ -34,7 +33,6 @@ public class Cartao {
                 }
             }
         }
-        System.out.println(str.toString());
 
         List<Map<String, Object>> rs = connectBD.EXE_Select(str.toString());
 
@@ -63,10 +61,9 @@ public class Cartao {
             }
 
             resulClientes.add(cli);
-            // System.out.println(cli.toString2() + "\n");
+
         }
 
-        System.out.println(resulClientes.size());
         return resulClientes;
     }
 
@@ -99,7 +96,7 @@ public class Cartao {
             }
 
         }
-        System.out.println(uid.toString());
+
         fieldname = connectBD.EXE_Select_UID(uid.toString());
 
         return fieldname;
@@ -116,8 +113,6 @@ public class Cartao {
         } else if (uid == 0) {
             str.append("select * from cartao");
         }
-
-        System.out.println(str.toString());
 
         List<Map<String, Object>> rs = connectBD.EXE_Select(str.toString());
 
@@ -153,9 +148,9 @@ public class Cartao {
 
             }
             resulClientes.add(cli);
-            // System.out.println(cli.toString2());
+
         }
-        System.out.println(resulClientes.size());
+
         return resulClientes;
     }
 
@@ -164,7 +159,6 @@ public class Cartao {
         Entry<String, String> lastEntry;
 
         StringBuilder str = new StringBuilder();
-        System.out.println(" public static ArrayList<Cartao> cartaoCLIUID " + uid);
 
         if (uid != 0 & args == null) {
             str.append("select * from cartao where cli_id = " + uid + ";");
@@ -183,8 +177,6 @@ public class Cartao {
             }
         }
 
-        System.out.println(str.toString());
-
         List<Map<String, Object>> rs = connectBD.EXE_Select(str.toString());
 
         for (Map<String, Object> map : rs) {
@@ -219,9 +211,7 @@ public class Cartao {
 
             }
             resulClientes.add(cli);
-            // System.out.println(cli.toString2());
         }
-        System.out.println(resulClientes.size());
         return resulClientes;
     }
 
@@ -234,7 +224,6 @@ public class Cartao {
     }
 
     public static void InserirCBD(Object obj) {
-        System.out.println("inserir no %s: " + obj.getClass().getSimpleName());
         try {
             String queryIns = connectBD.InserirTableX(obj);
             connectBD.EXEquery(queryIns);
@@ -269,7 +258,6 @@ public class Cartao {
     }
 
     public Cartao(Map<String, ?> param) {
-        System.out.println("public Cartao(Map<String, ?> param)");
         for (Entry<String, ?> entry : param.entrySet()) {
             for (Field field : this.getClass().getDeclaredFields()) {
                 if (field.getName().equalsIgnoreCase(entry.getKey())) {
@@ -296,7 +284,6 @@ public class Cartao {
         StringBuilder Inserir = new StringBuilder();
         Inserir.append("delete from " + Cartao.class.getSimpleName() + " where cli_id " + " = " + init.getUid());
 
-        System.out.println(Inserir.toString());
         connectBD.EXEquery(Inserir.toString());
     }
 
@@ -304,7 +291,6 @@ public class Cartao {
         StringBuilder Inserir = new StringBuilder();
         Inserir.append("delete from " + Cartao.class.getSimpleName() + " where idCartaos " + " = " + uid);
 
-        System.out.println(Inserir.toString());
         connectBD.EXEquery(Inserir.toString());
     }
 
@@ -313,7 +299,6 @@ public class Cartao {
         Entry<String, String> lastEntry;
 
         StringBuilder str = new StringBuilder();
-        System.out.println(" public static update cartao " + uid);
         str.append("UPDATE cartao SET ");
 
         lastEntry = args.lastEntry();
@@ -342,8 +327,6 @@ public class Cartao {
         }
         str.append(" where idCartao = " + uid + ";");
 
-        System.out.println(str.toString());
-        // connectBD.executeQuery(str.toString());
         connectBD.EXEquery("UPDATE cartao SET preferencial = " + "'" + "0" + "';");
         connectBD.EXEquery(str.toString());
 

@@ -2,8 +2,6 @@ package fatec.ph.les.controller;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
@@ -36,15 +34,6 @@ public class IndexController {
 
     private void init() {
 
-        Set<String> array = fatec.ph.les.servicos.init
-                .fileDirectory("C:/Users/Pedro Henrique/Documents/Fatec/les/lesapp/lesapp/src/main/java/fatec/ph/les");
-
-        for (String iterable_element : array) {
-            System.out.println("-------------------\n");
-            System.out.println(iterable_element);
-            System.out.println("\n-------------------");
-        }
-
         connectBD.CreateTableX(Cliente.class);
         connectBD.CreateTableX(Endereco.class);
         connectBD.CreateTableX(Cartao.class);
@@ -70,7 +59,7 @@ public class IndexController {
         connectBD.EXEquery(si);
         connectBD.EXEquery(so);
 
-        String query = "create table ordem (ordem_id int primary key AUTO_INCREMENT, cli_id int, total NUMERIC(20,2), status VARCHAR(100), endereco VARCHAR(100));";
+        String query = "create table ordem (ordem_id int primary key AUTO_INCREMENT, cli_id int, total NUMERIC(20,2), status VARCHAR(100), endereco VARCHAR(100), data_pedido DATE);";
         connectBD.EXEquery(query);
 
         String query2 = "create table ordDetails (details_id int primary key AUTO_INCREMENT, cli_id int, ordem_id int, livroid int, quant int);";

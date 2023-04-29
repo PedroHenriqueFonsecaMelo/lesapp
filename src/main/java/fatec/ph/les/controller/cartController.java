@@ -1,8 +1,9 @@
 package fatec.ph.les.controller;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -36,6 +37,7 @@ public class cartController {
 
     private boolean mudanca = false;
     private float total = 0;
+    private double frete = 0;
 
     ArrayList<ArrayList<String>> cupon = new ArrayList<>();
     private ArrayList<Integer> lista = new ArrayList<>();
@@ -56,15 +58,18 @@ public class cartController {
                     ls.replace(iterable_element.getKey(), iterable_element.getValue() + quant);
 
                     total = total + (quant * Livro.livroCLIUID(id, 0).get(0).getPrecificacao());
+                    frete = 0.05 * total;
 
                 } else {
                     ls.put(Livro.livroCLIUID(id, 0).get(0), quant);
                     total = total + (quant * Livro.livroCLIUID(id, 0).get(0).getPrecificacao());
+                    frete = 0.05 * total;
                 }
             }
         } else {
             ls.put(Livro.livroCLIUID(id, 0).get(0), quant);
             total = total + (quant * Livro.livroCLIUID(id, 0).get(0).getPrecificacao());
+            frete = 0.05 * total;
         }
         mudanca = true;
 
@@ -124,9 +129,9 @@ public class cartController {
 
         model.addAttribute("outrosEnderecos", enderecos2);
 
-        model.addAttribute("Total", df.format(total));
+        model.addAttribute("Total", df.format(total + frete));
 
-        model.addAttribute("TotalPorCartao", df.format(total / arrayCartao.size()).replace(",", "."));
+        model.addAttribute("TotalPorCartao", df.format((total + frete) / arrayCartao.size()).replace(",", "."));
 
         model.addAttribute("livros", ls);
 
@@ -135,6 +140,8 @@ public class cartController {
         model.addAttribute("cartoes2", arrayCartao2);
 
         model.addAttribute("cupon", cupon);
+
+        model.addAttribute("frete", df.format(frete));
 
     }
 
@@ -212,12 +219,13 @@ public class cartController {
                 }
 
             }
-            if (cartao.getKey().contains("in") && totalCart == total) {
-                execCart(param);
-            }
+
         }
 
-        clear();
+        if (Math.abs((total + frete) - totalCart) <= 0.1) {
+            execCart(param);
+            clear();
+        }
 
         return new ModelAndView("redirect:/shop", model);
     }
@@ -231,8 +239,10 @@ public class cartController {
             }
         }
 
-        String insertOrder = "insert into ordem ( cli_id, total, status, endereco) values (" + init.getUid()
-                + ", " + total + ", 'EM PROCESSAMENTO' , '" + param.get("endereco") + "');";
+        String insertOrder = "insert into ordem ( cli_id, total, status, endereco, data_pedido) values ("
+                + init.getUid()
+                + ", " + total + ", 'EM PROCESSAMENTO' , '" + param.get("endereco") + "', '"
+                + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + "');";
 
         connectBD.EXEquery(insertOrder);
 

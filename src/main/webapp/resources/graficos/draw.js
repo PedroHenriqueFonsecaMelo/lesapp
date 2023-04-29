@@ -18,11 +18,11 @@ function drawChart() {
     var data = google.visualization.arrayToDataTable(customObjectList);
 
 
-var options = {
-    title: 'Vendas'
-};
+    var options = {
+        title: 'Vendas'
+    };
 
-var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+    var chart = new google.visualization.PieChart(document.getElementById('piechart'));
 
-chart.draw(data, options);
+    chart.draw(data, options);
 }

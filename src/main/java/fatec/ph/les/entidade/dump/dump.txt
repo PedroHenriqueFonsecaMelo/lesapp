@@ -325,3 +325,16 @@ for (String iterable_element : array) {
 
 
 
+Deverá ser apresentado a implementação das funcionalidades abaixo::
+Venda de diversos itens de diferentes produtos;
+Pagamento utilizando diversos cartões e cupons de troca;
+Uso de endereços pré-cadastrados ou inserção de um novo endereço no momento da venda;
+Uso de cartões de crédito pré-cadastrados ou inserção de um novo cartão de crédito no momento da venda;
+Cálculo de frete;
+Solicitação de troca pelo cliente;
+Aprovação/recusa de troca pelo administrador;
+Geração de cupom de troca;
+Alteração de status, considerando o workflow: EM PROCESSAMENTO, PAGAMENTO REALIZADO / PAGAMENTO NÃO PROCESSADO, EM TRANSPORTE, ENTREGUE, TROCA SOLICITADA, TROCA APROVADA / NÃO APROVADA, PRODUTO (A SER TROCADO) RECEBIDO, TROCA FINALIZADA;
+Baixa e entrada no estoque (quando produto trocado).
+
+Obs: Não é preciso fazer nenhum tipo de integração com meio de pagamento ou correios, frete e pagamento pode ser simulado com uma tabela de banco de dados ou serviço "mockado".

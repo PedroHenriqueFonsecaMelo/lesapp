@@ -42,7 +42,7 @@ public class Cliente {
             }
 
         }
-        System.out.println(uid.toString());
+
         fieldname = connectBD.EXE_Select_UID(uid.toString());
 
         return fieldname;
@@ -58,7 +58,6 @@ public class Cliente {
         }
         uid.replace(uid.length() - 4, uid.length(), ";");
 
-        System.out.println(uid.toString());
         fieldname = connectBD.EXE_Select_UID(uid.toString());
 
         return fieldname;
@@ -69,7 +68,6 @@ public class Cliente {
         Entry<String, String> lastEntry;
 
         StringBuilder str = new StringBuilder();
-        System.out.println(" public static ArrayList<Cliente> cliente " + uid);
 
         if (uid != 0 & args == null) {
             str.append("select * from CLIENTE where idCliente = " + uid + ";");
@@ -87,7 +85,6 @@ public class Cliente {
                 }
             }
         }
-        System.out.println(str.toString());
 
         List<Map<String, Object>> rs = connectBD.EXE_Select(str.toString());
 
@@ -114,10 +111,9 @@ public class Cliente {
                 }
             }
             resulClientes.add(cli);
-            // System.out.println(cli.toString2());
+
         }
 
-        System.out.println(resulClientes.size());
         return resulClientes;
     }
 
@@ -130,7 +126,7 @@ public class Cliente {
     }
 
     public static void InserirCBD(Object obj) {
-        System.out.println("inserir no %s: " + obj.getClass().getSimpleName());
+
         try {
 
             String queryIns = connectBD.InserirTableX(obj);
@@ -142,7 +138,7 @@ public class Cliente {
     }
 
     public static void DeletarCBD(int uid, Class<?> cli) {
-        System.out.println("deletar no %s: " + uid);
+
         try {
             String queryIns = connectBD.DeletarTableX(uid, cli);
             connectBD.EXEquery(queryIns);
@@ -157,7 +153,6 @@ public class Cliente {
         Inserir.append("delete from " + Cliente.class.getSimpleName() + " where id" + Cliente.class.getSimpleName()
                 + " = " + uid);
 
-        System.out.println(Inserir.toString());
         connectBD.EXEquery(Inserir.toString());
     }
 
@@ -166,7 +161,7 @@ public class Cliente {
         Entry<String, String> lastEntry;
 
         StringBuilder str = new StringBuilder();
-        System.out.println(" public static update cliente " + uid);
+
         str.append("UPDATE CLIENTE SET ");
 
         lastEntry = args.lastEntry();
@@ -195,8 +190,6 @@ public class Cliente {
         }
         str.append(" where idCliente = " + init.getUid() + ";");
 
-        System.out.println(str.toString());
-        // connectBD.executeQuery(str.toString());
         connectBD.EXEquery(str.toString());
 
     }
@@ -227,7 +220,7 @@ public class Cliente {
     }
 
     public Cliente(Map<String, ?> param) {
-        System.out.println("public Cliente(Map<String, ?> param)");
+
         for (Entry<String, ?> entry : param.entrySet()) {
             Field field;
             try {

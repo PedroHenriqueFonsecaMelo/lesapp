@@ -61,9 +61,8 @@ public class connectBD {
                 table.append(extracted(name, tipo) + ");");
             }
         }
-        System.out.println(table.toString());
+
         EXEquery(table.toString());
-        // return table.toString() + " ";
 
     }
 
@@ -109,8 +108,6 @@ public class connectBD {
             }
 
         }
-
-        System.out.println("resultado::: " + Inserir.toString());
 
         return Inserir.toString();
     }
@@ -211,8 +208,7 @@ public class connectBD {
                 row = new HashMap<String, Object>();
                 for (int i = 1; i <= columnCount; i++) {
                     row.put(metaData.getColumnName(i), rs.getObject(i));
-                    // System.out.println(metaData.getColumnName(i) + "||" + rs.getObject(i) + "||"
-                    // + rs.getObject(i).getClass().getSimpleName());
+
                 }
                 resultList.add(row);
             }
