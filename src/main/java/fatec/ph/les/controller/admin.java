@@ -1,7 +1,6 @@
 package fatec.ph.les.controller;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -72,7 +71,7 @@ public class admin {
             orderArray.addAll(connectBD.mcolum("select * from ordem;"));
 
             orderArray.addAll(connectBD.mrows(
-                    "select ORDEM_ID, CLI_ID, TOTAL, STATUS, RUA from ordem join Endereco on endereco = IDENDERECO;"));
+                    "select ORDEM_ID, CLI_ID, TOTAL, STATUS, DATA_PEDIDO, RUA from ordem join Endereco on endereco = IDENDERECO;"));
 
         } else {
             orderArray.add(null);
@@ -104,21 +103,14 @@ public class admin {
         clientes.clear();
     }
 
-    @GetMapping("/cliTrocar/{id}")
-    public ModelAndView trocar(ModelMap model, @PathVariable(value = "id") String ncard) {
-        String updateDetails = "";
-        String updateORDEM = "";
-        ArrayList<String> updatePay = new ArrayList<>();
+    @GetMapping("/pedidostatus")
+    public ModelAndView pedidostatus(ModelMap model, @RequestParam Map<String, ?> param) {
 
-        DadoPreparoMapa(ncard);
+        String updateOrderm = "UPDATE ORDEM set status = '" + param.get("pedidoStatus").toString()
+                + "' where ORDEM_ID = "
+                + param.get("index").toString() + ";";
 
-        updateDetails = updateDetails(updateDetails);
-        updateORDEM = updateORDEM(updateORDEM);
-        updatePay(updatePay);
-
-        connectBD.EXEquery("delete from troca where ordem_id = " + mapa.get("ORDEM_ID").get(0) + ";");
-
-        execUpdate(updateDetails, updateORDEM, updatePay);
+        connectBD.EXEquery(updateOrderm);
 
         return new ModelAndView("redirect:/admin/admin", model);
     }
@@ -131,101 +123,120 @@ public class admin {
         }
     }
 
-    private void updatePay(ArrayList<String> updatePay) {
-        for (int i = 0; i < mapa.get("CARTAOID").size(); i++) {
-            if (mapa.get("CARTAOID").size() > 1) {
-                valorDividido = Float.parseFloat(mapa.get("VALOR").get(i))
-                        - (Float.parseFloat(mapa.get("TOTAL").get(0)) / mapa.get("CARTAOID").size());
-            } else {
-                valorDividido = Float.parseFloat(mapa.get("TOTAL").get(i))
-                        - (Float.parseFloat(mapa.get("PRECIFICACAO").get(i)) / 2);
-            }
+    @PostMapping("/trocastatus")
+    public ModelAndView trocaStatus(ModelMap model, @RequestParam Map<String, ?> param) {
+        String updateDetails = "";
+        String updateORDEM = "";
+        ArrayList<String> updatePay = new ArrayList<>();
+
+        DadoPreparoMapa(param.get("index").toString());
+
+        updateDetails = updateDetails(updateDetails);
+        updateORDEM = updateORDEMparam(updateORDEM, param.get("trocaStatus").toString());
+
+        updatePay(updatePay, param.get("index").toString());
+        execUpdate(updateDetails, updateORDEM, updatePay);
+
+        connectBD.EXEquery("delete from troca where TROCA_ID = " + mapa.get("TROCA_ID").get(0) + ";");
+
+        System.out.println(updateORDEM);
+        System.out.println(updateDetails);
+        System.out.println(updatePay);
+
+        return new ModelAndView("redirect:/admin/admin", model);
+    }
+
+    private void updatePay(ArrayList<String> updatePay, String ncard) {
+
+        ArrayList<ArrayList<String>> ordpay = connectBD.mrows("select * from ORDPAY where ORDEM_ID = " + ncard);
+
+        float PRECIFICACAO = Float.parseFloat(mapa.get("PRECIFICACAO").get(0));
+
+        float QUANTIDADE_TROCA = Float.parseFloat(mapa.get("QUANTIDADE_TROCA").get(0));
+        float QUANTIDADE_OG = Float.parseFloat(mapa.get("QUANT").get(0));
+
+        valorDividido = (PRECIFICACAO * (QUANTIDADE_OG - QUANTIDADE_TROCA)) / ordpay.size();
+
+        for (int i = 0; i < ordpay.size(); i++) {
+            int indexPay = Integer.parseInt(ordpay.get(i).get(0));
 
             if (valorDividido >= 10) {
-                update(updatePay, i);
-
-                connectBD.EXEquery("insert into cupons (cli_id, desconto) values ("
-                        + Integer.parseInt(mapa.get("CLI_ID").get(i)) + ", "
-                        + (Float.parseFloat(mapa.get("PRECIFICACAO").get(i)) - valorDividido) + ");");
+                update(updatePay, indexPay);
 
             } else if (valorDividido <= 0) {
 
-                update(updatePay, i);
-                delete(updatePay, i);
+                update(updatePay, indexPay);
+                delete(updatePay, indexPay);
 
-            } else {
-
-                ArrayList<Float> parse = new ArrayList<>();
-                for (String string : mapa.get("VALOR")) {
-                    parse.add(Float.parseFloat(string));
-                }
-                Float min = Collections.min(parse);
-                Float max = Collections.max(parse);
-
-                updatePay.add("delete from ORDPAY where VALOR = " + min + " where ORDEM_ID = "
-                        + mapa.get("ORDEM_ID").get(0) + " AND CARTAOID = "
-                        + mapa.get("CARTAOID").get(i) + ";");
-
-                updatePay.add("UPDATE ORDPAY set VALOR = "
-                        + (max / connectBD.EXE_Map("SELECT VALOR FROM ORDPAY where ORDEM_ID = "
-                                + mapa.get("ORDEM_ID").get(0) + ";").get("VALOR").size())
-                        + " where ORDEM_ID = " + mapa.get("ORDEM_ID").get(0) + ";");
-
-                connectBD.EXEquery("insert into cupons (cli_id, desconto) values ("
-                        + Integer.parseInt(mapa.get("CLI_ID").get(i)) + ", "
-                        + (valorDividido - Float.parseFloat(mapa.get("PRECIFICACAO").get(i))) + ");");
             }
         }
     }
 
-    private String updateORDEM(String updateORDEM) {
-        if ((Float.parseFloat(mapa.get("TOTAL").get(0)) - Float.parseFloat(mapa.get("PRECIFICACAO").get(0))) > 1) {
-            updateORDEM = "UPDATE ORDEM set TOTAL = "
-                    + ((Float.parseFloat(mapa.get("TOTAL").get(0))
-                            - Float.parseFloat(mapa.get("PRECIFICACAO").get(0))))
-                    + " where ORDEM_ID = " + mapa.get("ORDEM_ID").get(0) + ";";
+    private String updateORDEMparam(String updateORDEM, String status) {
+
+        float novototal = Float.parseFloat(mapa.get("TOTAL").get(0))
+                - (Float.parseFloat(mapa.get("PRECIFICACAO").get(0))
+                        * Float.parseFloat(mapa.get("QUANTIDADE_TROCA").get(0)));
+        System.out.println(novototal);
+
+        if (novototal >= 10) {
+            updateORDEM = "UPDATE ORDEM set TOTAL = " + novototal + ", status = '" + status
+                    + "' where ORDEM_ID = " + mapa.get("ORDEM_ID").get(0) + ";";
+
+            connectBD.EXEquery("insert into cupons (cli_id, desconto) values ("
+                    + Integer.parseInt(mapa.get("CLI_ID").get(0)) + ", "
+                    + (novototal / 2) + ");");
         } else {
             updateORDEM = "delete from ORDEM where ORDEM_ID = " + mapa.get("ORDEM_ID").get(0) + ";";
+
+            connectBD.EXEquery("insert into cupons (cli_id, desconto) values ("
+                    + Integer.parseInt(mapa.get("CLI_ID").get(0)) + ", "
+                    + (novototal / 2) + ");");
         }
 
         return updateORDEM;
     }
 
     private String updateDetails(String updateDetails) {
-        if (Integer.parseInt(mapa.get("QUANT").get(0)) > 1) {
-            updateDetails = "UPDATE ORDDETAILS set QUANT = "
-                    + (Integer.parseInt(mapa.get("QUANT").get(0)) - 1)
-                    + " where ORDEM_ID = " + mapa.get("ORDEM_ID").get(0) + ";";
+
+        for (int i = 0; i < mapa.get("QUANTIDADE_TROCA").size(); i++) {
+            int QUANTIDADE_TROCA = Integer.parseInt(mapa.get("QUANTIDADE_TROCA").get(i));
+            int QUANTIDADE_DETAILS = Integer.parseInt(mapa.get("QUANT").get(i));
+
+            if ((QUANTIDADE_DETAILS - QUANTIDADE_TROCA) == 0) {
+                updateDetails = "delete from ORDDETAILS where ORDEM_ID = " + mapa.get("ORDEM_ID").get(i);
+            } else
+                updateDetails = "UPDATE ORDDETAILS set QUANT = "
+                        + (QUANTIDADE_DETAILS - QUANTIDADE_TROCA)
+                        + " where ORDEM_ID = " + mapa.get("ORDEM_ID").get(i) + ";";
         }
+
         return updateDetails;
     }
 
     private void DadoPreparoMapa(String ncard) {
-        mapa.putAll(connectBD.EXE_Map("SELECT ORDEM_ID, LIVROID, QUANT, CLI_ID FROM ORDDETAILS where "
-                + " ORDEM_ID = " + Integer.parseInt(ncard) + ";"));
 
-        mapa.putAll(
-                connectBD
-                        .EXE_Map("SELECT PRECIFICACAO FROM LIVRO where idlivro = " + mapa.get("LIVROID").get(0) + ";"));
-        mapa.putAll(
-                connectBD
-                        .EXE_Map("SELECT TOTAL FROM ORDEM where ORDEM_ID = " + mapa.get("ORDEM_ID").get(0) + ";"));
-        mapa.putAll(
-                connectBD
-                        .EXE_Map("SELECT VALOR, PAY_ID, CARTAOID FROM ORDPAY where ORDEM_ID = "
-                                + mapa.get("ORDEM_ID").get(0) + ";"));
+        StringBuilder query = new StringBuilder();
+        query.append("SELECT ORDEM.ORDEM_ID, TROCA_ID, DETAILS_ID, ORDEM.CLI_ID, LIVROID, ");
+        query.append("PRECIFICACAO,ORDDETAILS.QUANT ,TROCA.QUANTIDADE_TROCA , VALORTROCA, TOTAL ");
+        query.append("FROM ORDDETAILS join ORDEM on ORDDETAILS.ORDEM_ID = ORDEM.ORDEM_ID ");
+        query.append("join LIVRO on LIVRO.idlivro = ORDDETAILS.LIVROID ");
+        query.append("join TROCA on TROCA.ORDEM_ID = ORDEM.ORDEM_ID ");
+
+        query.append("where TROCA_ID = " + Integer.parseInt(ncard) + ";");
+
+        System.out.println(query.toString());
+
+        mapa.putAll(connectBD.EXE_Map(query.toString()));
+
     }
 
     private void delete(ArrayList<String> updatePay, int i) {
-        updatePay.add("delete from ORDPAY where VALOR = " + valorDividido + " AND ORDEM_ID = "
-                + mapa.get("ORDEM_ID").get(0) + " AND CARTAOID = "
-                + mapa.get("CARTAOID").get(i) + ";");
+        updatePay.add("delete from ORDPAY where PAY_ID = " + i + ";");
     }
 
     private void update(ArrayList<String> updatePay, int i) {
-        updatePay.add("UPDATE ORDPAY set VALOR  = " + valorDividido + " where ORDEM_ID = "
-                + mapa.get("ORDEM_ID").get(0)
-                + " AND PAY_ID = " + mapa.get("PAY_ID").get(i) + ";");
+        updatePay.add("UPDATE ORDPAY set VALOR  = " + valorDividido + " where PAY_ID = " + i + ";");
     }
 
     @GetMapping("/cliPedido/{id}")
@@ -234,40 +245,6 @@ public class admin {
                 connectBD.EXE_Map("SELECT TOTAL FROM ORDEM where ORDEM_ID = " + ncard + ";"));
         String updateOrderm = "UPDATE ORDEM set status = 'APROVADO' where ORDEM_ID = " + ncard + ";";
 
-        connectBD.EXEquery(updateOrderm);
-
-        return new ModelAndView("redirect:/admin/admin", model);
-    }
-
-    @GetMapping("/cliPedido/{id}/0")
-    public ModelAndView recusado(ModelMap model, @PathVariable(value = "id") String ncard) {
-
-        Map<String, ArrayList<String>> Livroid = connectBD
-                .EXE_Map("select livroid, quant from ORDDETAILS where ordem_id = " + ncard);
-
-        Map<String, ArrayList<String>> map;
-
-        for (int index = 0; index < Livroid.get("livroid").size(); index++) {
-
-            int livroi = Integer.parseInt(Livroid.get("livroid").get(index));
-            map = connectBD.EXE_Map("select livroid, quant from LIVRO where LIVROID = " + livroi + ";");
-
-            for (int j = 0; j < map.get("quant").size(); j++) {
-
-                int detailLivro = Integer.parseInt(map.get("livroid").get(j));
-                if (livroi == detailLivro) {
-                    int quantidade = Integer.parseInt(map.get("quant").get(j))
-                            + Integer.parseInt(map.get("quant").get(j));
-                    String updateLivro = "update LIVRO set quant = " + quantidade + "where ordem_id = " + ncard;
-                    connectBD.EXEquery(updateLivro);
-                }
-
-            }
-        }
-
-        mapa.putAll(
-                connectBD.EXE_Map("SELECT TOTAL FROM ORDEM where ORDEM_ID = " + ncard + ";"));
-        String updateOrderm = "delete from ORDEM where ORDEM_ID = " + ncard + ";";
         connectBD.EXEquery(updateOrderm);
 
         return new ModelAndView("redirect:/admin/admin", model);

@@ -148,14 +148,19 @@
 													</td>
 												</c:forEach>
 												
-												<c:if test="${cliente.get(3) == 'EM PROCESSAMENTO'}">
-													<td class="tg-0lax">
-														<a class="btn btn-light" href="/admin/cliPedido/${cliente.get(0)}" target="_top">Aprovar</a>
-													</td>
-													<td class="tg-0lax">
-														<a class="btn btn-light" href="/admin/cliPedido/${cliente.get(0)}/0" target="_top">Recusar</a>
-													</td>
-												</c:if>
+												<form action="/admin/pedidostatus" method="post">
+												<td class="tg-0lax">
+													<select class="form-select shadow-none" id="pedidoStatus" name="pedidoStatus" required>
+														<option selected value="Aprovar">Aprovar</option>
+														<option value="Recusar">Recusar</option>
+														<option value="Em Processamento">Em Processamento</option>
+													</select>
+												</td>
+												<input type="hidden" id="index" value="${cliente.get(0)}">
+												<td class="tg-0lax">
+													<button type='submit' id='save-btn'>Alterar Status</button>
+												</td>
+											</form>
 												
 											</tr>
 										</c:if>
@@ -187,12 +192,19 @@
 												${lista}
 											</td>
 										</c:forEach>
-											<td class="tg-0lax">
-												<a class="btn btn-light" href="/admin/cliTrocar/${cliente.get(0)}" target="_top">Aprovar</a>
-											</td>
-											<td class="tg-0lax">
-												<a class="btn btn-light" href="/admin/cliTrocar/${cliente.get(0)}/0" target="_top">Recusar</a>
-											</td>
+											<form action="/admin/trocastatus" method="post">
+												<td class="tg-0lax">
+													<select class="form-select shadow-none" id="trocaStatus" name="trocaStatus" required>
+														<option selected value="Aprovar Troca">Aprovar</option>
+														<option value="Recusar Troca">Recusar</option>
+														<option value="Troca Em Processamento">Em Processamento</option>
+													</select>
+												</td>
+												<input type="hidden" id="index" name="index" value="${cliente.get(0)}">
+												<td class="tg-0lax">
+													<button type='submit' id='save-btn'>Alterar Status</button>
+												</td>
+											</form>
 										</tr>
 										</c:if>
 									</c:forEach>

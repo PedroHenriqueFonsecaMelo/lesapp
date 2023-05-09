@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -30,12 +29,12 @@ import fatec.ph.les.servicos.manyTmany;
 
 @Controller
 @RequestMapping("/cliHome")
-
 public class clienteController {
+
     private String uidcli = "1";
     ArrayList<Endereco> enderecos = new ArrayList<>();
     ArrayList<ArrayList<String>> row = new ArrayList<>();
-    ArrayList<ArrayList<String>> rowDetails = new ArrayList<>();
+
     Map<String, ArrayList<String>> rowMapDetails = new HashMap<>();
     Map<String, ArrayList<String>> collumMapDetails = new HashMap<>();
     private String json1 = "";
@@ -109,11 +108,6 @@ public class clienteController {
         return "cliPages/cliProfile";
     }
 
-    @GetMapping("/cliProfile2")
-    public String cliProfile2(Model model, @SessionAttribute(name = "uidcli", required = false) String uid) {
-        return "cliPages/cliProfile";
-    }
-
     @PostMapping("/update")
     public ModelAndView update(ModelMap model, @RequestParam Map<String, String> param) {
         TreeMap<String, String> ls = new TreeMap<>();
@@ -133,20 +127,25 @@ public class clienteController {
     }
 
     public void cliOrdens() {
-        rowDetails.clear();
 
-        ArrayList<String> tables = new ArrayList<>();
-        tables.add(manyTmany.GenericTable(row, 0));
+        ArrayList<ArrayList<String>> tables = new ArrayList<>();
+        ArrayList<String> indexamento = new ArrayList<>();
 
-        int rowSize = connectBD
+        indexamento.add("0");
+        indexamento.add(manyTmany.GenericTable(row, 0));
+
+        tables.add(indexamento);
+
+        ArrayList<ArrayList<String>> rowSize = connectBD
                 .mrows("Select DISTINCT ORDEM_ID FROM ORDDETAILS join LIVRO on IDLIVRO = LIVROID where CLI_ID =  "
-                        + Integer.parseInt(init.getUid()))
-                .size();
+                        + Integer.parseInt(init.getUid()));
 
-        for (int i = 1; i <= rowSize; i++) {
+        for (ArrayList<String> iterable_element : rowSize) {
+
             ArrayList<ArrayList<String>> rowToTable = new ArrayList<>();
+            int i = Integer.parseInt(iterable_element.get(0));
 
-            String query = "SELECT ORDEM_ID, TITULO, LIVRO.PRECIFICACAO as Preco_Por_Livro,"
+            String query = "SELECT ORDEM_ID as IdenticadorPedido, IDLIVRO as IdenticadorLivro, TITULO, LIVRO.PRECIFICACAO as Preco_Por_Livro,"
                     + " ORDDETAILS.QUANT as Quantidade_Livros, (LIVRO.PRECIFICACAO * ORDDETAILS.QUANT) as Preco_Total_Livros"
                     + " FROM ORDDETAILS join LIVRO on IDLIVRO = LIVROID where CLI_ID =  "
                     + Integer.parseInt(init.getUid())
@@ -155,7 +154,13 @@ public class clienteController {
             rowToTable.addAll(connectBD.mcolum(query));
             rowToTable.addAll(connectBD.mrows(query));
 
-            tables.add(manyTmany.GenericTable(rowToTable, i));
+            indexamento = new ArrayList<>();
+
+            indexamento.add(String.valueOf(i));
+            indexamento.add(manyTmany.GenericTable(rowToTable, i));
+
+            tables.add(indexamento);
+
         }
 
         json1 = manyTmany.ArrayListToJson(tables);
@@ -179,6 +184,23 @@ public class clienteController {
         return new ModelAndView("redirect:/cliHome/cliProfile", model);
     }
 
+    @PostMapping("/TrocaForm")
+    public ModelAndView TrocaFormTable(ModelMap model, @RequestParam Map<String, ?> param) {
+
+        Map<String, ArrayList<String>> Maptroca = connectBD
+                .EXE_Map("select Precificacao from Livro where idlivro = '" + param.get("livroid").toString() + "';");
+
+        connectBD.EXEquery(
+                "insert into TROCA (ordem_id, QUANTIDADE_TROCA ,valorTroca) values ("
+                        + Integer.parseInt(param.get("ordem_id").toString())
+                        + ", "
+                        + param.get("trocaQuant")
+                        + ", "
+                        + Maptroca.get("PRECIFICACAO").get(0) + ")");
+
+        return new ModelAndView("redirect:/cliHome/cliProfile", model);
+    }
+
     private void cliModel(Model model) {
         ArrayList<Cliente> array = Cliente.cliente(Integer.parseInt(uidcli), null);
         model.addAttribute("Cliente", array.get(0));
@@ -194,11 +216,11 @@ public class clienteController {
                         .isEmpty()) {
             row.clear();
             row.addAll(
-                    connectBD.mcolum("SELECT ORDEM_ID, ENDERECO, TOTAL, STATUS FROM ORDEM  where CLI_ID = "
+                    connectBD.mcolum("SELECT ORDEM_ID, DATA_PEDIDO, ENDERECO, TOTAL, STATUS FROM ORDEM  where CLI_ID = "
                             + Integer.parseInt(init.getUid())));
 
             row.addAll(connectBD.mrows(
-                    "SELECT ORDEM_ID, RUA, TOTAL, STATUS FROM ORDEM join Endereco on endereco = IDENDERECO where CLI_ID = "
+                    "SELECT ORDEM_ID, DATA_PEDIDO, RUA, TOTAL, STATUS FROM ORDEM join Endereco on endereco = IDENDERECO where CLI_ID = "
                             + Integer.parseInt(init.getUid())));
 
             model.addAttribute("ORDEM", row);

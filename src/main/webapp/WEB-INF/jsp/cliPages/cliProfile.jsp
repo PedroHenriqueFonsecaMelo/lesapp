@@ -76,7 +76,7 @@
 						</a>
 						<a class="nav-link" id="ordemDetails-tab" data-toggle="pill" href="#ordemDetails" role="tab" aria-controls="ordemDetails" aria-selected="false">
 							<i class="fa fa-credit-card text-center mr-1"></i> 
-							Ordem Details
+							Historico
 						</a>
 					</div>
 				</div>
@@ -301,14 +301,10 @@
 										<td class="tg-0lax">
 											${lista}
 										</td>
-										<c:choose>
-											<c:when test = "${lista == 'EM PROCESSAMENTO'}">
-												<td class="tg-0lax">
-													<button onclick='changeTable("${cliente.get(0)}")' id="cliDetails${cliente.get(0)}" class="cart-btn">Add to cart</button>
-												</td>
-											</c:when>
-										</c:choose>
 									</c:forEach>
+										<td class="tg-0lax">
+											<button onclick='changeTable("${cliente.get(0)}")' id="cliDetails${cliente.get(0)}" class="cart-btn">Add to cart</button>
+										</td>
 									</tr>
 								</c:forEach>
 							</tbody>
@@ -318,11 +314,13 @@
 						</div>
 					</div>
 					<div class="tab-pane fade" id="ordemDetails" role="tabpanel" aria-labelledby="ordemDetails-tab">
-						<h3 class="mb-4">Pedido Detalhes Troca</h3>
+						<h3 class="mb-4">Historico</h3>
 						<div class="row">
 						<div class="col-md-12">
 							<input type="hidden" id="json" value='${table}'>
-							<div id="TABLE2"></div>
+							<table class="tg" id="TABLE2">
+								${Historico}
+							</table>
 						</div>
 						</div>
 					</div>

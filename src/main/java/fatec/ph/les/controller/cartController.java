@@ -139,7 +139,17 @@ public class cartController {
 
         model.addAttribute("cartoes2", arrayCartao2);
 
-        model.addAttribute("cupon", cupon);
+        StringBuilder cuponBuilder = new StringBuilder();
+
+        for (int i = 1; i < cupon.size(); i++) {
+            cuponBuilder.append("<option value='");
+            cuponBuilder.append(cupon.get(i).get(2) + "'>");
+            cuponBuilder.append(cupon.get(i).get(2) + "</option>");
+        }
+
+        model.addAttribute("cupon", cuponBuilder.toString());
+
+        model.addAttribute("cuponSize", cupon.size());
 
         model.addAttribute("frete", df.format(frete));
 
@@ -225,6 +235,8 @@ public class cartController {
         if (Math.abs((total + frete) - totalCart) <= 0.1) {
             execCart(param);
             clear();
+        } else {
+            return new ModelAndView("redirect:/cart/cartTotal", model);
         }
 
         return new ModelAndView("redirect:/shop", model);
@@ -246,8 +258,8 @@ public class cartController {
 
         connectBD.EXEquery(insertOrder);
 
-        String orderID = connectBD.EXE_Select_UID("select * from ordem where cli_id = " + init.getUid()
-                + " AND total = " + total + " AND endereco = " + param.get("endereco"));
+        String orderID = String
+                .valueOf(connectBD.mrows("select * from ordem where cli_id = " + init.getUid()).size());
 
         insertDetails(orderID);
 
@@ -275,8 +287,12 @@ public class cartController {
     }
 
     private void insertpay(Map<String, ?> param, String orderID) {
+        System.out.println(param);
+        System.out.println(orderID);
+
         for (Entry<Cartao, Integer> cartao : arrayCartao.entrySet()) {
             String insertPay = "";
+
             if (param.containsKey("cupon") && param.get("cupon") != "") {
                 insertPay = "insert into ordPay (cli_id , ordem_id, cartaoid, valor) values ("
                         + Integer.parseInt(init.getUid()) + ", " + Integer.parseInt(orderID) + ", " +

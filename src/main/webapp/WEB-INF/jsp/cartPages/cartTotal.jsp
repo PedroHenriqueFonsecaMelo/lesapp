@@ -83,12 +83,10 @@
 										</div>
 									</div>
 					        </c:forEach>
-                            <c:if test="${cupon.size() > 1}">
+                            <c:if test="${cuponSize > 1}">
                                 <select class="form-select shadow-none" id="cupon" name="cupon">
                                     <option selected></option>
-                                    <c:forEach var="cupon" items="${cupon.get(1)}" begin="2">
-                                        <option value="${cupon}">${cupon}  </option>
-                                    </c:forEach>
+                                    ${cupon}
                                 </select>
                             </c:if>
                             <button class="dropbtn col-12" type="submit" id="save-btn">Finalizar compra</button>

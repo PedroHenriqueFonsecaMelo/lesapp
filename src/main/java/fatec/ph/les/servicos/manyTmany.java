@@ -51,6 +51,10 @@ public class manyTmany {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("<tbody>");
+        stringBuilder.append("<tr><td class='tg-0lax'>"
+                + "<button type='button' onclick='changeTable("
+                + 0 + ")' class='cart-btn'>Voltar</button>"
+                + "</td></tr>");
 
         for (int i = 0; i < mapss.size(); i++) {
             stringBuilder.append("<tr>");
@@ -62,11 +66,18 @@ public class manyTmany {
                 for (int k = 0; k < mapss.get(i).size(); k++) {
                     stringBuilder.append("<td class='tg-0lax'>" + mapss.get(i).get(k) + "</td>");
                     if (k == mapss.get(i).size() - 1 && l != 0) {
+
                         stringBuilder.append("<td class='tg-0lax'>"
-                                + "<button type='button' onclick='changeTable("
-                                + 0 + ")' id='cliDetails"
-                                + mapss.get(i).get(0) + "' class='cart-btn'>Add to cart</button>"
-                                + "</td>");
+                                + "<form action='/cliHome/TrocaForm' method='post'>  <div id='dv'><nobr>"
+                                + "<input type='number' id='trocaQuant' name='trocaQuant' min='0' max="
+                                + mapss.get(i).get(4) + ">"
+                                + "<input type='hidden' id='ordem_id' name='ordem_id' value=" + mapss.get(i).get(0)
+                                + ">"
+                                + "<input type='hidden' id='livroid' name='livroid' value=" + mapss.get(i).get(1)
+                                + ">"
+                                + "<button type='submit' id='save-btn'>Cadastrar</button>"
+                                + "</nobr></div></form></td>");
+
                     } else if (k == mapss.get(i).size() - 1) {
                         stringBuilder.append("<td class='tg-0lax'>"
                                 + "<button type='button' onclick='changeTable("
@@ -111,7 +122,7 @@ public class manyTmany {
         return gsoString;
     }
 
-    public static String ArrayListToJson(ArrayList<String> tables) {
+    public static String ArrayListToJson(ArrayList<ArrayList<String>> tables) {
 
         Gson gson = new Gson();
         // Type gsnoType = new TypeToken<HashMap>() { e();

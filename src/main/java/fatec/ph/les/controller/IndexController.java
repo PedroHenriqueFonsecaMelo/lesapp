@@ -47,8 +47,10 @@ public class IndexController {
         String su = "insert into Endereco (cliuid , pais , cep , estado , cidade , rua , bairro , numero , complemento , tiporesidencia) VALUES  ( 1  , 'BR' , '08780690' , 'SP' , 'Mogi das Cruzes' , 'Rua Professor Manoel Acelino de Mello' , 'Jardim Armênia' ,  21  , '21' , 'CASA' );";
         String si = "insert into Cartao (ncartao , bandeira , nomecli , cli_id , cv , preferencial) VALUES  ( 21  , 'Visa' , '21' ,  1  ,  22  ,  1  ); ";
         String so = "insert into Cartao (ncartao , bandeira , nomecli , cli_id , cv , preferencial) VALUES  ( 212  , 'Visa' , '21' ,  1  ,  22  ,  0  ); ";
+
         connectBD.EXEquery(
                 "create table cupons (cupons_id int primary key AUTO_INCREMENT, cli_id int, desconto NUMERIC (20,2))");
+
         connectBD.EXEquery("insert into cupons (cli_id, desconto) values  (1, 11.1);");
 
         connectBD.EXEquery(st);
@@ -67,6 +69,9 @@ public class IndexController {
 
         String query3 = "create table ordPay (pay_id int primary key AUTO_INCREMENT, cli_id int, ordem_id int, cartaoid int, valor NUMERIC(20, 2));";
         connectBD.EXEquery(query3);
+
+        String troca = "create table TROCA (TROCA_id int primary key AUTO_INCREMENT, ordem_id int unique, quantidade_troca int ,valorTroca NUMERIC(20, 2));";
+        connectBD.EXEquery(troca);
     }
 
     @GetMapping("/shop")
