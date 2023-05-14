@@ -71,6 +71,28 @@ div#cartoes {
 	padding:10px 5px;
 	word-break:normal;
 }
+
+.tg2  {
+	width: 650px;
+	border-spacing:20px;
+}
+.tg2 td{
+	border-width:1px;
+	font-family:Arial, sans-serif;
+	font-size:10px;
+	overflow:hidden;
+	padding:10px 5px;
+	word-break:normal;
+}
+.tg2 th{
+	border-width:1px;
+	font-family:Arial, sans-serif;
+	font-size:10px;
+	font-weight:normal;
+	overflow:hidden;
+	padding:10px 5px;
+	word-break:normal;
+}
 .social_icon {
     display: flex;
 }

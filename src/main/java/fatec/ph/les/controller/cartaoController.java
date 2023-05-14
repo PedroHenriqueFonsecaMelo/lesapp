@@ -41,6 +41,7 @@ public class cartaoController {
         aux1 = emailId2;
 
         return "cartaoPages/singup";
+
     }
 
     @PostMapping("/singup")

@@ -68,6 +68,10 @@
 							<i class="fa fa-book text-center mr-1"></i> 
 							Relatorio
 						</a>
+						<a class="nav-link" id="LivrosCadastrados-tab" data-toggle="pill" href="#LivrosCadastrados" role="tab" aria-controls="LivrosCadastrados" aria-selected="false">
+							<i class="fa fa-book text-center mr-1"></i> 
+							Livros Cadastrados
+						</a>
 					</div>
 				</div>
 				<div class="tab-content p-4 p-md-5" id="v-pills-tabContent">
@@ -156,7 +160,8 @@
 														<option value="Em Processamento">Em Processamento</option>
 													</select>
 												</td>
-												<input type="hidden" id="index" value="${cliente.get(0)}">
+												<input type="hidden" id="index" name="index" value="${cliente.get(0)}">
+												
 												<td class="tg-0lax">
 													<button type='submit' id='save-btn'>Alterar Status</button>
 												</td>
@@ -238,6 +243,13 @@
 						<h3 class="mb-4">Grafico de Vendas</h3>
 						<input type="hidden" id="json" value='${grafico}'>
 						<div id="piechart" style="width: 200px; height: 200px;"></div>
+					</div>
+
+					<div class="tab-pane fade" id="LivrosCadastrados" role="tabpanel" aria-labelledby="LivrosCadastrados-tab">
+						<h3 class="mb-4">Livros Cadastrados</h3>
+						<table class="tg2" id="TABLE2">
+								${LivrosCadastrados}
+						</table>
 					</div>
 				</div>
 			</div>

@@ -95,6 +95,32 @@ public class manyTmany {
         return stringBuilder.toString();
     }
 
+    public static String GenericSimpleTable(ArrayList<ArrayList<String>> toTable) {
+        ArrayList<ArrayList<String>> mapss = toTable;
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("<tbody>");
+
+        for (int i = 0; i < mapss.size(); i++) {
+            stringBuilder.append("<tr>");
+            if (i == 0) {
+                for (int j = 0; j < mapss.get(0).size(); j++) {
+                    stringBuilder.append("<td class='tg-0lax'>" + mapss.get(0).get(j) + "</td>");
+                }
+            } else {
+                for (int k = 0; k < mapss.get(i).size(); k++) {
+                    stringBuilder.append("<td class='tg-0lax'>" + mapss.get(i).get(k) + "</td>");
+
+                }
+            }
+            stringBuilder.append("</tr>");
+
+        }
+        stringBuilder.append("</tbody>");
+
+        return stringBuilder.toString();
+    }
+
     public static String GenericJson(String toJson) {
         Map<String, ArrayList<String>> mapss = connectBD.EXE_Map(toJson);
 

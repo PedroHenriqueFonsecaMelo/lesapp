@@ -43,6 +43,114 @@ public class admin {
         return "bookStore/admin";
     }
 
+    @PostMapping("/pedidostatus")
+    public ModelAndView pedidostatus(ModelMap model, @RequestParam Map<String, ?> param) {
+
+        ArrayList<ArrayList<String>> ordetailsLivro = connectBD
+                .mrows("select LIVROID, QUANT from ORDDETAILS where ORDEM_ID  =  " + param.get("index"));
+
+        ArrayList<ArrayList<String>> livroQuant = new ArrayList<>();
+
+        for (ArrayList<String> iterable_element : ordetailsLivro) {
+            livroQuant.addAll(connectBD.mrows("select quant from LIVRO where IDLIVRO = " + iterable_element.get(0)));
+        }
+        for (int i = 0; i < livroQuant.size(); i++) {
+            int ogQuant = Integer.parseInt(livroQuant.get(i).get(0));
+            int pedQuant = Integer.parseInt(ordetailsLivro.get(i).get(1));
+
+            String upadeteLivro = "UPDATE LIVRO set quant = "
+                    + (ogQuant - pedQuant)
+                    + " where IDLIVRO = "
+                    + ordetailsLivro.get(i).get(0) + ";";
+
+            connectBD.EXEquery(upadeteLivro);
+        }
+
+        String updateOrderm = "UPDATE ORDEM set status = '" + param.get("pedidoStatus").toString()
+                + "' where ORDEM_ID = "
+                + param.get("index").toString() + ";";
+
+        connectBD.EXEquery(updateOrderm);
+
+        return new ModelAndView("redirect:/admin/admin", model);
+    }
+
+    @PostMapping("/trocastatus")
+    public ModelAndView trocaStatus(ModelMap model, @RequestParam Map<String, ?> param) {
+        String updateDetails = "";
+        String updateORDEM = "";
+        ArrayList<String> updatePay = new ArrayList<>();
+
+        DadoPreparoMapa(param.get("index").toString());
+
+        updateDetails = updateDetails(updateDetails);
+        updateORDEM = updateORDEMparam(updateORDEM, param.get("trocaStatus").toString());
+
+        updatePay(updatePay, param.get("index").toString());
+        execUpdate(updateDetails, updateORDEM, updatePay);
+
+        connectBD.EXEquery("delete from troca where TROCA_ID = " + mapa.get("TROCA_ID").get(0) + ";");
+
+        return new ModelAndView("redirect:/admin/admin", model);
+    }
+
+    @GetMapping("/cliPedido/{id}")
+    public ModelAndView aceito(ModelMap model, @PathVariable(value = "id") String ncard) {
+        mapa.putAll(
+                connectBD.EXE_Map("SELECT TOTAL FROM ORDEM where ORDEM_ID = " + ncard + ";"));
+        String updateOrderm = "UPDATE ORDEM set status = 'APROVADO' where ORDEM_ID = " + ncard + ";";
+
+        connectBD.EXEquery(updateOrderm);
+
+        return new ModelAndView("redirect:/admin/admin", model);
+    }
+
+    @PostMapping("/livro")
+    public ModelAndView name(ModelMap model, @RequestParam Map<String, ?> param) {
+
+        Livro li = new Livro(param);
+        Livro.InserirCBD(li);
+        return new ModelAndView("redirect:/admin/admin", model);
+    }
+
+    @PostMapping("/pesquisa")
+    public String pesquisa(ModelMap map, @RequestParam Map<String, ?> param) {
+
+        row.clear();
+
+        row.addAll(connectBD.mcolum("select * from cliente;"));
+        StringBuilder str = new StringBuilder("select * from cliente where ");
+        String tipo = "";
+
+        Map<String, String> cliInfo = Cliente.info();
+        for (Entry<String, String> cliente : cliInfo.entrySet()) {
+            if (cliente.getKey().equalsIgnoreCase(param.get("pesquisaCli").toString())) {
+                tipo = cliente.getValue();
+            }
+        }
+
+        switch (tipo) {
+            case "String":
+                str.append(param.get("pesquisaCli").toString() + " LIKE ");
+                str.append("'%" + param.get("pesquisaCliValue") + "%';");
+                break;
+            default:
+                str.append(param.get("pesquisaCli").toString() + " = ");
+                str.append(param.get("pesquisaCliValue") + ";");
+                break;
+        }
+
+        row.addAll(connectBD.mrows(str.toString()));
+
+        ModelAddOderm();
+        ModelAddTroca();
+        AdminBaseModel(map);
+
+        map.addAttribute("Clientes", row);
+
+        return "bookStore/admin";
+    }
+
     private void AdminBaseModel(ModelMap map) {
 
         map.addAttribute("Ordem", orderArray);
@@ -52,6 +160,21 @@ public class admin {
         map.addAttribute("livros", Livro.info());
 
         map.addAttribute("grafico", manyTmany.SelectOneLivro());
+
+        map.addAttribute("LivrosCadastrados", LivroTable());
+    }
+
+    private String LivroTable() {
+
+        ArrayList<ArrayList<String>> rowToTable = new ArrayList<>();
+
+        String query = "select * from LIVRO";
+
+        rowToTable.addAll(connectBD.mcolum(query));
+        rowToTable.addAll(connectBD.mrows(query));
+
+        return manyTmany.GenericSimpleTable(rowToTable);
+
     }
 
     private void ModelAddTroca() {
@@ -103,47 +226,12 @@ public class admin {
         clientes.clear();
     }
 
-    @GetMapping("/pedidostatus")
-    public ModelAndView pedidostatus(ModelMap model, @RequestParam Map<String, ?> param) {
-
-        String updateOrderm = "UPDATE ORDEM set status = '" + param.get("pedidoStatus").toString()
-                + "' where ORDEM_ID = "
-                + param.get("index").toString() + ";";
-
-        connectBD.EXEquery(updateOrderm);
-
-        return new ModelAndView("redirect:/admin/admin", model);
-    }
-
     private void execUpdate(String updateDetails, String updateORDEM, ArrayList<String> updatePay) {
         connectBD.EXEquery(updateORDEM);
         connectBD.EXEquery(updateDetails);
         for (String string : updatePay) {
             connectBD.EXEquery(string);
         }
-    }
-
-    @PostMapping("/trocastatus")
-    public ModelAndView trocaStatus(ModelMap model, @RequestParam Map<String, ?> param) {
-        String updateDetails = "";
-        String updateORDEM = "";
-        ArrayList<String> updatePay = new ArrayList<>();
-
-        DadoPreparoMapa(param.get("index").toString());
-
-        updateDetails = updateDetails(updateDetails);
-        updateORDEM = updateORDEMparam(updateORDEM, param.get("trocaStatus").toString());
-
-        updatePay(updatePay, param.get("index").toString());
-        execUpdate(updateDetails, updateORDEM, updatePay);
-
-        connectBD.EXEquery("delete from troca where TROCA_ID = " + mapa.get("TROCA_ID").get(0) + ";");
-
-        System.out.println(updateORDEM);
-        System.out.println(updateDetails);
-        System.out.println(updatePay);
-
-        return new ModelAndView("redirect:/admin/admin", model);
     }
 
     private void updatePay(ArrayList<String> updatePay, String ncard) {
@@ -237,62 +325,5 @@ public class admin {
 
     private void update(ArrayList<String> updatePay, int i) {
         updatePay.add("UPDATE ORDPAY set VALOR  = " + valorDividido + " where PAY_ID = " + i + ";");
-    }
-
-    @GetMapping("/cliPedido/{id}")
-    public ModelAndView aceito(ModelMap model, @PathVariable(value = "id") String ncard) {
-        mapa.putAll(
-                connectBD.EXE_Map("SELECT TOTAL FROM ORDEM where ORDEM_ID = " + ncard + ";"));
-        String updateOrderm = "UPDATE ORDEM set status = 'APROVADO' where ORDEM_ID = " + ncard + ";";
-
-        connectBD.EXEquery(updateOrderm);
-
-        return new ModelAndView("redirect:/admin/admin", model);
-    }
-
-    @PostMapping("/livro")
-    public ModelAndView name(ModelMap model, @RequestParam Map<String, ?> param) {
-
-        Livro li = new Livro(param);
-        Livro.InserirCBD(li);
-        return new ModelAndView("redirect:/admin/admin", model);
-    }
-
-    @PostMapping("/pesquisa")
-    public String pesquisa(ModelMap map, @RequestParam Map<String, ?> param) {
-
-        row.clear();
-
-        row.addAll(connectBD.mcolum("select * from cliente;"));
-        StringBuilder str = new StringBuilder("select * from cliente where ");
-        String tipo = "";
-
-        Map<String, String> cliInfo = Cliente.info();
-        for (Entry<String, String> cliente : cliInfo.entrySet()) {
-            if (cliente.getKey().equalsIgnoreCase(param.get("pesquisaCli").toString())) {
-                tipo = cliente.getValue();
-            }
-        }
-
-        switch (tipo) {
-            case "String":
-                str.append(param.get("pesquisaCli").toString() + " LIKE ");
-                str.append("'%" + param.get("pesquisaCliValue") + "%';");
-                break;
-            default:
-                str.append(param.get("pesquisaCli").toString() + " = ");
-                str.append(param.get("pesquisaCliValue") + ";");
-                break;
-        }
-
-        row.addAll(connectBD.mrows(str.toString()));
-
-        ModelAddOderm();
-        ModelAddTroca();
-        AdminBaseModel(map);
-
-        map.addAttribute("Clientes", row);
-
-        return "bookStore/admin";
     }
 }

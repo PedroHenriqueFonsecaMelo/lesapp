@@ -40,6 +40,7 @@ public class cartController {
     private double frete = 0;
 
     ArrayList<ArrayList<String>> cupon = new ArrayList<>();
+
     private ArrayList<Integer> lista = new ArrayList<>();
     ArrayList<Endereco> enderecos2 = new ArrayList<>();
     private ArrayList<Cartao> arrayCartao2 = new ArrayList<>();
@@ -212,6 +213,8 @@ public class cartController {
     @PostMapping("/order")
     public ModelAndView order(@RequestParam Map<String, ?> param, ModelMap model) {
         float totalCart = 0;
+        System.out.println(param);
+        System.out.println(cupon.toString());
 
         for (Entry<String, ?> cartao : param.entrySet()) {
 
@@ -222,8 +225,12 @@ public class cartController {
                 for (ArrayList<String> cartao2 : cupon) {
                     for (int i = 0; i < cartao2.size(); i++) {
                         if (cartao2.get(i).toString().equalsIgnoreCase(cartao.getValue().toString())) {
+
                             totalCart = totalCart - Float.parseFloat(cartao.getValue().toString());
                             total = total - Float.parseFloat(cartao.getValue().toString());
+
+                            connectBD.EXEquery("delete from cupons where DESCONTO = " + cartao.getValue() + ";");
+
                         }
                     }
                 }
