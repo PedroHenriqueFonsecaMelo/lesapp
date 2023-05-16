@@ -213,8 +213,6 @@ public class cartController {
     @PostMapping("/order")
     public ModelAndView order(@RequestParam Map<String, ?> param, ModelMap model) {
         float totalCart = 0;
-        System.out.println(param);
-        System.out.println(cupon.toString());
 
         for (Entry<String, ?> cartao : param.entrySet()) {
 
@@ -239,7 +237,10 @@ public class cartController {
 
         }
 
-        if (Math.abs((total + frete) - totalCart) <= 0.1) {
+        double d = total + frete;
+        double abs = Math.abs(totalCart - d);
+
+        if (-abs <= 0 && totalCart <= d && abs <= 0.01) {
             execCart(param);
             clear();
         } else {
@@ -294,8 +295,6 @@ public class cartController {
     }
 
     private void insertpay(Map<String, ?> param, String orderID) {
-        System.out.println(param);
-        System.out.println(orderID);
 
         for (Entry<Cartao, Integer> cartao : arrayCartao.entrySet()) {
             String insertPay = "";

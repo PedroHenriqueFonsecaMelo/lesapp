@@ -46,6 +46,18 @@ public class admin {
     @PostMapping("/pedidostatus")
     public ModelAndView pedidostatus(ModelMap model, @RequestParam Map<String, ?> param) {
 
+        OrdemAndLivroUpdate(param);
+
+        String updateOrderm = "UPDATE ORDEM set status = '" + param.get("pedidoStatus").toString()
+                + "' where ORDEM_ID = "
+                + param.get("index").toString() + ";";
+
+        connectBD.EXEquery(updateOrderm);
+
+        return new ModelAndView("redirect:/admin/admin", model);
+    }
+
+    private void OrdemAndLivroUpdate(Map<String, ?> param) {
         ArrayList<ArrayList<String>> ordetailsLivro = connectBD
                 .mrows("select LIVROID, QUANT from ORDDETAILS where ORDEM_ID  =  " + param.get("index"));
 
@@ -65,20 +77,14 @@ public class admin {
 
             connectBD.EXEquery(upadeteLivro);
         }
-
-        String updateOrderm = "UPDATE ORDEM set status = '" + param.get("pedidoStatus").toString()
-                + "' where ORDEM_ID = "
-                + param.get("index").toString() + ";";
-
-        connectBD.EXEquery(updateOrderm);
-
-        return new ModelAndView("redirect:/admin/admin", model);
     }
 
     @PostMapping("/trocastatus")
     public ModelAndView trocaStatus(ModelMap model, @RequestParam Map<String, ?> param) {
         String updateDetails = "";
         String updateORDEM = "";
+        String status = connectBD.mrows("select STATUS FROM ORDEM where ORDEM_ID = " + param.get("index") + ";").get(0)
+                .get(0);
         ArrayList<String> updatePay = new ArrayList<>();
 
         DadoPreparoMapa(param.get("index").toString());
@@ -90,6 +96,14 @@ public class admin {
         execUpdate(updateDetails, updateORDEM, updatePay);
 
         connectBD.EXEquery("delete from troca where TROCA_ID = " + mapa.get("TROCA_ID").get(0) + ";");
+
+        System.out.println(status);
+
+        if (status.equalsIgnoreCase("Aprovar")
+                || status.equalsIgnoreCase("Aprovar Troca")) {
+
+            OrdemAndLivroUpdate(param);
+        }
 
         return new ModelAndView("redirect:/admin/admin", model);
     }
@@ -265,7 +279,6 @@ public class admin {
         float novototal = Float.parseFloat(mapa.get("TOTAL").get(0))
                 - (Float.parseFloat(mapa.get("PRECIFICACAO").get(0))
                         * Float.parseFloat(mapa.get("QUANTIDADE_TROCA").get(0)));
-        System.out.println(novototal);
 
         if (novototal >= 10) {
             updateORDEM = "UPDATE ORDEM set TOTAL = " + novototal + ", status = '" + status
@@ -305,15 +318,13 @@ public class admin {
     private void DadoPreparoMapa(String ncard) {
 
         StringBuilder query = new StringBuilder();
-        query.append("SELECT ORDEM.ORDEM_ID, TROCA_ID, DETAILS_ID, ORDEM.CLI_ID, LIVROID, ");
-        query.append("PRECIFICACAO,ORDDETAILS.QUANT ,TROCA.QUANTIDADE_TROCA , VALORTROCA, TOTAL ");
+        query.append("SELECT ORDEM.ORDEM_ID, ORDEM.STATUS, TROCA_ID, DETAILS_ID, ORDEM.CLI_ID, LIVROID, ");
+        query.append("PRECIFICACAO, ORDDETAILS.QUANT, TROCA.QUANTIDADE_TROCA, VALORTROCA, TOTAL ");
         query.append("FROM ORDDETAILS join ORDEM on ORDDETAILS.ORDEM_ID = ORDEM.ORDEM_ID ");
         query.append("join LIVRO on LIVRO.idlivro = ORDDETAILS.LIVROID ");
         query.append("join TROCA on TROCA.ORDEM_ID = ORDEM.ORDEM_ID ");
 
         query.append("where TROCA_ID = " + Integer.parseInt(ncard) + ";");
-
-        System.out.println(query.toString());
 
         mapa.putAll(connectBD.EXE_Map(query.toString()));
 

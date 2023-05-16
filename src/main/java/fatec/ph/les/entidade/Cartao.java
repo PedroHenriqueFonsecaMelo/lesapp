@@ -106,7 +106,6 @@ public class Cartao {
         ArrayList<Cartao> resulClientes = new ArrayList<>();
 
         StringBuilder str = new StringBuilder();
-        System.out.println(" public static ArrayList<Cartao> cartaoCLIUID " + uid);
 
         if (uid != 0) {
             str.append("select * from cartao where cli_id = " + uid + ";");
