@@ -83,10 +83,16 @@
 										</div>
 									</div>
 					        </c:forEach>
-                            <c:if test="${cuponSize > 1}">
+                            <c:if test="${cuponSize > 0}">
                                 <select class="form-select shadow-none" id="cupon" name="cupon">
                                     <option selected></option>
                                     ${cupon}
+                                </select>
+                            </c:if>
+                            <c:if test="${cuponSize2 > 0}">
+                                <select class="form-select shadow-none" id="cupon2" name="cupon2">
+                                    <option selected></option>
+                                    ${cupon2}
                                 </select>
                             </c:if>
                             <button class="dropbtn col-12" type="submit" id="save-btn">Finalizar compra</button>
@@ -95,7 +101,7 @@
                              <button class="dropbtn col-12" type="submit">Cadastrar Endereco</button>
                         </form>
                         <div class="dropdown">
-                            <button class="dropbtn col-12">Cartoes</button>
+                            <button class="dropbtn col-12" id="cartoes-btn">Cartoes</button>
                             <div class="dropdown-content">
                                 <c:forEach var="cartao" items="${cartoes2}">
                                     <a href="/cart/addCartaoCart/${cartao.getNcartao()}">${cartao.getNcartao()}</a>

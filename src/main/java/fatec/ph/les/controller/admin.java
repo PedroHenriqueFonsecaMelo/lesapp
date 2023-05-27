@@ -28,6 +28,7 @@ public class admin {
     ArrayList<Cliente> clientes = new ArrayList<>();
     Map<String, ArrayList<String>> mapa = new HashMap<>();
     float valorDividido = 0;
+    boolean depoisTROCA = false;
 
     @GetMapping("/admin")
     public String data(ModelMap map) {
@@ -69,11 +70,18 @@ public class admin {
         for (int i = 0; i < livroQuant.size(); i++) {
             int ogQuant = Integer.parseInt(livroQuant.get(i).get(0));
             int pedQuant = Integer.parseInt(ordetailsLivro.get(i).get(1));
-
-            String upadeteLivro = "UPDATE LIVRO set quant = "
-                    + (ogQuant - pedQuant)
-                    + " where IDLIVRO = "
-                    + ordetailsLivro.get(i).get(0) + ";";
+            String upadeteLivro;
+            if (depoisTROCA) {
+                upadeteLivro = "UPDATE LIVRO set quant = "
+                        + (ogQuant - (pedQuant * -1))
+                        + " where IDLIVRO = "
+                        + ordetailsLivro.get(i).get(0) + ";";
+            } else {
+                upadeteLivro = "UPDATE LIVRO set quant = "
+                        + (ogQuant - pedQuant)
+                        + " where IDLIVRO = "
+                        + ordetailsLivro.get(i).get(0) + ";";
+            }
 
             connectBD.EXEquery(upadeteLivro);
         }
@@ -81,6 +89,7 @@ public class admin {
 
     @PostMapping("/trocastatus")
     public ModelAndView trocaStatus(ModelMap model, @RequestParam Map<String, ?> param) {
+
         String updateDetails = "";
         String updateORDEM = "";
         String status = connectBD.mrows("select STATUS FROM ORDEM where ORDEM_ID = " + param.get("index") + ";").get(0)
@@ -102,7 +111,9 @@ public class admin {
         if (status.equalsIgnoreCase("Aprovar")
                 || status.equalsIgnoreCase("Aprovar Troca")) {
 
+            depoisTROCA = true;
             OrdemAndLivroUpdate(param);
+
         }
 
         return new ModelAndView("redirect:/admin/admin", model);

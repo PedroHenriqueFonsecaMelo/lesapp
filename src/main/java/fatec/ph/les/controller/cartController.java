@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
@@ -94,7 +95,12 @@ public class cartController {
 
                 arrayCartao2 = Cartao.cartaoCLIUID(0, map);
 
-                arrayEndereco.addAll(Endereco.endereco(Integer.valueOf(init.getUid()), null));
+                if (arrayEndereco.isEmpty()) {
+                    arrayEndereco.addAll(Endereco.endereco(Integer.valueOf(init.getUid()), null));
+                } else {
+                    arrayEndereco.clear();
+                    arrayEndereco.addAll(Endereco.endereco(Integer.valueOf(init.getUid()), null));
+                }
 
             } else {
                 map.clear();
@@ -141,16 +147,27 @@ public class cartController {
         model.addAttribute("cartoes2", arrayCartao2);
 
         StringBuilder cuponBuilder = new StringBuilder();
+        StringBuilder cuponBuilder2 = new StringBuilder();
 
-        for (int i = 1; i < cupon.size(); i++) {
+        List<ArrayList<String>> cupon1metade = cupon.subList(1, (int) Math.ceil(cupon.size() / 2) + 1);
+        List<ArrayList<String>> cupon2metade = cupon.subList((int) Math.ceil(cupon.size() / 2.0), cupon.size());
+
+        for (int i = 0; i < cupon1metade.size(); i++) {
             cuponBuilder.append("<option value='");
-            cuponBuilder.append(cupon.get(i).get(2) + "'>");
-            cuponBuilder.append(cupon.get(i).get(2) + "</option>");
+            cuponBuilder.append(cupon1metade.get(i).get(2) + "'>");
+            cuponBuilder.append(cupon1metade.get(i).get(2) + "</option>");
+
+            cuponBuilder2.append("<option value='");
+            cuponBuilder2.append(cupon2metade.get(i).get(2) + "'>");
+            cuponBuilder2.append(cupon2metade.get(i).get(2) + "</option>");
+
         }
 
         model.addAttribute("cupon", cuponBuilder.toString());
+        model.addAttribute("cupon2", cuponBuilder2.toString());
 
-        model.addAttribute("cuponSize", cupon.size());
+        model.addAttribute("cuponSize", cupon1metade.size());
+        model.addAttribute("cuponSize2", cupon2metade.size());
 
         model.addAttribute("frete", df.format(frete));
 
@@ -219,15 +236,15 @@ public class cartController {
             if (cartao.getKey().contains("in")) {
                 totalCart = totalCart + Float.parseFloat(cartao.getValue().toString());
             }
-            if (cartao.getKey().equalsIgnoreCase("cupon")) {
+            if (cartao.getKey().equalsIgnoreCase("cupon") || cartao.getKey().equalsIgnoreCase("cupon2")) {
                 for (ArrayList<String> cartao2 : cupon) {
                     for (int i = 0; i < cartao2.size(); i++) {
                         if (cartao2.get(i).toString().equalsIgnoreCase(cartao.getValue().toString())) {
 
-                            totalCart = totalCart - Float.parseFloat(cartao.getValue().toString());
-                            total = total - Float.parseFloat(cartao.getValue().toString());
+                            // totalCart = totalCart - Float.parseFloat(cartao.getValue().toString());
+                            // total = total - Float.parseFloat(cartao.getValue().toString());
 
-                            connectBD.EXEquery("delete from cupons where DESCONTO = " + cartao.getValue() + ";");
+                            connectBD.EXEquery("delete from cupons where CUPONS_ID = " + cartao2.get(0) + ";");
 
                         }
                     }
@@ -255,6 +272,12 @@ public class cartController {
         if (param.containsKey("cupon")) {
             if (param.get("cupon").toString() != "" && param.get("cupon") != null) {
                 total = total - Float.parseFloat(param.get("cupon").toString());
+                total = Float.parseFloat(df.format(total).replace(",", "."));
+            }
+        }
+        if (param.containsKey("cupon")) {
+            if (param.get("cupon2").toString() != "" && param.get("cupon2") != null) {
+                total = total - Float.parseFloat(param.get("cupon2").toString());
                 total = Float.parseFloat(df.format(total).replace(",", "."));
             }
         }
@@ -298,15 +321,48 @@ public class cartController {
 
         for (Entry<Cartao, Integer> cartao : arrayCartao.entrySet()) {
             String insertPay = "";
+            float cupon = 0;
+            float cupon2 = 0;
 
-            if (param.containsKey("cupon") && param.get("cupon") != "") {
+            if (param.containsKey("cupon") && param.get("cupon") != ""
+                    && param.containsKey("cupon2") && param.get("cupon2") != "") {
+                cupon = Float.parseFloat(param.get("cupon").toString());
+                cupon2 = Float.parseFloat(param.get("cupon2").toString());
+
                 insertPay = "insert into ordPay (cli_id , ordem_id, cartaoid, valor) values ("
                         + Integer.parseInt(init.getUid()) + ", " + Integer.parseInt(orderID) + ", " +
                         cartao.getKey().getNcartao()
                         + ", " +
                         Float.parseFloat(df.format(
                                 Float.parseFloat(param.get("in" + cartao.getKey().getNcartao()).toString())
-                                        - (Float.parseFloat(param.get("cupon").toString()) / arrayCartao.size()))
+                                        - ((cupon + cupon2) / arrayCartao.size()))
+                                .replace(",", "."))
+
+                        + ");";
+
+            } else if (param.containsKey("cupon") && param.get("cupon") != "") {
+                cupon = Float.parseFloat(param.get("cupon").toString());
+
+                insertPay = "insert into ordPay (cli_id , ordem_id, cartaoid, valor) values ("
+                        + Integer.parseInt(init.getUid()) + ", " + Integer.parseInt(orderID) + ", " +
+                        cartao.getKey().getNcartao()
+                        + ", " +
+                        Float.parseFloat(df.format(
+                                Float.parseFloat(param.get("in" + cartao.getKey().getNcartao()).toString())
+                                        - (cupon / arrayCartao.size()))
+                                .replace(",", "."))
+
+                        + ");";
+            } else if (param.containsKey("cupon") && param.get("cupon") != "") {
+                cupon2 = Float.parseFloat(param.get("cupon2").toString());
+
+                insertPay = "insert into ordPay (cli_id , ordem_id, cartaoid, valor) values ("
+                        + Integer.parseInt(init.getUid()) + ", " + Integer.parseInt(orderID) + ", " +
+                        cartao.getKey().getNcartao()
+                        + ", " +
+                        Float.parseFloat(df.format(
+                                Float.parseFloat(param.get("in" + cartao.getKey().getNcartao()).toString())
+                                        - (cupon2 / arrayCartao.size()))
                                 .replace(",", "."))
 
                         + ");";

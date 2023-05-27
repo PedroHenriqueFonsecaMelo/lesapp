@@ -52,6 +52,7 @@ public class IndexController {
                 "create table cupons (cupons_id int primary key AUTO_INCREMENT, cli_id int, desconto NUMERIC (20,2))");
 
         connectBD.EXEquery("insert into cupons (cli_id, desconto) values  (1, 11.1);");
+        connectBD.EXEquery("insert into cupons (cli_id, desconto) values  (1, 20.0);");
 
         connectBD.EXEquery(st);
         connectBD.EXEquery(st2);
