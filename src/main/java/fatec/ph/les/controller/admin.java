@@ -290,21 +290,25 @@ public class admin {
         float novototal = Float.parseFloat(mapa.get("TOTAL").get(0))
                 - (Float.parseFloat(mapa.get("PRECIFICACAO").get(0))
                         * Float.parseFloat(mapa.get("QUANTIDADE_TROCA").get(0)));
-
+        float desconto = Float.parseFloat(mapa.get("PRECIFICACAO").get(0))
+                * Float.parseFloat(mapa.get("QUANTIDADE_TROCA").get(0));
         if (novototal >= 10) {
             updateORDEM = "UPDATE ORDEM set TOTAL = " + novototal + ", status = '" + status
                     + "' where ORDEM_ID = " + mapa.get("ORDEM_ID").get(0) + ";";
 
             connectBD.EXEquery("insert into cupons (cli_id, desconto) values ("
                     + Integer.parseInt(mapa.get("CLI_ID").get(0)) + ", "
-                    + (novototal / 2) + ");");
+                    + ((novototal / 2) + (desconto / 4)) + ");");
         } else {
             updateORDEM = "delete from ORDEM where ORDEM_ID = " + mapa.get("ORDEM_ID").get(0) + ";";
-
             connectBD.EXEquery("insert into cupons (cli_id, desconto) values ("
                     + Integer.parseInt(mapa.get("CLI_ID").get(0)) + ", "
-                    + (novototal / 2) + ");");
+                    + (desconto / 4) + ");");
         }
+        System.out.println(trocaArray);
+        System.out.println("insert into cupons (cli_id, desconto) values ("
+                + Integer.parseInt(mapa.get("CLI_ID").get(0)) + ", "
+                + (novototal / 4) + ");");
 
         return updateORDEM;
     }

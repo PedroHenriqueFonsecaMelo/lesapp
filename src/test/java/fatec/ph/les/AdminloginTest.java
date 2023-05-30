@@ -16,7 +16,7 @@ public class AdminloginTest {
   @Before
   public void setUp() {
     System.setProperty("webdriver.chrome.driver",
-        "src/test/resources/chromedriver.exe");
+        "src/test/driver/chromedriver.exe");
     driver = new ChromeDriver();
     js = (JavascriptExecutor) driver;
   }

@@ -149,14 +149,17 @@ public class cartController {
         StringBuilder cuponBuilder = new StringBuilder();
         StringBuilder cuponBuilder2 = new StringBuilder();
 
-        List<ArrayList<String>> cupon1metade = cupon.subList(1, (int) Math.ceil(cupon.size() / 2) + 1);
-        List<ArrayList<String>> cupon2metade = cupon.subList((int) Math.ceil(cupon.size() / 2.0), cupon.size());
+        int metate = (int) Math.ceil((cupon.size() - 1) / 2.0);
+
+        List<ArrayList<String>> cupon1metade = cupon.subList(1, metate + 1);
+        List<ArrayList<String>> cupon2metade = cupon.subList(metate + 1, cupon.size());
 
         for (int i = 0; i < cupon1metade.size(); i++) {
             cuponBuilder.append("<option value='");
             cuponBuilder.append(cupon1metade.get(i).get(2) + "'>");
             cuponBuilder.append(cupon1metade.get(i).get(2) + "</option>");
-
+        }
+        for (int i = 0; i < cupon2metade.size(); i++) {
             cuponBuilder2.append("<option value='");
             cuponBuilder2.append(cupon2metade.get(i).get(2) + "'>");
             cuponBuilder2.append(cupon2metade.get(i).get(2) + "</option>");
@@ -230,6 +233,7 @@ public class cartController {
     @PostMapping("/order")
     public ModelAndView order(@RequestParam Map<String, ?> param, ModelMap model) {
         float totalCart = 0;
+        float aux = total;
 
         for (Entry<String, ?> cartao : param.entrySet()) {
 
@@ -240,24 +244,17 @@ public class cartController {
                 for (ArrayList<String> cartao2 : cupon) {
                     for (int i = 0; i < cartao2.size(); i++) {
                         if (cartao2.get(i).toString().equalsIgnoreCase(cartao.getValue().toString())) {
-
-                            // totalCart = totalCart - Float.parseFloat(cartao.getValue().toString());
-                            // total = total - Float.parseFloat(cartao.getValue().toString());
-
-                            connectBD.EXEquery("delete from cupons where CUPONS_ID = " + cartao2.get(0) + ";");
-
+                            aux = aux - Float.parseFloat(cartao.getValue().toString());
                         }
                     }
                 }
-
             }
-
         }
 
         double d = total + frete;
         double abs = Math.abs(totalCart - d);
 
-        if (-abs <= 0 && totalCart <= d && abs <= 0.01) {
+        if (-abs <= 0 && totalCart <= d && abs <= 0.01 && aux >= 10) {
             execCart(param);
             clear();
         } else {
@@ -273,12 +270,14 @@ public class cartController {
             if (param.get("cupon").toString() != "" && param.get("cupon") != null) {
                 total = total - Float.parseFloat(param.get("cupon").toString());
                 total = Float.parseFloat(df.format(total).replace(",", "."));
+                deletaCupom(param);
             }
         }
         if (param.containsKey("cupon")) {
             if (param.get("cupon2").toString() != "" && param.get("cupon2") != null) {
                 total = total - Float.parseFloat(param.get("cupon2").toString());
                 total = Float.parseFloat(df.format(total).replace(",", "."));
+                deletaCupom(param);
             }
         }
 
@@ -295,6 +294,19 @@ public class cartController {
         insertDetails(orderID);
 
         insertpay(param, orderID);
+    }
+
+    private void deletaCupom(Map<String, ?> param) {
+        for (Entry<String, ?> cartao : param.entrySet()) {
+            for (ArrayList<String> cartao2 : cupon) {
+                for (int i = 0; i < cartao2.size(); i++) {
+                    if (cartao2.get(i).toString().equalsIgnoreCase(cartao.getValue().toString())) {
+                        connectBD.EXEquery("delete from cupons where CUPONS_ID = " + cartao2.get(0) + ";");
+                        System.out.println("delete from cupons where CUPONS_ID = " + cartao2.get(0) + ";");
+                    }
+                }
+            }
+        }
     }
 
     private void insertDetails(String orderID) {

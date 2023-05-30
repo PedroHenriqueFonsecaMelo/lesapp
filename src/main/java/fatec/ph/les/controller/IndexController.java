@@ -53,6 +53,7 @@ public class IndexController {
 
         connectBD.EXEquery("insert into cupons (cli_id, desconto) values  (1, 11.1);");
         connectBD.EXEquery("insert into cupons (cli_id, desconto) values  (1, 20.0);");
+        connectBD.EXEquery("insert into cupons (cli_id, desconto) values  (1, 20.0);");
 
         connectBD.EXEquery(st);
         connectBD.EXEquery(st2);

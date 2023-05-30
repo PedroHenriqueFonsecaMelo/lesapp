@@ -169,7 +169,8 @@ public class clienteController {
 
     @GetMapping("/reqTroca/{id}/{livro}/{quant}")
     public ModelAndView reqTroca(ModelMap model, @RequestParam Map<String, String> param,
-            @PathVariable(value = "id") String ncard, @PathVariable(value = "livro") String titulo) {
+            @PathVariable(value = "id") String ncard, @PathVariable(value = "livro") String titulo,
+            @PathVariable(value = "quant") String quant) {
 
         String troca = "create table TROCA (TROCA_id int primary key AUTO_INCREMENT, ordem_id int unique, valorTroca NUMERIC(20, 2));";
         connectBD.EXEquery(troca);
@@ -178,7 +179,7 @@ public class clienteController {
                 .EXE_Map("select Precificacao from Livro where TITULO = '" + titulo + "';");
 
         troca = "insert into TROCA (ordem_id, valorTroca) values (" + Integer.parseInt(ncard) + ", "
-                + Maptroca.get("PRECIFICACAO").get(0) + ")";
+                + (Float.parseFloat(Maptroca.get("PRECIFICACAO").get(0)) * Float.parseFloat(quant)) + ")";
         connectBD.EXEquery(troca);
 
         return new ModelAndView("redirect:/cliHome/cliProfile", model);
