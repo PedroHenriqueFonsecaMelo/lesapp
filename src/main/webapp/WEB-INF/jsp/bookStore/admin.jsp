@@ -15,7 +15,7 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <script src="/resources/livrocss/livros.js" defer></script>
+    
 </head>
 
 
@@ -242,7 +242,12 @@
 					<div class="tab-pane fade" id="relatorio" role="tabpanel" aria-labelledby="relatorio-tab">
 						<h3 class="mb-4">Grafico de Vendas</h3>
 						<input type="hidden" id="json" value='${grafico}'>
-						<div id="piechart" style="width: 200px; height: 200px;"></div>
+						<div id="piechart" style="width: 400px; height: 400px;">
+						</div>
+						<select class="form-select shadow-none" id="AnosGraph" name="AnosGraph">
+							<option value="null"></option>
+							${datas}
+						</select>
 					</div>
 
 					<div class="tab-pane fade" id="LivrosCadastrados" role="tabpanel" aria-labelledby="LivrosCadastrados-tab">
@@ -261,7 +266,7 @@
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-	<script src="/resources/livrocss/livros.js" defer></script>
+	
 	<script src="/resources/graficos/draw.js"></script>
 
 	<script>

@@ -41,7 +41,8 @@ public class IndexController {
         connectBD.CreateTableX(Categoria.class);
 
         String st = "insert into LIVRO  ( autor,  ano,  titulo,  editora,  edicao,  isbn,  npaginas,  sinopse,  altura,  largura,  categorias,  peso,  profundidade,  precificacao,  barras, quant) VALUES ('ph',2023,'jose','WB',1,123,200,' joao e maria', 12.20 , 2.20, 'terror', 23 , 2, 22.2 , 1101, 20 );";
-        String st2 = "insert into LIVRO  ( autor,  ano,  titulo,  editora,  edicao,  isbn,  npaginas,  sinopse,  altura,  largura,  categorias,  peso,  profundidade,  precificacao,  barras, quant) VALUES ('ph',2023,'jose','WB',1,12355,200,' joao e maria', 12.20 , 2.20, 'terror', 23 , 2, 40 , 1101, 20 );";
+        String st2 = "insert into LIVRO  ( autor,  ano,  titulo,  editora,  edicao,  isbn,  npaginas,  sinopse,  altura,  largura,  categorias,  peso,  profundidade,  precificacao,  barras, quant) VALUES ('ph',2023,'joao','WB',1,12355,200,' joao e maria', 12.20 , 2.20, 'terror', 23 , 2, 40 , 1101, 20 );";
+        String st3 = "insert into LIVRO  ( autor,  ano,  titulo,  editora,  edicao,  isbn,  npaginas,  sinopse,  altura,  largura,  categorias,  peso,  profundidade,  precificacao,  barras, quant) VALUES ('ph',2023,'ccc','WB',1,12355,200,' joao e maria', 12.20 , 2.20, 'terror', 23 , 2, 40 , 1101, 20 );";
 
         String sy = "insert into Cliente (senha , nome , datanasc , gen , email) VALUES  ('122' , '12' , '2023-03-06' , 'M' , '3@2' ); ";
         String su = "insert into Endereco (cliuid , pais , cep , estado , cidade , rua , bairro , numero , complemento , tiporesidencia) VALUES  ( 1  , 'BR' , '08780690' , 'SP' , 'Mogi das Cruzes' , 'Rua Professor Manoel Acelino de Mello' , 'Jardim Armênia' ,  21  , '21' , 'CASA' );";
@@ -57,6 +58,7 @@ public class IndexController {
 
         connectBD.EXEquery(st);
         connectBD.EXEquery(st2);
+        connectBD.EXEquery(st3);
 
         connectBD.EXEquery(sy);
         connectBD.EXEquery(su);
@@ -74,6 +76,27 @@ public class IndexController {
 
         String troca = "create table TROCA (TROCA_id int primary key AUTO_INCREMENT, ordem_id int unique, quantidade_troca int ,valorTroca NUMERIC(20, 2));";
         connectBD.EXEquery(troca);
+
+        String pedido1 = "insert into ordem (cli_id, total, status, endereco, data_pedido) VALUES (1, 40.0, 'EM PROCESSAMENTO', 1,'2020-12-31');";
+        String pedido2 = "insert into ordDetails (cli_id, ordem_id, livroid, quant) VALUES (1, 1, 3, 2)";
+        connectBD.EXEquery(pedido1);
+        connectBD.EXEquery(pedido2);
+
+        String pedido3 = "insert into ordem (cli_id, total, status, endereco, data_pedido) VALUES (1, 40.0, 'EM PROCESSAMENTO', 1,'2020-12-31');";
+        String pedido4 = "insert into ordDetails (cli_id, ordem_id, livroid, quant) VALUES (1, 2, 1, 2)";
+        connectBD.EXEquery(pedido3);
+        connectBD.EXEquery(pedido4);
+
+        String pedido5 = "insert into ordem (cli_id, total, status, endereco, data_pedido) VALUES (1, 40.0, 'EM PROCESSAMENTO', 1,'2020-12-31');";
+        String pedido6 = "insert into ordDetails (cli_id, ordem_id, livroid, quant) VALUES (1, 3, 2, 4)";
+        connectBD.EXEquery(pedido5);
+        connectBD.EXEquery(pedido6);
+
+        String pedido7 = "insert into ordem (cli_id, total, status, endereco, data_pedido) VALUES (1, 40.0, 'EM PROCESSAMENTO', 1,'2025-12-31');";
+        String pedido8 = "insert into ordDetails (cli_id, ordem_id, livroid, quant) VALUES (1, 4, 2, 4)";
+        connectBD.EXEquery(pedido7);
+        connectBD.EXEquery(pedido8);
+
     }
 
     @GetMapping("/shop")

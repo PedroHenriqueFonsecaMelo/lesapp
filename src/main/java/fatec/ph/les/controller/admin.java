@@ -106,8 +106,6 @@ public class admin {
 
         connectBD.EXEquery("delete from troca where TROCA_ID = " + mapa.get("TROCA_ID").get(0) + ";");
 
-        System.out.println(status);
-
         if (status.equalsIgnoreCase("Aprovar")
                 || status.equalsIgnoreCase("Aprovar Troca")) {
 
@@ -185,6 +183,8 @@ public class admin {
         map.addAttribute("livros", Livro.info());
 
         map.addAttribute("grafico", manyTmany.SelectOneLivro());
+
+        map.addAttribute("datas", manyTmany.getDatasOption());
 
         map.addAttribute("LivrosCadastrados", LivroTable());
     }
@@ -305,10 +305,6 @@ public class admin {
                     + Integer.parseInt(mapa.get("CLI_ID").get(0)) + ", "
                     + (desconto / 4) + ");");
         }
-        System.out.println(trocaArray);
-        System.out.println("insert into cupons (cli_id, desconto) values ("
-                + Integer.parseInt(mapa.get("CLI_ID").get(0)) + ", "
-                + (novototal / 4) + ");");
 
         return updateORDEM;
     }

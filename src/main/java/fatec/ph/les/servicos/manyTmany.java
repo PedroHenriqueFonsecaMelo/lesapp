@@ -1,13 +1,16 @@
 package fatec.ph.les.servicos;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import com.google.gson.Gson;
 
 public class manyTmany {
     String str;
+    static String datasOption = "";
     static StringBuilder str2;
     static Gson tGson;
 
@@ -28,15 +31,46 @@ public class manyTmany {
     }
 
     public static String SelectOneLivro() {
-        String str3 = "select CONCAT('IDLIVRO: ', IDLIVRO) as CONCATENADO, COUNT(IDLIVRO) as CONTAGEM from ORDDETAILS join LIVRO on IDLIVRO = LIVROID group by LIVROID";
+        String str3 = "select YEAR(data_pedido), sum(ordDetails.quant) as Livro, titulo from ORDDETAILS join LIVRO on IDLIVRO = LIVROID join ORDEM on ORDEM.ordem_id = ORDDETAILS.ordem_id group by titulo, data_pedido order by data_pedido;";
 
-        ArrayList<ArrayList<String>> rc = connectBD.mcolum(str3);
         ArrayList<ArrayList<String>> rr = connectBD.mrows(str3);
-
         ArrayList<ArrayList<String>> array = new ArrayList<>();
+        ArrayList<ArrayList<String>> novasLinhas = new ArrayList<>();
+        Set<String> novasColunas = new HashSet<>();
+        Set<String> setaux = new HashSet<>();
+        String data = "0";
 
-        array.addAll(rc);
-        array.addAll(rr);
+        for (int i = 0; i < rr.size(); i++) {
+            if (rr.get(i).get(0) == data) {
+                novasColunas.add(rr.get(i).get(2));
+            } else {
+                novasColunas.add("'data_pedido'");
+                novasColunas.add("'" + rr.get(i).get(2) + "'");
+                data = rr.get(i).get(0);
+
+            }
+
+        }
+
+        ArrayList<String> novasColunasArray = new ArrayList<>(novasColunas);
+
+        for (int i = 0; i < rr.size(); i++) {
+            setaux.add(rr.get(i).get(0));
+        }
+
+        ArrayList<String> setauxArrat = new ArrayList<>(setaux);
+
+        for (String string : setauxArrat) {
+            ArrayList<String> aux = new ArrayList<>();
+            for (int i = 0; i < novasColunas.size(); i++) {
+                aux.add(null);
+            }
+            aux(rr, aux, string, novasColunasArray, novasColunas, novasLinhas);
+
+        }
+
+        array.add(new ArrayList<String>(novasColunas));
+        array.addAll(novasLinhas);
 
         Gson gson = new Gson();
         // Type gsnoType = new TypeToken<HashMap>() { e();
@@ -44,6 +78,34 @@ public class manyTmany {
         String gsoString = gson.toJson(array);
 
         return gsoString;
+    }
+
+    private static String aux(ArrayList<ArrayList<String>> rr, ArrayList<String> aux, String data,
+            ArrayList<String> novasColunasArray, Set<String> novasColunas, ArrayList<ArrayList<String>> novasLinhas) {
+
+        for (ArrayList<String> arrayList : rr) {
+
+            aux.set(0, "'" + data + "'");
+
+            for (String string : novasColunas) {
+
+                if (data.equalsIgnoreCase(arrayList.get(0)) &&
+                        arrayList.get(2).contains(string.substring(1, string.length() - 1))) {
+
+                    aux.set(novasColunasArray.indexOf(string),
+                            arrayList.subList(1, arrayList.size() - 1).get(0));
+
+                }
+                if (!aux.isEmpty() && !novasLinhas.contains(aux)) {
+                    novasLinhas.add(aux);
+                     datasOption += "<option value=" + data + ">" + data + "</option>";
+                }
+
+            }
+
+        }
+
+        return "data";
     }
 
     public static String GenericTable(ArrayList<ArrayList<String>> toTable, int l) {
@@ -157,4 +219,13 @@ public class manyTmany {
         return gsoString;
 
     }
+
+    public static String getDatasOption() {
+        return datasOption;
+    }
+
+    public static void setDatasOption(String datasOption) {
+        manyTmany.datasOption = datasOption;
+    }
+
 }
