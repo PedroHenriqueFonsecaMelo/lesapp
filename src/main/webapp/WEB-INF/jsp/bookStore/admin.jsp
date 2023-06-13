@@ -242,7 +242,8 @@
 					<div class="tab-pane fade" id="relatorio" role="tabpanel" aria-labelledby="relatorio-tab">
 						<h3 class="mb-4">Grafico de Vendas</h3>
 						<input type="hidden" id="json" value='${grafico}'>
-						<div id="piechart" style="width: 400px; height: 400px;">
+						<input type="hidden" id="json2" value='${graficoDetalhes}'>
+						<div id="piechart" style="width: 500px; height: 400px;">
 						</div>
 						<select class="form-select shadow-none" id="AnosGraph" name="AnosGraph">
 							<option value="null"></option>

@@ -182,7 +182,9 @@ public class admin {
 
         map.addAttribute("livros", Livro.info());
 
-        map.addAttribute("grafico", manyTmany.SelectOneLivro());
+        map.addAttribute("grafico", manyTmany.SelectOneLivroGeral());
+
+        map.addAttribute("graficoDetalhes", manyTmany.SelectOneLivro());
 
         map.addAttribute("datas", manyTmany.getDatasOption());
 

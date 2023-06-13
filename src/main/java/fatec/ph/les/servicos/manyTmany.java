@@ -31,7 +31,7 @@ public class manyTmany {
     }
 
     public static String SelectOneLivro() {
-        String str3 = "select YEAR(data_pedido), sum(ordDetails.quant) as Livro, titulo from ORDDETAILS join LIVRO on IDLIVRO = LIVROID join ORDEM on ORDEM.ordem_id = ORDDETAILS.ordem_id group by titulo, data_pedido order by data_pedido;";
+        String str3 = "select data_pedido, sum(ordDetails.quant) as Livro, titulo from ORDDETAILS join LIVRO on IDLIVRO = LIVROID join ORDEM on ORDEM.ordem_id = ORDDETAILS.ordem_id group by titulo, data_pedido order by data_pedido ASC;";
 
         ArrayList<ArrayList<String>> rr = connectBD.mrows(str3);
         ArrayList<ArrayList<String>> array = new ArrayList<>();
@@ -44,8 +44,8 @@ public class manyTmany {
             if (rr.get(i).get(0) == data) {
                 novasColunas.add(rr.get(i).get(2));
             } else {
-                novasColunas.add("'data_pedido'");
-                novasColunas.add("'" + rr.get(i).get(2) + "'");
+                novasColunas.add("data_pedido");
+                novasColunas.add(rr.get(i).get(2));
                 data = rr.get(i).get(0);
 
             }
@@ -63,7 +63,57 @@ public class manyTmany {
         for (String string : setauxArrat) {
             ArrayList<String> aux = new ArrayList<>();
             for (int i = 0; i < novasColunas.size(); i++) {
-                aux.add(null);
+                aux.add("0");
+            }
+            aux(rr, aux, string, novasColunasArray, novasColunas, novasLinhas);
+
+        }
+
+        array.add(new ArrayList<String>(novasColunas));
+        array.addAll(novasLinhas);
+
+        Gson gson = new Gson();
+        // Type gsnoType = new TypeToken<HashMap>() { e();
+
+        String gsoString = gson.toJson(array);
+
+        return gsoString;
+    }
+
+    public static String SelectOneLivroGeral() {
+        String str3 = "select YEAR(data_pedido), sum(ordDetails.quant) as Livro, titulo from ORDDETAILS join LIVRO on IDLIVRO = LIVROID join ORDEM on ORDEM.ordem_id = ORDDETAILS.ordem_id group by titulo, data_pedido order by data_pedido ASC;";
+
+        ArrayList<ArrayList<String>> rr = connectBD.mrows(str3);
+        ArrayList<ArrayList<String>> array = new ArrayList<>();
+        ArrayList<ArrayList<String>> novasLinhas = new ArrayList<>();
+        Set<String> novasColunas = new HashSet<>();
+        Set<String> setaux = new HashSet<>();
+        String data = "0";
+
+        for (int i = 0; i < rr.size(); i++) {
+            if (rr.get(i).get(0) == data) {
+                novasColunas.add(rr.get(i).get(2));
+            } else {
+                novasColunas.add("data_pedido");
+                novasColunas.add(rr.get(i).get(2));
+                data = rr.get(i).get(0);
+
+            }
+
+        }
+
+        ArrayList<String> novasColunasArray = new ArrayList<>(novasColunas);
+
+        for (int i = 0; i < rr.size(); i++) {
+            setaux.add(rr.get(i).get(0));
+        }
+
+        ArrayList<String> setauxArrat = new ArrayList<>(setaux);
+
+        for (String string : setauxArrat) {
+            ArrayList<String> aux = new ArrayList<>();
+            for (int i = 0; i < novasColunas.size(); i++) {
+                aux.add("0");
             }
             aux(rr, aux, string, novasColunasArray, novasColunas, novasLinhas);
 
@@ -85,7 +135,7 @@ public class manyTmany {
 
         for (ArrayList<String> arrayList : rr) {
 
-            aux.set(0, "'" + data + "'");
+            aux.set(0, data);
 
             for (String string : novasColunas) {
 
@@ -98,7 +148,11 @@ public class manyTmany {
                 }
                 if (!aux.isEmpty() && !novasLinhas.contains(aux)) {
                     novasLinhas.add(aux);
-                     datasOption += "<option value=" + data + ">" + data + "</option>";
+
+                }
+                if (!datasOption.contains(data.substring(0, 4))) {
+                    datasOption += "<option value=" + data.substring(0, 4) + ">"
+                            + data.substring(0, 4) + "</option>";
                 }
 
             }

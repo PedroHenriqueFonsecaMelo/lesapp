@@ -1,7 +1,11 @@
 package fatec.ph.les.controller;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
@@ -96,6 +100,28 @@ public class IndexController {
         String pedido8 = "insert into ordDetails (cli_id, ordem_id, livroid, quant) VALUES (1, 4, 2, 4)";
         connectBD.EXEquery(pedido7);
         connectBD.EXEquery(pedido8);
+
+        Random random = new Random();
+
+        for (int i = 0; i < 11; i++) {
+            LocalDate startDate = LocalDate.of(2020, 1, 1); // start date
+            long start = startDate.toEpochDay();
+
+            LocalDate endDate = LocalDate.of(2023, 1, 1); // end date
+            long end = endDate.toEpochDay();
+
+            long randomEpochDay = ThreadLocalRandom.current().longs(start, end).findAny().getAsLong();
+
+            String pedido9 = "insert into ordem (cli_id, total, status, endereco, data_pedido) VALUES"
+                    + "(1, 40.0, 'EM PROCESSAMENTO', 1,'" + LocalDate.ofEpochDay(randomEpochDay) + "');";
+
+            String pedido10 = "insert into ordDetails (cli_id, ordem_id, livroid, quant) VALUES "
+                    + "(1," + (i + 4) + "," + random.ints(1, 3).findFirst().getAsInt() + ", "
+                    + random.ints(0, i + 1).findFirst().getAsInt() + ")";
+
+            connectBD.EXEquery(pedido9);
+            connectBD.EXEquery(pedido10);
+        }
 
     }
 

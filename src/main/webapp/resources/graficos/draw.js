@@ -1,53 +1,52 @@
 let customObjectList = [];
 
 let googleData = JSON.parse(document.getElementById('json').value);
+let googleDataDetalhes = JSON.parse(document.getElementById('json2').value);
 let select = document.getElementById('AnosGraph');
 
-google.charts.load('50', {'packages':['bar']});
+google.charts.load('50', {'packages':['corechart']});
+
+for (let i = 1; i < googleData.length; i++){
+  for (let j = 1; j < googleData[i].length; j++) {
+    if( googleData[i][j] != null){
+      googleData[i][j] = parseInt(googleData[i][j]);
+    }
+  }
+}
+for (let i = 1; i < googleDataDetalhes.length; i++){
+  for (let j = 1; j < googleDataDetalhes[i].length; j++) {
+    if( googleDataDetalhes[i][j] != null){
+      googleDataDetalhes[i][j] = parseInt(googleDataDetalhes[i][j]);
+    }
+  }
+}
+
 google.charts.setOnLoadCallback(drawChart);
 
 
 document.getElementById("relatorio-tab").addEventListener("click", function() {
-
+  
   setTimeout(drawChart, 1000);;
 
 });
 
-for (let i = 1; index < googleData.length; i++){
-  for (let j = 0; j < googleData[i].length; j++) {
-    if( googleData[i][j] != null){
-      googleData[i][j] =  googleData[i][j].substring(1, googleData[i][j].length-1);
-    }
-  }
-}
+
 function drawChart(dados) {
 
 
    let data = null;
    
-   if(dados == undefined){
+   if(dados === undefined){
 
-      for (let i = 1; index < googleData.length; i++){
-        for (let j = 0; j < googleData[i].length; j++) {
-          if( googleData[i][j] != null && googleData[i][j].includes("'")){
-            googleData[i][j] =  googleData[i][j].substring(1, googleData[i][j].length-1);
-          }
-        }
-      }
-
+      
     data = google.visualization.arrayToDataTable(googleData);
 
    } else {
 
-    for (let i = 1; index < dados.length; i++){
-      for (let j = 0; j < dados[i].length; j++) {
-        if( dados[i][j] != null && dados[i][j].includes("'")){
-          dados[i][j] =  dados[i][j].substring(1, dados[i][j].length-1);
-        }
-      }
-    }
+    
 
     data = google.visualization.arrayToDataTable(dados);
+
    }
  
  
@@ -57,9 +56,9 @@ function drawChart(dados) {
       subtitle: 'Sales, Expenses, and Profit'
     }
   };
-
-  var chart = new google.charts.Bar(document.getElementById('piechart'));
-
+  
+  var chart = new google.visualization.LineChart(document.getElementById('piechart'));
+  data.sort([{column: 0}, {column: 1}]);
   chart.draw(data,options);
 }
 
@@ -74,9 +73,9 @@ selectElement.addEventListener("change", (event) => {
 
   } else{
 
-   for (let i = 1; i < googleData.length; i++) {
-      if(googleData[i][0].includes(filtros) || googleData[i][0].includes(filtros.toString())){
-        result.push(googleData[i]);
+   for (let i = 1; i < googleDataDetalhes.length; i++) {
+      if(googleDataDetalhes[i][0].includes(filtros) || googleDataDetalhes[i][0].includes(filtros.toString())){
+        result.push(googleDataDetalhes[i]);
       }
     }
 
