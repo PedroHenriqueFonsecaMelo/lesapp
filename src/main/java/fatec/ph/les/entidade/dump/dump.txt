@@ -240,6 +240,9 @@ private static Class<?> getClass(String className, String packageName) {
         return null;
     }
 
+Set<String> array = fatec.ph.les.servicos.init.fileDirectory(
+                "copy path");
+
 for (String iterable_element : array) {
             System.out.println("-------------------\n");
             System.out.println(iterable_element);
@@ -338,3 +341,31 @@ Alteração de status, considerando o workflow: EM PROCESSAMENTO, PAGAMENTO REAL
 Baixa e entrada no estoque (quando produto trocado).
 
 Obs: Não é preciso fazer nenhum tipo de integração com meio de pagamento ou correios, frete e pagamento pode ser simulado com uma tabela de banco de dados ou serviço "mockado".
+
+\\\\
+[Cliente | idCliente INT PRIMARY KEY AUTO_INCREMENT;  senha VARCHAR(100); nome VARCHAR(100);  datanasc DATE; gen VARCHAR(100); email VARCHAR(100)]
+
+
+[Endereco | idEndereco INT PRIMARY KEY AUTO_INCREMENT;  cliuid INT;  pais VARCHAR(100);  cep VARCHAR(100);  estado VARCHAR(100);  cidade VARCHAR(100);  rua VARCHAR(100); bairro VARCHAR(100);  numero INT; complemento VARCHAR(100); tiporesidencia VARCHAR(100)]
+
+[Cartao | idCartao INT PRIMARY KEY AUTO_INCREMENT;  ncartao INT;  bandeira VARCHAR(100);  nomecli VARCHAR(100);  cli_id INT;  cv INT;  preferencial INT]
+
+[Livro | idlivro INT PRIMARY KEY AUTO_INCREMENT;  autor VARCHAR(100);  ano INT;  titulo VARCHAR(100);  editora VARCHAR(100);  edicao INT;  isbn INT;  npaginas INT; sinopse VARCHAR(100);  altura NUMERIC(20, 2);  largura NUMERIC(20, 2);  categorias VARCHAR(100);  peso NUMERIC(20, 2);  profundidade NUMERIC(20, 2);  precificacao NUMERIC(20, 2);  barras VARCHAR(100);  quant INT]
+
+[ordem | ordem_id int primary key AUTO_INCREMENT; cli_id int; total NUMERIC(20,2); status VARCHAR(100); endereco VARCHAR(100); data_pedido DATE]
+
+[ordDetails | details_id int primary key AUTO_INCREMENT; ordem_id int; livroid int; quant int]
+
+[ordPay | pay_id int primary key AUTO_INCREMENT; ordem_id int; cartaoid int; valor NUMERIC(20, 2)]
+
+[TROCA | TROCA_id int primary key AUTO_INCREMENT; ordem_id int unique; quantidade_troca int; valorTroca NUMERIC(20, 2)]
+
+
+[TROCA ]<-++[ordem ]
+[ordDetails ]<-++[ordem ]
+[ordDetails ]<-++[Livro ]
+[ordPay ]<-++[ordem ]
+[ordem ]<-++[Cliente ]
+[Cliente ]++->[Endereco ]
+[Cliente ]++->[Cartao ]
+

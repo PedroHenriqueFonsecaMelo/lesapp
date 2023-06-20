@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +22,7 @@ import fatec.ph.les.entidade.Categoria;
 import fatec.ph.les.entidade.Cliente;
 import fatec.ph.les.entidade.Endereco;
 import fatec.ph.les.entidade.Livro;
-import fatec.ph.les.servicos.connectBD;
+import fatec.ph.les.servicos.*;
 
 @Controller
 public class IndexController {
@@ -37,6 +38,15 @@ public class IndexController {
     }
 
     private void init() {
+
+        Set<String> array = fatec.ph.les.servicos.init.fileDirectory(
+                "C:\\Users\\Pedro Henrique\\Documents\\Fatec\\les\\lesapp\\lesapp\\src\\main\\java\\fatec\\ph\\les\\servicos");
+
+        for (String iterable_element : array) {
+            System.out.println("-------------------\n");
+            System.out.println(iterable_element);
+            System.out.println("\n-------------------");
+        }
 
         connectBD.CreateTableX(Cliente.class);
         connectBD.CreateTableX(Endereco.class);

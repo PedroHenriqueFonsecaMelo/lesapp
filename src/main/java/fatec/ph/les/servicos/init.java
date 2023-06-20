@@ -5,12 +5,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.reflections.Reflections;
-import org.reflections.scanners.SubTypesScanner;
+import org.reflections8.Reflections;
+import org.reflections8.scanners.SubTypesScanner;
 
 public class init {
     private static String uid = "1";
@@ -32,15 +33,19 @@ public class init {
 
         File dir = new File(string);
         File[] directoryListing = dir.listFiles();
+        System.out.println(string);
+        System.out.println(Arrays.toString(directoryListing));
+        // classes.addAll(findAllClassesUsingReflectionsLibrary("fatec.ph.les.servicos"));
 
         if (directoryListing != null) {
             for (File child : directoryListing) {
+
                 if (!child.isDirectory()) {
                     if (!child.getAbsoluteFile().getName().contains("ServletInitializer")
                             && !child.getAbsoluteFile().getName().contains("SpringbootjspdemoApplication")
                             && child.getAbsoluteFile().getName().contains(".java")) {
 
-                        String strings = child.getAbsolutePath().substring(string.indexOf("java/") + 5,
+                        String strings = child.getAbsolutePath().substring(string.indexOf("java") + 5,
                                 string.length());
 
                         strings = strings.replaceAll("\\\\", ".");
@@ -57,6 +62,7 @@ public class init {
 
             }
         }
+        System.out.println("CLASSES " + classes);
 
         pacotes(classes);
 

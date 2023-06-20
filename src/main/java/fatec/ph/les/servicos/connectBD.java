@@ -62,6 +62,8 @@ public class connectBD {
             }
         }
 
+        System.out.println(table.toString());
+
         EXEquery(table.toString());
 
     }
