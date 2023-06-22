@@ -369,3 +369,118 @@ Obs: Não é preciso fazer nenhum tipo de integração com meio de pagamento ou 
 [Cliente ]++->[Endereco ]
 [Cliente ]++->[Cartao ]
 
+
+//
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table cliente {
+    IDCLIENTE INT [primary key]
+    SENHA VARCHAR(100)
+    NOME VARCHAR(100)
+    DATANASC DATE
+    GEN VARCHAR(100)
+    EMAIL VARCHAR(100)
+}
+
+Table ENDERECO {
+
+    IDENDERECO INT [primary key]
+    CLIUID INT
+    PAIS VARCHAR(100)
+    CEP VARCHAR(100)
+    ESTADO VARCHAR(100)
+    CIDADE VARCHAR(100)
+    RUA VARCHAR(100)
+    BAIRRO VARCHAR(100)
+    NUMERO INT
+    COMPLEMENTO VARCHAR(100)
+    TIPORESIDENCIA VARCHAR(100)
+}
+
+Table CARTAO {
+  IDCARTAO int [primary key]
+  NCARTAO INT
+  BANDEIRA VARCHAR(100)
+  NOMECLI VARCHAR(100)
+  CLI_ID INT
+  CV  INT
+  PREFERENCIAL INT
+}
+
+Table LIVRO {
+  IDLIVRO int [primary key]
+  AUTOR VARCHAR(100)
+  ANO INT
+  TITULO VARCHAR(100)
+  EDITORA VARCHAR(100)
+  EDICAO INT
+  ISBN INT
+  NPAGINAS INT
+  SINOPSE VARCHAR(100)
+  ALTURA NUMERIC(20, 2)
+  LARGURA NUMERIC(20, 2)
+  CATEGORIAS VARCHAR(100)
+  PESO NUMERIC(20, 2)
+  PROFUNDIDADE NUMERIC(20, 2)
+  PRECIFICACAO NUMERIC(20, 2)
+  BARRAS VARCHAR(100)
+  QUANT INT
+}
+
+Table CUPONS {
+  CUPONS_ID int [primary key]
+  CLI_ID INT
+  DESCONTO NUMERIC(20, 2)
+}
+
+Table ORDEM {
+  ORDEM_ID int [primary key]
+  CLI_ID INT
+  TOTAL NUMERIC(20, 2)
+  STATUS VARCHAR(100)
+  ENDERECO  VARCHAR(100)
+  DATA_PEDIDO DATE
+}
+
+ TABLE ORDDETAILS {
+    DETAILS_ID INT [primary key]
+    CLI_ID INT
+    ORDEM_ID INT
+    LIVROID INT
+    QUANT INT
+}
+
+TABLE ORDPAY{
+    PAY_ID INT  [primary key]
+    CLI_ID INT
+    ORDEM_ID INT
+    CARTAOID INT
+    VALOR NUMERIC(20, 2)
+}
+
+TABLE TROCA{
+    TROCA_ID INT [primary key]
+    ORDEM_ID INT
+    QUANTIDADE_TROCA INT
+    VALORTROCA NUMERIC(20, 2)
+}
+
+Ref: ORDEM.ORDEM_ID > cliente.IDCLIENTE // many-to-one
+
+Ref: ORDEM.ORDEM_ID > ORDDETAILS.ORDEM_ID
+
+Ref: ORDEM.ORDEM_ID > ORDPAY.ORDEM_ID
+
+Ref: ORDEM.ORDEM_ID > TROCA.TROCA_ID
+
+Ref: cliente.IDCLIENTE > ENDERECO.CLIUID // many-to-one
+
+Ref: cliente.IDCLIENTE > CARTAO.CLI_ID // many-to-one
+
+Ref: LIVRO.IDLIVRO > ORDDETAILS.LIVROID // many-to-one
+
+
+
+
+

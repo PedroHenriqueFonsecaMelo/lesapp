@@ -85,8 +85,35 @@ selectElement.addEventListener("change", (event) => {
   
 });
 
-function Filtrar(filtros){
-  
-  
-};
-drawChart();
+let elementsArray = document.getElementsByName("dataFiltro");
+
+elementsArray.forEach(function(elem) {
+  elem.addEventListener("change",  (event) =>{
+    let result = googleData.slice(0,1);
+
+     if (elementsArray[1].value != "" && elementsArray[0].value != ""){
+      let dateFrom =  new Date(elementsArray[0].value);
+      let dateTo = new Date(elementsArray[1].value);
+
+      dateFrom.setDate(dateFrom.getDate() + 1);
+      dateTo.setDate(dateTo.getDate() + 1);
+      
+      for (let i = 1; i < googleDataDetalhes.length; i++) {
+        let googleTodate = new Date(googleDataDetalhes[i][0]);
+        googleTodate.setDate(googleTodate.getDate() + 1);
+        console.log("i = " + i);
+        console.log("googleTodate = " + googleTodate);
+
+        if(googleTodate >= dateFrom && googleTodate <= dateTo){
+          result.push(googleDataDetalhes[i]);
+          console.log("adicionado");
+        }
+      }
+
+      
+      if(result.length>1){
+        drawChart(result);
+      }
+     }
+  });
+});

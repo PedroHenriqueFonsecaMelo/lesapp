@@ -243,12 +243,24 @@
 						<h3 class="mb-4">Grafico de Vendas</h3>
 						<input type="hidden" id="json" value='${grafico}'>
 						<input type="hidden" id="json2" value='${graficoDetalhes}'>
-						<div id="piechart" style="width: 500px; height: 400px;">
+					<div id="piechart" style="width: 500px; height: 400px;">
+					</div>
+						 <div style="float:left; margin-right: 20px;" >
+							<label style="display:block" >Filtro por Ano</label>
+							<select style="display:block" class="form-select shadow-none" id="AnosGraph" name="AnosGraph">
+								<option value="null"></option>
+								${datas}
+							</select>
 						</div>
-						<select class="form-select shadow-none" id="AnosGraph" name="AnosGraph">
-							<option value="null"></option>
-							${datas}
-						</select>
+
+						 <div style="float:left; margin-right: 20px;">
+							<label style="display:block">Filtro entre Data 1</label>
+							<input style="display:block" id="date1" type="date" name="dataFiltro">
+						</div>
+						<div style="float:left; margin-right: 20px;">
+							<label style="display:block">Filtro entre Data 2</label>
+							<input style="display:block" id="date2" type="date" name="dataFiltro">
+						</div>
 					</div>
 
 					<div class="tab-pane fade" id="LivrosCadastrados" role="tabpanel" aria-labelledby="LivrosCadastrados-tab">
