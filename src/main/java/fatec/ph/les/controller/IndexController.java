@@ -22,17 +22,19 @@ import fatec.ph.les.entidade.Categoria;
 import fatec.ph.les.entidade.Cliente;
 import fatec.ph.les.entidade.Endereco;
 import fatec.ph.les.entidade.Livro;
-import fatec.ph.les.servicos.*;
+import fatec.ph.les.servicos.connectBD;
+import fatec.ph.les.servicos.init;
 
 @Controller
 public class IndexController {
-    private static boolean init = true;
+    private static boolean initio = true;
+    
 
     @GetMapping("/")
     public String index(Model model, HttpServletRequest request) {
-        if (init) {
+        if (initio) {
             init();
-            init = false;
+            initio = false;
         }
         return "index";
     }
@@ -40,7 +42,7 @@ public class IndexController {
     private void init() {
 
         Set<String> array = fatec.ph.les.servicos.init.fileDirectory(
-                "C:\\Users\\Pedro Henrique\\Documents\\Fatec\\les\\lesapp\\lesapp\\src\\main\\java\\fatec\\ph\\les\\servicos");
+                init.class.getProtectionDomain().getCodeSource().getLocation().getPath());
 
         for (String iterable_element : array) {
             System.out.println("-------------------\n");
